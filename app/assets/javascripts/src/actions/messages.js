@@ -6,8 +6,10 @@ import {ActionTypes} from '../constants/app'
 // import {ActionTypes, APIEndpoints, CSRFToken} from '../constants/app'
 
 export default {
-  // when clicked in a view file,
-  // executing "updateOpenChatID" in "stores/messages.js"
+  //
+  // Connecting from 'changeOpenChat(id)'  in 'components/userList.js'
+  //              to 'UPDATE_OPEN_CHAT_ID' in 'stores/messages.js'
+  //
   changeOpenChat(newUserID) {
     Dispatcher.handleViewAction({
       type: ActionTypes.UPDATE_OPEN_CHAT_ID,
@@ -46,6 +48,7 @@ export default {
             type: ActionTypes.GET_MESSAGES,
             json: json,
           })
+          console.log("request done!")
           resolve(json)
         } else {
           reject(res)

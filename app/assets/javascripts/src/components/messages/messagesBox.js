@@ -12,48 +12,51 @@ class MessagesBox extends React.Component {
 
   constructor(props) {
     //
-    // Inheriting React.component's props (modifiable values)
-    // Inheriting React.component's states (unmodifiable values)
+    // Inheriting props  (modifiable   values) from 'React.component'
+    // Inheriting states (unmodifiable values) as   'this.getStateFromStore()'
     //
     super(props)
     this.state = this.initialState
     //
     // Calling getMessages() from 'actions/messages'
     // While calling, proceeding next
+    // ** Do not prepend "return" to objects (in this case, promise objects).
+    // ** If so, the constructor will return promise objects, not 'this'...
     //
-    return MessagesAction.getMessages()
+    MessagesAction.getMessages()
   }
   //
-  // Calling getMessages() from 'stores/messages'
+  // Equalizing 'this.initialState' and 'this.getStateFromStore()'
+  // ** If you write "get hoge() {return fuga}", this.hoge does fuga
   //
   get initialState() {
-    this.getStateFromStore()
+    return this.getStateFromStore()
   }
   getStateFromStore() {
-    // return MessagesStore.getChatByUserID(MessagesStore.getOpenChatUserID())
-    return MessagesStore.getMessages()
+    //
+    // Calling getMessages() from 'stores/messages', returning 'messages[openChatID]'
+    // ** If you remove "return", 'messages[openChatID]' can't be referred in 'get initialState()'
+    //
+    return MessagesStore.getMessages(MessagesStore.getOpenChatUserID())
   }
-  // //
-  // Just before starting rendering (mounting)
-  // ??
-  // //
-  componentWillMount() {
-    MessagesStore.onChange(this.onStoreChange.bind(this))
-  }
-  // //
-  // Just before stopping rendering (unmounting)
-  // ??
-  // //
-  componentWillUnmount() {
-    MessagesStore.offChange(this.onStoreChange.bind(this))
-  }
-  // //
-  // Setting the state to messages[openChatID]
-  // //
+  //
+  // Updating states as 'this.getStateFromStore()'
+  //
   onStoreChange() {
     this.setState(this.getStateFromStore())
   }
-  // //
+  //
+  // ??
+  //
+  componentWillMount() {
+    MessagesStore.onChange(this.onStoreChange.bind(this))
+  }
+  componentWillUnmount() {
+    MessagesStore.offChange(this.onStoreChange.bind(this))
+  }
+  //
+  // Rendering results
+  //
   render() {
     const messagesLength = this.state.messages.length
     const currentUserID = UserStore.user.id

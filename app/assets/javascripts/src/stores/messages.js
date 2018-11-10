@@ -71,8 +71,10 @@ const messages = {
   },
 }
 
-// Designating a temporary openChatID to '2'
-// Object.keys(messages), which is [2, 3, 4], is an array of keys in 'messages'
+//
+// Designating a temporary openChatID   to '2'
+// ** Object.keys(messages), which is [2, 3, 4], is an array of keys in 'messages'
+//
 var openChatID = parseInt(Object.keys(messages)[0], 10)
 
 class ChatStore extends BaseStore {
@@ -85,24 +87,25 @@ class ChatStore extends BaseStore {
   getOpenChatUserID() {
     return openChatID
   }
-  getChatByUserID(id) {
-    return messages[id]
-  }
-  getAllChats() {
-    return messages
-  }
-  getMessages() {
-    // 1. Setting initial values (blank)
+  //
+  // 1. Associating the key "messages" with a blank
+  // 2. Associating the key "messages" with 'messages'
+  // 3. Returning 'messages' or 'messages[openChatID]'
+  // ** If defined as 'setMessages(messages)', 'messages' is overwritten, which should be avoided
+  //
+  getMessages(tmpID) {
+    //
+    // If 'setMessages()' not defined yet, associating the key "messages" with a blank
+    // If called as 'getMessages()',       returning 'messages'
+    // If called as 'getMessages(tmpID)',  returning 'messages[tmpID]'
+    //
     if (!this.get("messages")) this.setMessages([])
-    // 3. Returning 'messages'
-    const get_storage_b = this.get("messages")
-    console.log(get_storage_b)
-    return this.get("messages")
+    if (tmpID == null) return this.get("messages")
+    return this.get("messages")[tmpID]
   }
-  setMessages(messages) {
-    // 2. Setting 'messages'
-    this.set("messages", messages)
-    console.log(messages)
+  setMessages(tmpMsg) {
+    var tmpMsg = messages
+    this.set("messages", tmpMsg)
   }
 }
 
@@ -116,7 +119,16 @@ MessagesStore.dispatchToken = Dispatcher.register(payload => {
 
   switch (action.type) {
     case ActionTypes.UPDATE_OPEN_CHAT_ID:
-      openChatID = payload.action.userID
+      //
+      // When an account is clicked, updating openChatID,
+      // redefining messages to display, calling setMessages(),
+      // and updating 'last access' status
+      //
+      openChatID   = payload.action.userID
+      const tmpMsg = messages[openChatID]
+      MessagesStore.setMessages(tmpMsg)
+      tmpMsg.lastAccess.currentUser = +new Date()
+      //
       MessagesStore.emitChange()
       break
 
@@ -127,11 +139,14 @@ MessagesStore.dispatchToken = Dispatcher.register(payload => {
         timestamp: action.timestamp,
         from: UserStore.user.id,
       })
+      messages[userID].lastAccess.currentUser = +new Date()
       MessagesStore.emitChange()
       break
 
     case ActionTypes.GET_MESSAGES:
-      MessagesStore.setMessages()
+      // openMessages = messages[openChatID]
+      // MessagesStore.setMessages(openMessages)
+      console.log()
       MessagesStore.emitChange()
       break
   }

@@ -1,25 +1,38 @@
+// components/userList.js
+
 import React from 'react'
-import _ from 'lodash'
 import classNames from 'classnames'
-import Utils from '../../utils'
+import _ from 'lodash'
+import MessagesAction from '../../actions/messages'
 import MessagesStore from '../../stores/messages'
 import UserStore from '../../stores/user'
-import MessagesAction from '../../actions/messages'
+import Utils from '../../utils'
 
 class UserList extends React.Component {
 
   constructor(props) {
+    //
+    // Inheriting props  (modifiable   values) from 'React.component'
+    // Inheriting states (unmodifiable values) as   'this.getStateFromStore()'
+    //
     super(props)
     this.state = this.initialState
   }
-
+  //
+  // Equalizing 'this.initialState' and 'this.getStateFromStore()'
+  // ** If you write "get hoge() {return fuga}", this.hoge does fuga
+  //
   get initialState() {
     return this.getStateFromStore()
   }
-
   getStateFromStore() {
-    const allMessages = MessagesStore.getAllChats()
-
+    //
+    // Calling getMessages() from 'stores/messages'
+    //
+    const allMessages = MessagesStore.getMessages()
+    //
+    // Getting as 'messageList' details on the last message for each account
+    //
     const messageList = []
     _.each(allMessages, (message) => {
       const messagesLength = message.messages.length
@@ -29,27 +42,38 @@ class UserList extends React.Component {
         user: message.user,
       })
     })
+    //
+    // Returning 'openChatID' and 'messageList'
+    //
     return {
       openChatID: MessagesStore.getOpenChatUserID(),
       messageList: messageList,
     }
   }
+  //
+  // Updating states as 'this.getStateFromStore()'
+  //
+  onStoreChange() {
+    this.setState(this.getStateFromStore())
+  }
+  //
+  // When an account is clicked, changing chats displayed
+  //
+  changeOpenChat(id) {
+    MessagesAction.changeOpenChat(id)
+  }
+  //
+  // ??
+  //
   componentWillMount() {
     MessagesStore.onChange(this.onStoreChange.bind(this))
   }
   componentWillUnmount() {
     MessagesStore.offChange(this.onStoreChange.bind(this))
   }
-  onStoreChange() {
-    this.setState(this.getStateFromStore())
-  }
-  // ////////////////////////////////////////////////
-  // when clicking an account,
-  // changing chats displayed
-  // ////////////////////////////////////////////////
-  changeOpenChat(id) {
-    MessagesAction.changeOpenChat(id)
-  }
+  //
+  // Rendering results
+  //
   render() {
     this.state.messageList.sort((a, b) => {
       if (a.lastMessage.timestamp > b.lastMessage.timestamp) {
@@ -90,7 +114,10 @@ class UserList extends React.Component {
 
       return (
         <li
-          onClick={ this.changeOpenChat.bind(this, message.user.id) }ß={true}
+          //
+          // When an account is clicked, returning 'changeOpenChat(message.user.id)'
+          //
+          onClick={ this.changeOpenChat.bind(this, message.user.id) }//ß={true}
           className={ itemClasses }
           key={ message.user.id }
         >
