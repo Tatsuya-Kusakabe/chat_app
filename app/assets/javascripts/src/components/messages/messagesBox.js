@@ -1,41 +1,59 @@
+// components/messagesBox.js
+
 import React from 'react'
 import classNames from 'classNames'
 import ReplyBox from '../../components/messages/replyBox'
+import MessagesAction from '../../actions/messages'
+import MessagesStore from '../../stores/messages'
 import UserStore from '../../stores/user'
 import Utils from '../../utils'
 
 class MessagesBox extends React.Component {
 
   constructor(props) {
+    //
+    // Inheriting React.component's props (modifiable values)
+    // Inheriting React.component's states (unmodifiable values)
+    //
     super(props)
     this.state = this.initialState
+    //
+    // Calling getMessages() from 'actions/messages'
+    // While calling, proceeding next
+    //
+    return MessagesAction.getMessages()
   }
+  //
+  // Calling getMessages() from 'stores/messages'
+  //
   get initialState() {
-    return {
-      user: {
-        profilePicture: 'https://avatars0.githubusercontent.com/u/7922109?v=3&s=460',
-        id: 2,
-        name: 'Ryan Clark',
-        status: 'online',
-      },
-      lastAccess: {
-        recipient: 1424469794050,
-        currentUser: 1424469794080,
-      },
-      messages: [
-        {
-          contents: 'Hey!',
-          from: 2,
-          timestamp: 1424469793023,
-        },
-        {
-          contents: 'Hey, what\'s up?',
-          from: 1,
-          timestamp: 1424469794000,
-        },
-      ],
-    }
+    this.getStateFromStore()
   }
+  getStateFromStore() {
+    // return MessagesStore.getChatByUserID(MessagesStore.getOpenChatUserID())
+    return MessagesStore.getMessages()
+  }
+  // //
+  // Just before starting rendering (mounting)
+  // ??
+  // //
+  componentWillMount() {
+    MessagesStore.onChange(this.onStoreChange.bind(this))
+  }
+  // //
+  // Just before stopping rendering (unmounting)
+  // ??
+  // //
+  componentWillUnmount() {
+    MessagesStore.offChange(this.onStoreChange.bind(this))
+  }
+  // //
+  // Setting the state to messages[openChatID]
+  // //
+  onStoreChange() {
+    this.setState(this.getStateFromStore())
+  }
+  // //
   render() {
     const messagesLength = this.state.messages.length
     const currentUserID = UserStore.user.id
