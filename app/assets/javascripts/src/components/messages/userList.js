@@ -1,74 +1,79 @@
+// components/userList.js
+
 import React from 'react'
 import classNames from 'classnames'
-import Utils from '../../utils'
+import _ from 'lodash'
+import MessagesAction from '../../actions/messages'
+import MessagesStore from '../../stores/messages'
 import UserStore from '../../stores/user'
+import Utils from '../../utils'
 
 class UserList extends React.Component {
 
   constructor(props) {
+    //
+    // Inheriting props  (modifiable   values) from 'React.component'
+    // Inheriting states (unmodifiable values) as   'this.getStateFromStore()'
+    //
     super(props)
     this.state = this.initialState
   }
-
+  //
+  // Equalizing 'this.initialState' and 'this.getStateFromStore()'
+  // ** If you write "get hoge() {return fuga}", this.hoge does fuga
+  //
   get initialState() {
+    return this.getStateFromStore()
+  }
+  getStateFromStore() {
+    //
+    // Calling getMessages() from 'stores/messages'
+    //
+    const allMessages = MessagesStore.getMessages()
+    //
+    // Getting as 'messageList' details on the last message for each account
+    //
+    const messageList = []
+    _.each(allMessages, (message) => {
+      const messagesLength = message.messages.length
+      messageList.push({
+        lastMessage: message.messages[messagesLength - 1],
+        lastAccess: message.lastAccess,
+        user: message.user,
+      })
+    })
+    //
+    // Returning 'openChatID' and 'messageList'
+    //
     return {
-      openChatID: 2,
-      messageList: [
-        {
-          lastMessage: {
-            contents: 'Hey, what\'s up?',
-            from: 1,
-            timestamp: 1424469794000,
-          },
-          lastAccess: {
-            recipient: 1424469794050,
-            currentUser: 1424469794080,
-          },
-          user: {
-            profilePicture: 'https://avatars0.githubusercontent.com/u/7922109?v=3&s=460',
-            id: 2,
-            name: 'Ryan Clark',
-            status: 'online',
-          },
-        },
-        {
-          lastMessage: {
-            contents: 'Want a game of ping pong?',
-            from: 3,
-            timestamp: 1424352522000,
-          },
-          lastAccess: {
-            recipient: 1424352522000,
-            currentUser: 1424352522080,
-          },
-          user: {
-            read: true,
-            profilePicture: 'https://avatars3.githubusercontent.com/u/2955483?v=3&s=460',
-            name: 'Jilles Soeters',
-            id: 3,
-            status: 'online',
-          },
-        },
-        {
-          lastMessage: {
-            contents: 'Please follow me on twitter I\'ll pay you',
-            timestamp: 1424423579000,
-            from: 4,
-          },
-          lastAccess: {
-            recipient: 1424423579000,
-            currentUser: 1424423574000,
-          },
-          user: {
-            name: 'Todd Motto',
-            id: 4,
-            profilePicture: 'https://avatars1.githubusercontent.com/u/1655968?v=3&s=460',
-            status: 'online',
-          },
-        },
-      ],
+      openChatID: MessagesStore.getOpenChatUserID(),
+      messageList: messageList,
     }
   }
+  //
+  // Updating a state from 'this.getStateFromStore()' to 'this.getStateFromStore()'
+  //
+  onStoreChange() {
+    this.setState(this.getStateFromStore())
+  }
+  //
+  // When an account is clicked, changing chats displayed
+  //
+  changeOpenChat(id) {
+    MessagesAction.changeOpenChat(id)
+  }
+  //
+  // ??
+  //
+  componentWillMount() {
+    MessagesStore.onChange(this.onStoreChange.bind(this))
+  }
+  componentWillUnmount() {
+    MessagesStore.offChange(this.onStoreChange.bind(this))
+  }
+  //
+  // Rendering results
+  //
   render() {
     this.state.messageList.sort((a, b) => {
       if (a.lastMessage.timestamp > b.lastMessage.timestamp) {
@@ -84,15 +89,17 @@ class UserList extends React.Component {
       const date = Utils.getNiceDate(message.lastMessage.timestamp)
 
       var statusIcon
+      // console.log(message.lastMessage.from + " " + message.user.id)
+      //
+      // If the last message was from a user (not a recipient), showing a 'reply' icon
+      //
       if (message.lastMessage.from !== message.user.id) {
-        statusIcon = (
-          <i className='fa fa-reply user-list__item__icon' />
-        )
-      }
-      if (message.lastAccess.currentUser < message.lastMessage.timestamp) {
-        statusIcon = (
-          <i className='fa fa-circle user-list__item__icon' />
-        )
+        statusIcon = (<i className='fa fa-reply user-list__item__icon' />)
+      //
+      // If the last message was posted after the last access, showing a 'circle' icon
+      //
+      } else if (message.lastAccess.currentUser < message.lastMessage.timestamp) {
+        statusIcon = (<i className='fa fa-circle user-list__item__icon' />)
       }
 
       var isNewMessage = false
@@ -109,6 +116,10 @@ class UserList extends React.Component {
 
       return (
         <li
+          //
+          // When an account is clicked, returning 'changeOpenChat(message.user.id)'
+          //
+          onClick={ this.changeOpenChat.bind(this, message.user.id) }
           className={ itemClasses }
           key={ message.user.id }
         >
