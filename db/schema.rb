@@ -11,26 +11,22 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181113022957) do
-
-  create_table "access_logs", force: :cascade do |t|
-    t.integer "recipient"
-    t.integer "currentUser"
-  end
+ActiveRecord::Schema.define(version: 20181108140344) do
 
   create_table "messages", force: :cascade do |t|
     t.integer "user_id"
     t.integer "from"
     t.text    "contents"
-    t.integer "timestamp", limit: 8
+    t.integer "timestamp"
   end
 
-  create_table "users", id: false, force: :cascade do |t|
-    t.integer "id"
-    t.text    "name"
+  create_table "users", force: :cascade do |t|
+    t.string  "name"
     t.text    "profilePicture"
-    t.text    "status"
-    t.text    "read"
+    t.string  "status"
+    t.boolean "read"
+    t.integer "timestamp_recipient", limit: 8
+    t.integer "timestamp_user",      limit: 8
   end
 
 end
