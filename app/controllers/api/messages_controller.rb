@@ -21,7 +21,7 @@ class Api::MessagesController < ApplicationController
       #
       @messages[num]["user"]["id"]                = User.find_by(id: num).id
       @messages[num]["user"]["name"]              = User.find_by(id: num).name
-      @messages[num]["user"]["profilePicture"]    = User.find_by(id: num).profilePicture
+      @messages[num]["user"]["profilePicture"]    = User.find_by(id: num).profile_picture
       @messages[num]["user"]["status"]            = User.find_by(id: num).status
       @messages[num]["user"]["read"]              = User.find_by(id: num).read
       #
@@ -41,6 +41,7 @@ class Api::MessagesController < ApplicationController
     #
     # If 'ActionTypes.SEND_MESSAGE' (judged by 'params[:contents] == true'),
     # building '@messages' by extracting data from 'actions/messages.js'
+    # '.save!' returns error messages if failing to save
     #
     if params[:contents]
       @messages = Message.new(
@@ -49,7 +50,7 @@ class Api::MessagesController < ApplicationController
         contents:  params[:contents],
         timestamp: params[:timestamp]
       )
-      @messages.save
+      @messages.save!
     end
     #
     # Updating the recipient's timestamp
@@ -59,7 +60,9 @@ class Api::MessagesController < ApplicationController
     #
     @user = User.find_by(id: params[:user_id])
     @user.timestamp_user = params[:timestamp]
-    @user.save
+    logger.debug("debug: ")
+    logger.debug(@user.timestamp_user)
+    @user.save!
     #
     # Rendering a result
     #

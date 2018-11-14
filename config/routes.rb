@@ -6,6 +6,7 @@
 #    Rendering in 'json' format
 
 Rails.application.routes.draw do
+  devise_for :users, module: :users
   namespace :api, { format: 'json' } do
     resources :messages
   end
