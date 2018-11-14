@@ -204,6 +204,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  arel
   bcrypt
   browserify-rails
   byebug

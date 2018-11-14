@@ -11,25 +11,22 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181114103711) do
+ActiveRecord::Schema.define(version: 20181114230700) do
 
   create_table "messages", force: :cascade do |t|
     t.integer "user_id"
     t.integer "from"
     t.text    "contents"
-    t.integer "timestamp", limit: 8
-  end
-
-  create_table "tmp_users", force: :cascade do |t|
-    t.string  "name"
-    t.text    "profilePicture"
-    t.string  "status"
-    t.boolean "read"
-    t.integer "timestamp_recipient", limit: 8
-    t.integer "timestamp_user",      limit: 8
+    t.integer "timestamp"
   end
 
   create_table "users", force: :cascade do |t|
+    t.string   "name"
+    t.text     "profile_picture"
+    t.string   "status"
+    t.boolean  "read"
+    t.integer  "timestamp_recipient",    limit: 8
+    t.integer  "timestamp_user",         limit: 8
     t.string   "email",                            default: "", null: false
     t.string   "encrypted_password",               default: "", null: false
     t.string   "reset_password_token"
@@ -49,12 +46,6 @@ ActiveRecord::Schema.define(version: 20181114103711) do
     t.datetime "locked_at"
     t.datetime "created_at",                                    null: false
     t.datetime "updated_at",                                    null: false
-    t.string   "name"
-    t.text     "profile_picture"
-    t.string   "status"
-    t.boolean  "read"
-    t.integer  "timestamp_recipient",    limit: 8
-    t.integer  "timestamp_user",         limit: 8
   end
 
   add_index "users", ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true

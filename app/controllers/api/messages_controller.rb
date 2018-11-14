@@ -60,8 +60,6 @@ class Api::MessagesController < ApplicationController
     #
     @user = User.find_by(id: params[:user_id])
     @user.timestamp_user = params[:timestamp]
-    logger.debug("debug: ")
-    logger.debug(@user.timestamp_user)
     @user.save!
     #
     # Rendering a result

@@ -1,8 +1,14 @@
-# frozen_string_literal: true
-
-class DeviseCreateDvsUsers < ActiveRecord::Migration
+class CreateUsers < ActiveRecord::Migration
   def change
-    create_table :dvs_users do |t|
+    create_table :users do |t|
+      ## Basic information
+      t.string :name
+      t.text    :profile_picture
+      t.string :status
+      t.boolean :read
+      t.integer :timestamp_recipient, limit: 8
+      t.integer :timestamp_user, limit: 8
+
       ## Database authenticatable
       t.string :email,              null: false, default: ""
       t.string :encrypted_password, null: false, default: ""
@@ -36,9 +42,9 @@ class DeviseCreateDvsUsers < ActiveRecord::Migration
       t.timestamps null: false
     end
 
-    add_index :dvs_users, :email,                unique: true
-    add_index :dvs_users, :reset_password_token, unique: true
-    add_index :dvs_users, :confirmation_token,   unique: true
-    add_index :dvs_users, :unlock_token,         unique: true
+    add_index :users, :email,                unique: true
+    add_index :users, :reset_password_token, unique: true
+    add_index :users, :confirmation_token,   unique: true
+    add_index :users, :unlock_token,         unique: true
   end
 end
