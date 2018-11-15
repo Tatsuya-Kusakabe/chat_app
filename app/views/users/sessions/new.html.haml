@@ -1,6 +1,6 @@
 %h2 Log in
 / = form_for(@user, url: user_session_path) do |f|
-= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f|
+= form_for(@user, url: user_session_path) do |f|
   .field
     = f.label :email
     %br/

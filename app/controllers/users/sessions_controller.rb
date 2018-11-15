@@ -6,6 +6,7 @@ class Users::SessionsController < Devise::SessionsController
   # GET /user/sign_in
   def new
     super
+    @user = User.new
   end
 
   # POST /user/sign_in
