@@ -5,6 +5,11 @@ class Users::SessionsController < Devise::SessionsController
 
   # GET /user/sign_in
   def new
+    super
+  end
+
+  # POST /user/sign_in
+  def create
     #
     # Inheriting properties and methods from a parent class
     #
@@ -12,17 +17,19 @@ class Users::SessionsController < Devise::SessionsController
     #
     # Finding a user from a database
     #
-    @user = User.find_by(email: params[:email])
+    logger.debug("debug: ")
+    logger.debug(params[:user][:email])
+    @user = User.find_by(email: params[:user][:email])
     #
     # If a user does exist and has the correct password
     #
-    # if @user && @user.authenticate(params[:password])
+    if @user && @user.authenticate(params[:password])
+      flash[:notice] = "You successfully logged in!"
+      redirect_to("/")
+    else
+      render("sessions/new")
+    end
   end
-
-  # POST /user/sign_in
-  # def create
-  #   super
-  # end
 
   # DELETE /user/sign_out
   # def destroy
