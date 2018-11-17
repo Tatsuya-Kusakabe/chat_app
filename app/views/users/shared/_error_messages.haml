@@ -1,0 +1,9 @@
+- if @user.errors.any?
+  .error_briefing
+    - error_count = pluralize(@user.errors.count, "error")
+    = "The form contains #{error_count}."
+  %ul.error_details
+    - @user.errors.full_messages.each do |msg|
+      = msg
+      %br
+  %br

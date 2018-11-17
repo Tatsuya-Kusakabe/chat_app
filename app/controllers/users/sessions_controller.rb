@@ -1,41 +1,53 @@
 # frozen_string_literal: true
 
 class Users::SessionsController < Devise::SessionsController
+  #
+  # Skipping 'verify_signed_out_user' in 'Devise::SessionsController' when logging out
+  # ** https://stackoverflow.com/questions/27204055/rails-skip-before-action-doesnt-work
+  #
+  skip_before_action :verify_signed_out_user, only: :destroy
+  #
+  # Stopping authenticated users from an access to '/users/sign_in'
+  #
+  before_action :block_authenticated_user, { only: :new }
   # before_action :configure_sign_in_params, only: [:create]
 
-  # GET /user/sign_in
+  # GET /users/sign_in
   def new
-    super
-    @user = User.new
+    #
+    # ** 'super' removed from all actions (seemingly doing harm)
+    #
   end
 
-  # POST /user/sign_in
+  # POST /users/sign_in
   def create
-    #
-    # Inheriting properties and methods from a parent class
-    #
-    super
     #
     # Finding a user from a database
     #
-    logger.debug("debug: ")
-    logger.debug(params[:user][:email])
-    @user = User.find_by(email: params[:user][:email])
+    @user = User.find_by(email: params[:session][:email])
     #
     # If a user does exist and has the correct password
+    # ** Using '.valid_password?()' instead of '.authenticate()'
+    #    https://qiita.com/kuranari/items/a2d7e76c13f1025e2200
     #
-    if @user && @user.authenticate(params[:password])
+    if @user && @user.valid_password?(params[:session][:password])
       flash[:notice] = "You successfully logged in!"
+      log_in(@user)
       redirect_to("/")
     else
-      render("sessions/new")
+      @error_message = "Wrong email address or password"
+      render("users/sessions/new")
     end
   end
 
-  # DELETE /user/sign_out
-  # def destroy
-  #   super
-  # end
+  # DELETE /users/sign_out
+  def destroy
+    #
+    # ** 'super' seemingly does harm because it already includes redirecting
+    #
+    log_out
+    redirect_to("/users/sign_in")
+  end
 
   # protected
 

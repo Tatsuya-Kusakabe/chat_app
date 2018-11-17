@@ -1,0 +1,25 @@
+.notice {
+  text-align:  center;
+  height:      30px;
+  margin:      0 auto;  // Default: 13px on top and bottom
+  padding-top: 5px;
+  //
+  background:  #2AADE5;
+  color:       white;
+  font-weight: bold;
+}
+
+.container {
+  // position: relative; // 'messageBox' and 'userList' are positioned based on 'header.container'
+  background: #2AADE5;
+  top: 30px;
+
+  ul {
+    line-height: 60px;
+    text-align:  center;
+    left:        0;
+    right:       0;
+    font-weight: bold;
+    color:       white;
+  }
+}

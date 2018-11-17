@@ -20,7 +20,18 @@ module RailsProject
     # config.i18n.load_path += Dir[Rails.root.join('my', 'locales', '*.{rb,yml}').to_s]
     # config.i18n.default_locale = :de
 
+    #
     # Do not swallow errors in after_commit/after_rollback callbacks.
+    #
     config.active_record.raise_in_transactional_callbacks = true
+    #
+    # Inserting <div class='has-error'> for invalid forms
+    # ** https://qiita.com/kawahiro311/items/e48c53c978d27a9192cc
+    # ** https://qiita.com/satoshin2071/items/66cee18b2b458b005ffa
+    #
+    config.action_view.field_error_proc = Proc.new {
+      |html_tag, instance| "<span class='has-error'>#{html_tag}</span>".html_safe
+    }
+    #
   end
 end

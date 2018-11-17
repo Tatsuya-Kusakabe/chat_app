@@ -1,35 +1,62 @@
 # frozen_string_literal: true
 
 class Users::RegistrationsController < Devise::RegistrationsController
+  #
+  # Stopping authenticated users from an access to '/users/sign_in'
+  #
+  before_action :block_authenticated_user, { only: :new }
   # before_action :configure_sign_up_params, only: [:create]
   # before_action :configure_account_update_params, only: [:update]
 
-  # GET /resource/sign_up
-  # def new
-  #   super
-  # end
+  # GET /users/sign_up
+  def new
+    #
+    # ** 'super' removed from all actions (seemingly doing harm)
+    #
+    @user = User.new
+  end
 
-  # POST /resource
-  # def create
-  #   super
-  # end
+  # POST /users
+  def create
+    #
+    # Creating a new user
+    #
+    @user = User.new(registration_params)
+    if @user.save
+      flash[:notice] = "Welcome to this tutorial!"
+      log_in(@user)
+      redirect_to("/")
+    else
+      render("users/registrations/new")
+    end
 
-  # GET /resource/edit
+  end
+
+  private
+
+    def registration_params
+      params.require(:user).permit(
+        :name, :email, :profile_picture,
+        :password, :password_confirmation
+      )
+    end
+
+  # GET /users/edit
   # def edit
   #   super
   # end
 
-  # PUT /resource
+  # PUT /users
   # def update
   #   super
   # end
 
-  # DELETE /resource
+  # DELETE /users
   # def destroy
   #   super
   # end
 
-  # GET /resource/cancel
+  # GET /users/cancel
   # Forces the session data which is usually expired after sign
   # in to be expired now. This is useful if the user wants to
   # cancel oauth signing in/up in the middle of the process,

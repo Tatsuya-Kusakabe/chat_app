@@ -25,7 +25,7 @@ const Utils = {
       59: '%distance minutes ago',
       118: 'an hour ago',
       1439: '%r hours ago',
-      2879: 'Yesterday at %h:%',
+      2879: 'Yesterday at %h:%i',
       14567: '%l at %h:%i',
     }
     const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']

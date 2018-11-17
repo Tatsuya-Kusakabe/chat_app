@@ -1,15 +1,16 @@
-// Defaults
+// Basic frames
 @import '_defaults';
+@import '_header';
 @import '_misc';
 @import '_print';
 
 // Icons
 @import 'fonts/_fontawesome';
 
-// Partials
-@import 'partials/_header';
-@import 'partials/_messagesBox';
-@import 'partials/_userList';
-
 // Components
+@import 'components/_messagesBox';
+@import 'components/_userList';
 @import 'components/_replyBox';
+
+// Devise
+@import 'devise/_login'

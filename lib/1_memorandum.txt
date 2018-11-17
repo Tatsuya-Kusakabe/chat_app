@@ -1,0 +1,6 @@
+Q1. localhost:3000 がアップデートされない時
+
+  a) npm run watch を走らせる
+
+  *) localhost:3000 は、public/assets/javascripts/boot.js を読み込み、レンダリングする。
+     npm run watch を走らせておけば、常に最新の状態が public/.../boot.js に読み込まれる。
