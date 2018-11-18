@@ -1,11 +1,10 @@
 // components/userList.js
 
 import React from 'react'
-import classNames from 'classnames'
-import _ from 'lodash'
 import MessagesAction from '../../actions/messages'
 import MessagesStore from '../../stores/messages'
-import UserStore from '../../stores/user'
+import _ from 'lodash'
+import classNames from 'classnames'
 import Utils from '../../utils'
 
 class UserList extends React.Component {
@@ -27,9 +26,12 @@ class UserList extends React.Component {
   }
   getStateFromStore() {
     //
-    // Calling getMessages() from 'stores/messages'
+    // Calling getMessages()       from 'stores/messages' and
+    //         getOpenChatUserID() from 'stores/messages'
     //
     const allMessages = MessagesStore.getMessages()
+    const openChatUserID = MessagesStore.getOpenChatUserID()
+    //
     //
     // Getting as 'messageList' details on the last message for each account
     //
@@ -43,10 +45,11 @@ class UserList extends React.Component {
       })
     })
     //
-    // Returning 'openChatID' and 'messageList'
+    // Returning 'currentUserID', 'openChatUserID' and 'messageList'
     //
     return {
-      openChatID: MessagesStore.getOpenChatUserID(),
+      currentUserID: MessagesStore.getMessages(openChatUserID).currentUserID,
+      openChatUserID: openChatUserID,
       messageList: messageList,
     }
   }
@@ -89,29 +92,34 @@ class UserList extends React.Component {
       const date = Utils.getNiceDate(message.lastMessage.timestamp)
 
       var statusIcon
-      // console.log(message.lastMessage.from + " " + message.user.id)
-      //
-      // If the last message was from a user (not a recipient), showing a 'reply' icon
-      //
-      if (message.lastMessage.from !== message.user.id) {
-        statusIcon = (<i className='fa fa-reply user-list__item__icon' />)
       //
       // If the last message was posted after the last access, showing a 'circle' icon
       //
-      } else if (message.lastAccess.currentUser < message.lastMessage.timestamp) {
+      if (message.lastAccess.current_user < message.lastMessage.timestamp) {
         statusIcon = (<i className='fa fa-circle user-list__item__icon' />)
+      }
+      //
+      // If the last message was posted from a current user, showing a 'reply' icon
+      //
+      if (message.lastMessage.sent_from === this.state.currentUserID) {
+        statusIcon = (<i className='fa fa-reply user-list__item__icon' />)
       }
 
       var isNewMessage = false
-      if (message.lastAccess.currentUser < message.lastMessage.timestamp) {
-        isNewMessage = message.lastMessage.from !== UserStore.user.id
+      //
+      // If the last message was posted after the last access, and
+      // if the last message was posted from a partner,
+      // 'isNewMessage' becomes 'true'
+      //
+      if (message.lastAccess.current_user < message.lastMessage.timestamp) {
+        isNewMessage = (message.lastMessage.sent_from !== this.state.currentUserID)
       }
 
       const itemClasses = classNames({
         'user-list__item': true,
         'clear': true,
         'user-list__item--new': isNewMessage,
-        'user-list__item--active': this.state.openChatID === message.user.id,
+        'user-list__item--active': this.state.openChatUserID === message.user.id,
       })
 
       return (
@@ -124,7 +132,7 @@ class UserList extends React.Component {
           key={ message.user.id }
         >
           <div className='user-list__item__picture'>
-            <img src={ message.user.profilePicture } />
+            <img src={ message.user.profile_picture } />
           </div>
           <div className='user-list__item__details'>
             <h4 className='user-list__item__name'>

@@ -1,11 +1,10 @@
 // components/messagesBox.js
 
 import React from 'react'
-import classNames from 'classNames'
-import ReplyBox from '../../components/messages/replyBox'
 import MessagesAction from '../../actions/messages'
 import MessagesStore from '../../stores/messages'
-import UserStore from '../../stores/user'
+import ReplyBox from '../../components/messages/replyBox'
+import classNames from 'classNames'
 import Utils from '../../utils'
 
 class MessagesBox extends React.Component {
@@ -59,18 +58,23 @@ class MessagesBox extends React.Component {
   //
   render() {
     const messagesLength = this.state.messages.length
-    const currentUserID = UserStore.user.id
+    const currentUserID = this.state.currentUserID
 
     const messages = this.state.messages.map((message, index) => {
-      const messageClasses = classNames({
+      const itemClasses = classNames({
         'message-box__item': true,
-        'message-box__item--from-current': message.from === currentUserID,
         'clear': true,
       })
 
+      const contentClasses = classNames({
+        'message-box__content': true,
+        'message-box__content__from-current': message.sent_from === currentUserID,
+        'message-box__content__from-partner': message.sent_from !== currentUserID,
+      })
+
       return (
-          <li key={ message.timestamp + '-' + message.from } className={ messageClasses }>
-            <div className='message-box__item__contents'>
+          <li key={ message.timestamp + '-' + message.sent_from } className={ itemClasses }>
+            <div className={ contentClasses }>
               { message.contents }
             </div>
           </li>
@@ -79,12 +83,12 @@ class MessagesBox extends React.Component {
 
     const lastMessage = this.state.messages[messagesLength - 1]
 
-    if (lastMessage.from === currentUserID) {
-      if (this.state.lastAccess.recipient >= lastMessage.timestamp) {
-        const date = Utils.getShortDate(lastMessage.timestamp)
+    if (lastMessage.sent_from === currentUserID) {
+      if (this.state.lastAccess.partner >= lastMessage.timestamp) {
+        const date = Utils.getShortDate(this.state.lastAccess.partner)
         messages.push(
-            <li key='read' className='message-box__item message-box__item--read'>
-              <div className='message-box__item__contents'>
+            <li key='read' className='message-box__item'>
+              <div className='message-box__read'>
                 Read { date }
               </div>
             </li>

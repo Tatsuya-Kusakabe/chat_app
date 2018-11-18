@@ -1,9 +1,8 @@
 // actions/messages.js
 
 import request from 'superagent'
-import UserStore from '../stores/user'
 import Dispatcher from '../dispatcher'
-import {ActionTypes, APIEndpoints, CSRFToken} from '../constants/app'
+import {ActionTypes, APIEndpoints, CSRFToken} from '../utils'
 
 export default {
   //
@@ -63,8 +62,7 @@ export default {
       request
       .post(`${APIEndpoints.CREATE}`)
       .set('X-CSRF-Token', CSRFToken())
-      .send({user_id: userID, timestamp: timestamp})
-      .send({from: UserStore.user.id, contents: message})
+      .send({sent_to: userID, timestamp: timestamp, contents: message})
       .end((error, res) => {
         //
         // When successfully accessed (status code: 200)
@@ -112,7 +110,7 @@ export default {
       request
       .post(`${APIEndpoints.CREATE}`)
       .set('X-CSRF-Token', CSRFToken())
-      .send({user_id: newUserID, timestamp: timestamp})
+      .send({clicked_on: newUserID, timestamp: timestamp})
       .end((error, res) => {
         //
         // When successfully accessed (status code: 200)

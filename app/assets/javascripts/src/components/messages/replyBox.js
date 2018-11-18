@@ -1,8 +1,8 @@
 // components/messages/replyBox.js
 
 import React from 'react'
-import MessagesStore from '../../stores/messages'
 import MessagesAction from '../../actions/messages'
+import MessagesStore from '../../stores/messages'
 
 class ReplyBox extends React.Component {
 

@@ -11,17 +11,28 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181114230700) do
+ActiveRecord::Schema.define(version: 20181117043139) do
 
   create_table "messages", force: :cascade do |t|
     t.integer "user_id"
     t.integer "from"
-    t.text    "contents"
-    t.integer "timestamp"
+    t.text    "contents",            null: false
+    t.integer "timestamp", limit: 8
   end
 
+  create_table "relationships", force: :cascade do |t|
+    t.integer  "applied_from_id"
+    t.integer  "applied_to_id"
+    t.datetime "created_at",      null: false
+    t.datetime "updated_at",      null: false
+  end
+
+  add_index "relationships", ["applied_from_id", "applied_to_id"], name: "index_relationships_on_applied_from_id_and_applied_to_id", unique: true
+  add_index "relationships", ["applied_from_id"], name: "index_relationships_on_applied_from_id"
+  add_index "relationships", ["applied_to_id"], name: "index_relationships_on_applied_to_id"
+
   create_table "users", force: :cascade do |t|
-    t.string   "name"
+    t.string   "name",                                          null: false
     t.text     "profile_picture"
     t.string   "status"
     t.boolean  "read"

@@ -45,6 +45,7 @@ class Users::SessionsController < Devise::SessionsController
     #
     # ** 'super' seemingly does harm because it already includes redirecting
     #
+    flash[:notice] = "You successfully logged out!"
     log_out
     redirect_to("/users/sign_in")
   end

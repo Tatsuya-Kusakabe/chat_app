@@ -2,8 +2,7 @@
 
 import Dispatcher from '../dispatcher'
 import BaseStore from '../base/store'
-// import UserStore from '../stores/user'
-import {ActionTypes} from '../constants/app'
+import {ActionTypes} from '../utils'
 
 //
 // Designating a temporary 'messages'
@@ -12,29 +11,29 @@ import {ActionTypes} from '../constants/app'
 //
 const messages = {
   2: {
-    user: { id: '2', name: 'Ryan Clark', profilePicture: '', status: 'online' },
-    lastAccess: { recipient: 1424469794050, currentUser: 1424469794080 },
-    messages: [{ from: '2', contents: 'Hey!', timestamp: 1424469793023 }],
+    user: { id: 2, name: 'Ryan Clark', profile_picture: '', status: 'online' },
+    lastAccess: { partner: 1424469794050, current_user: 1424469794080 },
+    messages: [{ id: 1, sent_from: 2, sent_to: 1, contents: 'Hey!', timestamp: 1424469793023 }],
   },
 }
-
 //
-// Designating a temporary 'openChatID' to '2'
-// ** Object.keys(messages), which is [2, 3, 4], is an array of keys in 'messages'
+// Designating a temporary 'currentUserID' to '1'
 //
-var openChatID = parseInt(Object.keys(messages)[0], 10)
+// const currentUserID = 1
+// {
+//   user: { id: 1, name: 'John Doek', profile_picture: '',  status: 'online' },
+// }
+//
+// Designating a temporary 'openChatUserID' to '2'
+// ** Object.keys(messages), which is [2], is an array of keys in 'messages'
+//
+var openChatUserID = parseInt(Object.keys(messages)[0], 10)
 
-class ChatStore extends BaseStore {
-  addChangeListener(callback) {
-    this.on('change', callback)
-  }
-  removeChangeListener(callback) {
-    this.off('change', callback)
-  }
+class AppStore extends BaseStore {
   //
   // 1. Associating the key "messages" with '[]'
   // 2. Associating the key "messages" with 'messages'
-  // 3. Returning 'messages' or 'messages[openChatID]'
+  // 3. Returning 'messages' or 'messages[openChatUserID]'
   // ** If defined as 'setMessages(messages)', 'messages' is overwritten, which should be avoided
   //
   getMessages(tmpMsgID) {
@@ -51,72 +50,112 @@ class ChatStore extends BaseStore {
     // Unfortunately, 'var tmpMsg' violates "no-redeclare"
     //
     if (!this.get('messages')) tmpMsg = messages
+    //
+    // Updating 'openChatUserID'
+    //
+    var tmpUsrID = this.getOpenChatUserID()
+    //
+    // Extracting a 'messages' hash to facilitate defining 'currentUserID'
+    //
+    const tmpMsgDgt = tmpMsg[tmpUsrID]['messages'][0]
+    //
+    // If 'sent_from_id' is equal to 'tmpUsrID'
+    // ** Using '===' to ensure that they are also equal in terms of object types
+    //
+    if (tmpMsgDgt['sent_from'] === tmpUsrID) {
+      //
+      // 'sent_to_id' is equal to 'currentUserID'
+      // ** Adding 'currentUserID' only at 'messages[openChatUsertID]'
+      //
+      tmpMsg[tmpUsrID].currentUserID = tmpMsgDgt['sent_to']
+    //
+    // Else, 'sent_from_id' is equal to 'currentUserID'
+    //
+    } else {
+      tmpMsg[tmpUsrID].currentUserID = tmpMsgDgt['sent_from']
+    }
+    //
+    // Associating the key "messages" with 'messages'
+    //
     this.set('messages', tmpMsg)
   }
   //
-  // 1. Associating the key "user_id" with '[]'
-  // 2. Associating the key "user_id" with 'openChatID'
-  // 3. Returning 'openChatID'
-  // ** If defined as 'setOpenChatUserID(openChatID)',
-  //    'openChatID' is overwritten, which should be avoided
+  // 1. Associating the key "open_user_id" with '[]'
+  // 2. Associating the key "open_user_id" with 'openChatUserID'
+  // 3. Returning 'openChatUserID'
+  // ** If defined as 'setOpenChatUserID(openChatUserID)',
+  //    'openChatUserID' is overwritten, which should be avoided
   //
   getOpenChatUserID() {
-    if (!this.get('user_id')) this.setOpenChatUserID([])
-    return this.get('user_id')
+    if (!this.get('open_user_id')) this.setOpenChatUserID([])
+    return this.get('open_user_id')
   }
-  setOpenChatUserID(tmpUsrID) {
+  setOpenChatUserID(tmpOpnUsrID) {
     //
     // Unfortunately, 'var tmpMsg' violates "no-redeclare"
     //
-    if (!this.get('user_id')) tmpUsrID = openChatID
-    this.set('user_id', tmpUsrID)
+    if (!this.get('open_user_id')) tmpOpnUsrID = openChatUserID
+    this.set('open_user_id', tmpOpnUsrID)
+  }
+  //
+  // ??
+  //
+  addChangeListener(callback) {
+    this.on('change', callback)
+  }
+  removeChangeListener(callback) {
+    this.off('change', callback)
   }
 }
 
 //
-// Creating a new instance from ChatStore
+// Creating a new instance 'MessagesStore' from 'AppStore'
 //
-const MessagesStore = new ChatStore()
+const MessagesStore = new AppStore()
 
 MessagesStore.dispatchToken = Dispatcher.register(payload => {
   const action = payload.action
 
   switch (action.type) {
     //
-    // When called from 'changeOpenChat(id)' in 'components/userList.js',
-    // updating 'openChatID' and the access log
+    // When called from 'constructor(props)' in 'components/messageBox.js',
+    // getting a JSON string from "GET '/api/messages'", and
+    // updating 'openChatUserID' and 'messages' with it
     // ** 'emitChange()' is necessary to activate 'onStoreChange()'
     // **  in 'components/userList.js' and 'components/messageBox.js'
     //
-    case ActionTypes.UPDATE_OPEN_CHAT_ID:
-      const tmpUsrID_u = action.userID
-      const tmpMsg_u = MessagesStore.getMessages()
-      tmpMsg_u[tmpUsrID_u].lastAccess.currentUser = +new Date().getTime()
-      MessagesStore.setOpenChatUserID(tmpUsrID_u)
-      MessagesStore.setMessages(tmpMsg_u)
-      //
-      MessagesStore.emitChange()
-      break
-    //
-    // When called from 'constructor(props)' in 'components/messageBox.js',
-    // updating 'messages' to a JSON string from "GET '/api/messages'"
-    //
     case ActionTypes.GET_MESSAGES:
-      MessagesStore.setMessages(action.json)
+      const tmpMsg_g = action.json
+      const tmpUsrID_g = parseInt(Object.keys(tmpMsg_g)[0], 10)
+      MessagesStore.setOpenChatUserID(tmpUsrID_g)
+      MessagesStore.setMessages(tmpMsg_g)
       //
       MessagesStore.emitChange()
       break
     //
     // When called from 'handleKeyDown(e)' in 'components/replyBox.js',
-    // getting a JSON string from "POST '/api/messages'",
-    // and updating 'messages' and the access log
+    // getting a JSON string from "POST '/api/messages'", and
+    // and updating 'messages' and the access log with it
     //
     case ActionTypes.SEND_MESSAGE:
-      const tmpUsrID_s = action.userID
       const tmpMsg_s = MessagesStore.getMessages()
+      const tmpUsrID_s = action.userID
       tmpMsg_s[tmpUsrID_s].messages.push(action.json)
-      tmpMsg_s[tmpUsrID_s].lastAccess.currentUser = +new Date().getTime()
+      tmpMsg_s[tmpUsrID_s].lastAccess.current_user = +new Date().getTime()
       MessagesStore.setMessages(tmpMsg_s)
+      //
+      MessagesStore.emitChange()
+      break
+    //
+    // When called from 'changeOpenChat(id)' in 'components/userList.js',
+    // updating 'openChatUserID' and the access log
+    //
+    case ActionTypes.UPDATE_OPEN_CHAT_ID:
+      const tmpMsg_u = MessagesStore.getMessages()
+      const tmpUsrID_u = action.userID
+      tmpMsg_u[tmpUsrID_u].lastAccess.current_user = +new Date().getTime()
+      MessagesStore.setOpenChatUserID(tmpUsrID_u)
+      MessagesStore.setMessages(tmpMsg_u)
       //
       MessagesStore.emitChange()
       break
