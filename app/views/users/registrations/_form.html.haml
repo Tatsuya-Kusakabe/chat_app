@@ -1,0 +1,121 @@
+-#
+-# A partial 'form_for' in response to 'create' and 'update' action
+-# Information will be contained in params[:user]
+-#
+= form_for(@user, url: yield(:url), html: { method: yield(:html) }) do |f|
+  -#
+  -# Rendering 'error_messages' if existing
+  -#
+  = render "users/shared/error_messages"
+  -#
+  -# 'Name' field
+  -#
+  .field
+    -#
+    -# Displaying 'Name'
+    -#
+    = f.label :name
+    %br/
+    -#
+    -# Displaying an input line
+    -#
+    = f.text_field :name, autocomplete: "name", autofocus: true
+    -#
+    -# Rendering 'leave blank if ...' if calling 'update' action
+    -#
+    = render "users/registrations/leave_blank"
+  -#
+  -# 'Profile picture' field
+  -#
+  .field
+    -#
+    = f.label :profile_picture
+    %br/
+    -#
+    = f.file_field :profile_picture, autocomplete: "profile_picture"
+    -#
+    = render "users/registrations/leave_blank"
+  -#
+  -# 'Email' field
+  -#
+  .field
+    -#
+    = f.label :email
+    %br/
+    -#
+    = f.email_field :email, autocomplete: "email"
+    -#
+    = render "users/registrations/leave_blank"
+  -#
+  -# 'Password' field
+  -#
+  .field
+    -#
+    = f.label :password
+    -#
+    -# Displaying 'minimum_password_length' if defined
+    -#
+    - if @minimum_password_length
+      %em (#{@minimum_password_length} characters minimum)
+    %br/
+    -#
+    = f.password_field :password, autocomplete: "new-password"
+    -#
+    = render "users/registrations/leave_blank"
+  -#
+  -# 'Password confirmation' field
+  -#
+  .field
+    -#
+    = f.label :password_confirmation
+    %br/
+    -#
+    = f.password_field :password_confirmation, autocomplete: "new-password"
+  -#
+  -# If calling 'create' action
+  -#
+  - if yield(:html) == "post"
+    -#
+    -# 'Sign up' button
+    -#
+    .actions
+      = f.submit "Sign up"
+  -#
+  -# If calling 'update' action
+  -#
+  - if yield(:html) == "put"
+    -#
+    -# 'Current email' field
+    -#
+    .field
+      -#
+      = f.label :current_email
+      -#
+      %br (needed to confirm your changes)
+      -#
+      -# Designating 'name' and 'id' for an input line
+      -# to distinguish from 'Email' field
+      -#
+      = f.email_field :email, autocomplete: "email",
+                              name: "user[current_email]",
+                              id: "user_current_email"
+    -#
+    -# ??
+    -#
+    - if devise_mapping.confirmable? && resource.pending_reconfirmation?
+      %div Currently waiting confirmation for: #{resource.unconfirmed_email}
+    -#
+    -# 'Current password' field
+    -#
+    .field
+      -#
+      = f.label :current_password
+      -#
+      %br (needed to confirm your changes)
+      -#
+      = f.password_field :current_password, autocomplete: "current-password"
+    -#
+    -# 'Update' button
+    -#
+    .actions
+      = f.submit "Update"

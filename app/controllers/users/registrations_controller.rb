@@ -2,34 +2,81 @@
 
 class Users::RegistrationsController < Devise::RegistrationsController
   #
-  # Stopping authenticated users from an access to '/users/sign_in'
+  # Skipping 'authenticate_scope!' in 'Devise::SessionsController'
+  # ** https://github.com/plataformatec/devise/blob/master/app/controllers/devise/...
+  #
+  skip_before_action :authenticate_scope!, { only: :edit }
+  #
+  # Stopping authenticated users from an access to '/users/sign_up'
   #
   before_action :block_authenticated_user, { only: :new }
+  #
+  # Stopping unauthenticated users from an access to '/users/edit'
+  #
+  before_action :block_unauthenticated_user, { only: :edit }
   # before_action :configure_sign_up_params, only: [:create]
   # before_action :configure_account_update_params, only: [:update]
 
   # GET /users/sign_up
   def new
     #
+    # Defining '@user' as a new instance, and passing to 'app/views/.../new.html.haml'
     # ** 'super' removed from all actions (seemingly doing harm)
     #
     @user = User.new
+    #
   end
 
   # POST /users
   def create
     #
-    # Creating a new user
+    # Creating '@user' from parameters it's got
     #
     @user = User.new(registration_params)
+    #
+    # If a user has been successfully saved
+    #
     if @user.save
+      #
+      # Displaying a flash message
+      #
       flash[:notice] = "Welcome to this tutorial!"
+      #
+      # Logging in and rendering a 'root' page
+      #
       log_in(@user)
       redirect_to("/")
+      #
     else
+      #
+      # Rendering a 'log_in' page
+      # ** Error messages are automatically generated
+      #
       render("users/registrations/new")
+      #
     end
+  end
 
+  # GET /users/edit
+  def edit
+    #
+    # Definding '@user' as '@current_user', and passing to 'app/views/.../edit.html.haml'
+    #
+    @user = @current_user
+    #
+  end
+
+  # PUT /users
+  def update
+    #
+    # Finding a user from a database
+    #
+    @user = User.find_by(email: params[:user][:current_email])
+    #
+    # If a user has a valid password
+    #
+    if @user.valid_password?(params[:user][:current_password])
+    end
   end
 
   private
@@ -41,20 +88,9 @@ class Users::RegistrationsController < Devise::RegistrationsController
       )
     end
 
-  # GET /users/edit
-  # def edit
-  #   super
-  # end
-
-  # PUT /users
-  # def update
-  #   super
-  # end
-
   # DELETE /users
-  # def destroy
-  #   super
-  # end
+  def destroy
+  end
 
   # GET /users/cancel
   # Forces the session data which is usually expired after sign

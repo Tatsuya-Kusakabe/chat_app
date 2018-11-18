@@ -37,8 +37,12 @@ class User < ActiveRecord::Base
          :confirmable, :lockable, :timeoutable, :trackable
   #
   # Adding validations
+  # ** For example, if getting rid of 'allow_blank: true',
+  #    the validations are activated both for 'presence: true' and 'valid.password?',
+  #    which produces duplicate error messages
+  # ** https://qiita.com/lasershow/items/0229855720aaf2be5fc8
   #
   validates :name,               { presence: true }
-  validates :email,              { presence: true }
-  validates :encrypted_password, { presence: true }
+  validates :email,              { presence: true, allow_blank: true }
+  validates :encrypted_password, { presence: true, allow_blank: true }
 end

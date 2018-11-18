@@ -3,9 +3,9 @@
 class Users::SessionsController < Devise::SessionsController
   #
   # Skipping 'verify_signed_out_user' in 'Devise::SessionsController' when logging out
-  # ** https://stackoverflow.com/questions/27204055/rails-skip-before-action-doesnt-work
+  # ** https://github.com/plataformatec/devise/blob/master/app/controllers/devise/...
   #
-  skip_before_action :verify_signed_out_user, only: :destroy
+  skip_before_action :verify_signed_out_user, { only: :destroy }
   #
   # Stopping authenticated users from an access to '/users/sign_in'
   #
@@ -31,23 +31,41 @@ class Users::SessionsController < Devise::SessionsController
     #    https://qiita.com/kuranari/items/a2d7e76c13f1025e2200
     #
     if @user && @user.valid_password?(params[:session][:password])
+      #
+      # Displaying a flash message
+      #
       flash[:notice] = "You successfully logged in!"
+      #
+      # Logging in and rendering a 'root' page
+      #
       log_in(@user)
       redirect_to("/")
+      #
     else
+      #
+      # Defining '@error_message'
+      #
       @error_message = "Wrong email address or password"
+      #
+      # Rendering a 'log_in' page
+      #
       render("users/sessions/new")
+      #
     end
   end
 
   # DELETE /users/sign_out
   def destroy
     #
-    # ** 'super' seemingly does harm because it already includes redirecting
+    # Displaying a flash message
     #
     flash[:notice] = "You successfully logged out!"
+    #
+    # Logging out and rendering a 'log_in' page
+    #
     log_out
     redirect_to("/users/sign_in")
+    #
   end
 
   # protected

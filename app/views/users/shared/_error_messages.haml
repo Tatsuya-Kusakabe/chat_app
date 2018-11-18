@@ -1,9 +1,19 @@
+-#
+-# If any error message does exist
+-#
 - if @user.errors.any?
+  -#
+  -# Displaying the number of error messages
+  -#
   .error_briefing
     - error_count = pluralize(@user.errors.count, "error")
     = "The form contains #{error_count}."
+  %br
+  -#
+  -# Displaying details on error messages
+  -#
   %ul.error_details
     - @user.errors.full_messages.each do |msg|
-      = msg
-      %br
+      %li<
+        = msg
   %br
