@@ -17,8 +17,13 @@ Rails.application.configure do
   config.action_mailer.raise_delivery_errors = false
 
   # Set default url for installing 'devise'
-  # https://www.task-notes.com/entry/ruby/20170620/1497927600
+  # ** https://www.task-notes.com/entry/ruby/20170620/1497927600
   config.action_mailer.default_url_options = { host: 'localhost', port: 3000 }
+
+  # Set up for 'mailcatcher'
+  # ** https://qiita.com/k-shogo/items/d85905535a64e82a3b2b
+  config.action_mailer.delivery_method = :smtp
+  config.action_mailer.smtp_settings = { address: 'localhost', port: 1025 }
 
   # Print deprecation notices to the Rails logger.
   config.active_support.deprecation = :log

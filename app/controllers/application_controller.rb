@@ -1,6 +1,6 @@
 class ApplicationController < ActionController::Base
   #
-  # Defining '@current_user' whenever you all actions
+  # Defining '@current_user' whenever calling all actions
   #
   before_action :current_user
   #
@@ -22,19 +22,19 @@ class ApplicationController < ActionController::Base
     @current_user     = nil
   end
   #
-  # Defining a 'current user'
+  # Defining '@current_user'
   #
   def current_user
-    if session[:user_id]
-      @current_user ||= User.find_by(id: session[:user_id])
-    end
+    @current_user = @current_user || User.find_by(id: session[:user_id])
   end
   #
   # Protecting access from unauthenticated users
+  # ** 'authenticate_user!' is already defined in 'DeviseController', but can't be used
+  # ** https://blog.willnet.in/entry/2013/08/06/152034
   #
   def block_unauthenticated_user
-    if @current_user == nil
-      flash[:notice] = "Please log in."
+    if current_user.nil?
+      flash[:notice] = "You need to sign in or sign up."
       redirect_to("/users/sign_in")
     end
   end
@@ -42,8 +42,8 @@ class ApplicationController < ActionController::Base
   # Protecting access from authenticated users
   #
   def block_authenticated_user
-    if @current_user
-      flash[:notice] = "You already logged in."
+    if current_user
+      flash[:notice] = "You already signed in."
       redirect_to("/")
     end
   end

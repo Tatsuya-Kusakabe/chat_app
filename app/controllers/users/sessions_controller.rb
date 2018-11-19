@@ -2,14 +2,15 @@
 
 class Users::SessionsController < Devise::SessionsController
   #
-  # Skipping 'verify_signed_out_user' in 'Devise::SessionsController' when logging out
-  # ** https://github.com/plataformatec/devise/blob/master/app/controllers/devise/...
-  #
-  skip_before_action :verify_signed_out_user, { only: :destroy }
-  #
   # Stopping authenticated users from an access to '/users/sign_in'
   #
-  before_action :block_authenticated_user, { only: :new }
+  before_action :block_authenticated_user, { only: [:new, :create] }
+  #
+  # ** 'verify_signed_out_user' in 'Devise::SessionsController' should be killed
+  # ** https://github.com/plataformatec/devise/blob/master/app/controllers
+  #
+  skip_before_action :verify_signed_out_user,   { only: :destroy }
+  #
   # before_action :configure_sign_in_params, only: [:create]
 
   # GET /users/sign_in
@@ -34,7 +35,7 @@ class Users::SessionsController < Devise::SessionsController
       #
       # Displaying a flash message
       #
-      flash[:notice] = "You successfully logged in!"
+      flash[:notice] = "You successfully signed in!"
       #
       # Logging in and rendering a 'root' page
       #
@@ -59,7 +60,7 @@ class Users::SessionsController < Devise::SessionsController
     #
     # Displaying a flash message
     #
-    flash[:notice] = "You successfully logged out!"
+    flash[:notice] = "You successfully signed out!"
     #
     # Logging out and rendering a 'log_in' page
     #

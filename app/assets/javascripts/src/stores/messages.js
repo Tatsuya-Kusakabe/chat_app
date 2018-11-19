@@ -10,10 +10,10 @@ import {ActionTypes} from '../utils'
 //   to define 'this.initialState' in 'components/userList.js'
 //
 const messages = {
-  2: {
-    user: { id: 2, name: 'Ryan Clark', profile_picture: '', status: 'online' },
+  1: {
+    user: { id: 1, name: 'Alright? official account', profile_picture: '', status: 'online' },
     lastAccess: { partner: 1424469794050, current_user: 1424469794080 },
-    messages: [{ id: 1, sent_from: 2, sent_to: 1, contents: 'Hey!', timestamp: 1424469793023 }],
+    messages: [{ id: 1, sent_from: 1, sent_to: 2, contents: 'Hey!', timestamp: 1424469793023 }],
   },
 }
 //

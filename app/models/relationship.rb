@@ -10,4 +10,19 @@ class Relationship < ActiveRecord::Base
   #
   validates :applied_by_id,  { presence: true }
   validates :received_by_id, { presence: true }
+  validate  :applicant_recipient_different
+  # validate  :application_one_way
+  #
+  #
+  #
+  private
+    #
+    # An applicant and a recipient should be different
+    # ** https://api.rubyonrails.org/classes/ActiveModel/Errors.html#method-i-add
+    #
+    def applicant_recipient_different
+      valid = (applied_by_id != received_by_id)
+      errors.add(:base, "An applicant and a recipient should be different") unless valid
+    end
+    #
 end
