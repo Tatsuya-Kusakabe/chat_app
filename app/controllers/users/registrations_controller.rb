@@ -15,8 +15,9 @@ class Users::RegistrationsController < Devise::RegistrationsController
   #
   # before_action :configure_sign_up_params, only: [:create]
   # before_action :configure_account_update_params, only: [:update]
-
+  #
   # GET /users/sign_up
+  #
   def new
     #
     # Defining '@user' as a new instance, and passing to 'app/views/.../new.html.haml'
@@ -25,8 +26,9 @@ class Users::RegistrationsController < Devise::RegistrationsController
     @user = User.new
     #
   end
-
+  #
   # POST /users
+  #
   def create
     #
     # Creating '@user' from parameters it's got
@@ -37,26 +39,31 @@ class Users::RegistrationsController < Devise::RegistrationsController
     #
     if @user.save
       #
-      # Displaying a flash message
+      # ** '@token' is not encrypted!!
+      #     Creating and encrypted '@token' is not needed unlike 'passwords_controller'
       #
-      flash[:notice] = "Welcome to this tutorial!"
+      # ** Sending 'confirmation_instructions' and saving data
+      #    are automatically done (why?)
       #
-      # Logging in and rendering a 'root' page
+      # Displaying a flash message and redirecting
       #
-      log_in(@user)
-      redirect_to("/")
+      flash[:notice] = "You will receive the instruction to activate your account!"
+      #
+      render("users/registrations/new")
       #
     else
       #
-      # Rendering a 'log_in' page
+      # Redirecting
       # ** Error messages are automatically generated
       #
       render("users/registrations/new")
       #
     end
+    #
   end
-
+  #
   # GET /users/edit
+  #
   def edit
     #
     # Definding '@user' as '@current_user', and passing to 'app/views/.../edit.html.haml'
@@ -64,17 +71,20 @@ class Users::RegistrationsController < Devise::RegistrationsController
     @user = @current_user
     #
   end
-
+  #
   # PUT /users
+  #
   def update
     #
     # Finding a user from a database
+    # ** If defining '@user = User.find_by(params[:user][:current_email])',
+    #    disabling us to find a user if filling in a wrong password
     #
-    @user = User.find_by(email: params[:user][:current_email])
+    @user = @current_user
     #
-    # If a user does exist, has a valid password and has been successfully saved
+    # If a user has a valid password and has been successfully saved
     #
-    if @user && @user.valid_password?(params[:user][:current_password]) \
+    if @user.valid_password?(params[:user][:current_password]) \
      && @user.update_attributes(update_params)
       #
       flash[:notice] = "You successfully updated your profile!"
@@ -83,13 +93,18 @@ class Users::RegistrationsController < Devise::RegistrationsController
       #
     else
       #
-      # @user = User.find_by(email: params[:user][:current_email])
+      unless @user.valid_password?(params[:user][:current_password])
+        @user.errors.add(:base, "You have a wrong password.")
+      end
+      #
       render("users/registrations/edit")
       #
     end
+    #
   end
-
+  #
   # DELETE /users
+  #
   def destroy
     #
     # Deleting '@current_user' from a database
@@ -100,27 +115,25 @@ class Users::RegistrationsController < Devise::RegistrationsController
     redirect_to("/users/sign_in")
     #
   end
-
+  #
   private
-
+    #
+    # Defining 'create_params', for which 'user' key is must-have, and
+    # 'name', ..., 'password_confirmation' are modifiable
+    # ** https://stackoverflow.com/questions/1531047/update-attributes-unless-blank
+    # ** https://ruby-doc.org/core-2.1.5/Hash.html#method-i-reject
+    #
     def create_params
-      #
-      # Defining 'create_params', for which 'user' key is must-have, and
-      # 'name', ..., 'password_confirmation' are modifiable
-      # ** https://stackoverflow.com/questions/1531047/update-attributes-unless-blank
-      # ** https://ruby-doc.org/core-2.1.5/Hash.html#method-i-reject
-      #
       params.require(:user).permit(
         :name, :email, :profile_picture,
         :password, :password_confirmation
       )
     end
-
+    #
+    # Defining 'update_params', for which
+    # keys in 'create_params' are not modified, if having blank values
+    #
     def update_params
-      #
-      # Defining 'update_params', for which
-      # keys in 'create_params' are not modified, if having blank values
-      #
       create_params.reject{ |k, v| v.blank? }
     end
 
@@ -154,4 +167,5 @@ class Users::RegistrationsController < Devise::RegistrationsController
   # def after_inactive_sign_up_path_for(resource)
   #   super(resource)
   # end
+
 end

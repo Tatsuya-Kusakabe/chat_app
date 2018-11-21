@@ -18,10 +18,10 @@ Devise.setup do |config|
   # Configure the e-mail address which will be shown in Devise::Mailer,
   # note that it will be overwritten if you use your own mailer class
   # with default "from" parameter.
-  config.mailer_sender = 'please-change-me-at-config-initializers-devise@example.com'
+  config.mailer_sender = 'no_reply@example.com'
 
   # Configure the class responsible to send e-mails.
-  # config.mailer = 'Devise::Mailer'
+  config.mailer = 'Users::Mailer'
 
   # Configure the parent class responsible to send e-mails.
   # config.parent_mailer = 'ActionMailer::Base'
@@ -114,7 +114,7 @@ Devise.setup do |config|
   config.stretches = Rails.env.test? ? 1 : 11
 
   # Set up a pepper to generate the hashed password.
-  # config.pepper = '79e29a499b4eefe086123cc42960ad67a0a3ad5c7f3d889db949a93260dacf35239c8531a6c06c13d3fa23e01c62b426fe35e4f9576f6d3b1d11e3d467951d42'
+  config.pepper = '79e29a499b4eefe086123cc42960ad67a0a3ad5c7f3d889db949a93260dacf35239c8531a6c06c13d3fa23e01c62b426fe35e4f9576f6d3b1d11e3d467951d42'
 
   # Send a notification to the original email when the user's email is changed.
   # config.send_email_changed_notification = false

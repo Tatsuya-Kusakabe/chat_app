@@ -1,19 +1,43 @@
+-#
+-# PUT method for '/users/password'
+-# Information will be contained in params[:password]
+-#
+-# Displaying a page title
+-#
 %h2 Change your password
-= form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :put }) do |f|
+-#
+-# Creating 'form_for' (descriptions available on '.../registrations/form')
+-#
+= form_for(@user, url: password_path(resource_name), html: { method: :put }) do |f|
+  -#
   = devise_error_messages!
-  = f.hidden_field :reset_password_token
+  -#
+  -# 'reset_password_token' and 'email' should be
+  -# sent explicitly to 'users/password#update'
+  -#
+  = f.hidden_field :reset_password_token, value: params[:reset_password_token]
+  = f.hidden_field :email,                value: params[:email]
+  -#
   .field
+    -#
     = f.label :password, "New password"
     %br/
+    -#
     - if @minimum_password_length
-      %em
-        (#{@minimum_password_length} characters minimum)
+      %em (#{@minimum_password_length} characters minimum)
       %br/
+    -#
     = f.password_field :password, autofocus: true, autocomplete: "new-password"
+  -#
   .field
+    -#
     = f.label :password_confirmation, "Confirm new password"
     %br/
+    -#
     = f.password_field :password_confirmation, autocomplete: "off"
+  -#
   .actions
+    -#
     = f.submit "Change my password"
-= render "dvs_users/shared/links"
+-#
+= render "users/shared/links"

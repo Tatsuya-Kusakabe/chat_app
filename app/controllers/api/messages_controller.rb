@@ -15,22 +15,35 @@ class Api::MessagesController < ApplicationController
     #
     # Building '@messages' by accessing databases
     #
+    num = 0
     itr = User.count
-    for num in 1..itr do
+    #
+    # 'for num in 1..itr do' malfunctions when some id is got rid of
+    #
+    while num < itr do
       #
-      # If the 'partner' has '@current_user.id', skipping the iteration
+      # Defining 'partner' who has 'id: num',
       #
-      if num == @current_user.id
+      partner = User.find_by(id: num)
+      #
+      # If 'partner' does not exist, skipping the iteration
+      #
+      if partner.nil?
+        num += 1
         next
       end
       #
-      # Defining the 'partner' who has 'id: num',
+      # If 'partner' has '@current_user.id', skipping the iteration
+      #
+      if num == @current_user.id
+        num += 1
+        next
+      end
       # 'partner_active',  in which the 'partner' has 'active_relationship'  to '@current_user', and
       # 'partner_passive', in which the 'partner' has 'passive_relationship' to '@current_user'
       #
-      partner         = User.find_by(id: num)
-      partner_active  = partner.active_relationship.find_by(received_by_id: @current_user)
-      partner_passive = partner.passive_relationship.find_by(applied_by_id: @current_user)
+      partner_active  = partner.active_relationship.find_by(recipient_id:  @current_user)
+      partner_passive = partner.passive_relationship.find_by(applicant_id: @current_user)
       #
       # If the 'partner' has 'active_relationship' to '@current_user'
       # the 'partner' has 'timestamp_applicant' and '@current_user' has 'timestamp_recipient'
@@ -49,6 +62,7 @@ class Api::MessagesController < ApplicationController
       # If the 'partner' has no relationships with '@current_user', skipping the iteration
       #
       else
+        num += 1
         next
       end
       #
@@ -66,6 +80,8 @@ class Api::MessagesController < ApplicationController
         "(sent_from = ? and sent_to = ?) or (sent_from = ? and sent_to = ?)",
         num, @current_user, @current_user, num
       )
+      #
+      num += 1
       #
     end
     #
@@ -112,8 +128,8 @@ class Api::MessagesController < ApplicationController
     #
     # Extracting the relationship as in 'api/messages#index'
     #
-    user_active  = @user.active_relationship.find_by(received_by_id: @current_user)
-    user_passive = @user.passive_relationship.find_by(applied_by_id: @current_user)
+    user_active  = @user.active_relationship.find_by(recipient_id:  @current_user)
+    user_passive = @user.passive_relationship.find_by(applicant_id: @current_user)
     #
     # Updating the timestamp
     #

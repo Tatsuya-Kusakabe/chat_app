@@ -1,3 +1,7 @@
-%p Welcome #{@email}!
-%p You can confirm your account email through the link below:
-%p= link_to 'Confirm my account', confirmation_url(@resource, confirmation_token: @resource.confirmation_token)
+%p Hello #{@user.name} (#{@user.email})!
+%p You can confirm your account through the link below:
+/
+/ 'confirmation_token' should be sent explicitly
+/ to 'users/confirmations#show', not '...#create'
+/
+%p= link_to 'Confirm my account', confirmation_url(@user, confirmation_token: @token, email: @user.email)

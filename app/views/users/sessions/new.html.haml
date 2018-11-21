@@ -4,24 +4,26 @@
 -#
 -# Displaying a page title
 -#
-%h2 Log in
+%h2 Sign in
 -#
 -# Creating 'form_for' (descriptions available on '.../registrations/form')
 -#
-= form_for(:session, url: user_session_path, method: "post") do |f|
+= form_for(@user, url: user_session_path, method: "post") do |f|
   -#
-  - if @error_message
-    %p<
-      = @error_message
+  = devise_error_messages!
   -#
   .field
+    -#
     = f.label :email
     %br/
+    -#
     = f.email_field :email, autofocus: true, autocomplete: "email"
   -#
   .field
+    -#
     = f.label :password
     %br/
+    -#
     = f.password_field :password, autocomplete: "current-password"
   -#
   -# ??

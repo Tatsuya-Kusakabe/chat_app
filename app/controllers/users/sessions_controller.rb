@@ -6,32 +6,35 @@ class Users::SessionsController < Devise::SessionsController
   #
   before_action :block_authenticated_user, { only: [:new, :create] }
   #
-  # ** 'verify_signed_out_user' in 'Devise::SessionsController' should be killed
+  # ** 'prepend_before_action' in 'Devise::SessionsController' should be killed
   # ** https://github.com/plataformatec/devise/blob/master/app/controllers
   #
-  skip_before_action :verify_signed_out_user,   { only: :destroy }
+  skip_before_action :require_no_authentication, { only: [:new, :create] }
+  skip_before_action :verify_signed_out_user,    { only: :destroy }
   #
   # before_action :configure_sign_in_params, only: [:create]
-
+  #
   # GET /users/sign_in
+  #
   def new
-    #
-    # ** 'super' removed from all actions (seemingly doing harm)
-    #
+    super
   end
-
+  #
   # POST /users/sign_in
+  #
   def create
+    #
+    # ** 'super' removed from 'POST' and 'DELETE' action (seemingly doing harm)
     #
     # Finding a user from a database
     #
-    @user = User.find_by(email: params[:session][:email])
+    @user = User.find_by(email: params[:user][:email])
     #
     # If a user does exist and has the correct password
     # ** Using '.valid_password?()' instead of '.authenticate()'
     #    https://qiita.com/kuranari/items/a2d7e76c13f1025e2200
     #
-    if @user && @user.valid_password?(params[:session][:password])
+    if @user && @user.valid_password?(params[:user][:password])
       #
       # Displaying a flash message
       #
@@ -44,18 +47,18 @@ class Users::SessionsController < Devise::SessionsController
       #
     else
       #
-      # Defining '@error_message'
+      # Defining an error message and redirecting
       #
-      @error_message = "Wrong email address or password"
-      #
-      # Rendering a 'log_in' page
+      @user = User.new
+      @user.errors.add(:base, "Your email or password is invalid.")
       #
       render("users/sessions/new")
       #
     end
   end
-
+  #
   # DELETE /users/sign_out
+  #
   def destroy
     #
     # Displaying a flash message
@@ -75,4 +78,5 @@ class Users::SessionsController < Devise::SessionsController
   # def configure_sign_in_params
   #   devise_parameter_sanitizer.permit(:sign_in, keys: [:attribute])
   # end
+
 end

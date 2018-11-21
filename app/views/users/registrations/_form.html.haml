@@ -7,7 +7,6 @@
   -# Rendering 'error_messages' if existing
   -#
   = devise_error_messages!
-  -# = render "users/shared/error_messages"
   -#
   -# 'Name' field
   -#
@@ -48,6 +47,11 @@
     -#
     = render "users/registrations/leave_blank"
   -#
+  -# ??
+  -#
+  - if devise_mapping.confirmable? && resource.pending_reconfirmation?
+    %div Currently waiting confirmation for: #{resource.unconfirmed_email}
+  -#
   -# 'Password' field
   -#
   .field
@@ -85,26 +89,6 @@
   -# If calling 'update' action
   -#
   - if yield(:html) == "put"
-    -#
-    -# 'Current email' field
-    -#
-    .field
-      -#
-      = f.label :current_email
-      -#
-      %br (needed to confirm your changes)
-      -#
-      -# Designating 'name' and 'id' for an input line
-      -# to distinguish from 'Email' field
-      -#
-      = f.email_field :email, autocomplete: "email",
-                              name: "user[current_email]",
-                              id: "user_current_email"
-    -#
-    -# ??
-    -#
-    - if devise_mapping.confirmable? && resource.pending_reconfirmation?
-      %div Currently waiting confirmation for: #{resource.unconfirmed_email}
     -#
     -# 'Current password' field
     -#
