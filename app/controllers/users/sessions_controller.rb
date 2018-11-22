@@ -40,9 +40,24 @@ class Users::SessionsController < Devise::SessionsController
       #
       flash[:notice] = "You successfully signed in!"
       #
-      # Logging in and rendering a 'root' page
+      # Signing in
       #
       log_in(@user)
+      #
+      # Updating 'status'
+      # ** Limiting updatable parameters
+      #
+      @user.status = "online"
+      @user.update_attribute(:status, @user.status)
+      #
+      # Enabling 'remember_me'
+      # ** https://issus.me/projects/34/issues/12
+      # ** http://www.mashpy.me/2017/06/remember-me-is-not-working-on-rails.html
+      #
+      @user.remember_me!
+      #
+      # Redirecting
+      #
       redirect_to("/")
       #
     else
@@ -65,9 +80,13 @@ class Users::SessionsController < Devise::SessionsController
     #
     flash[:notice] = "You successfully signed out!"
     #
-    # Logging out and rendering a 'log_in' page
+    # Signing out, updating 'status' and rendering a 'sign_in' page
+    #
+    @current_user.status = "offline"
+    @current_user.update_attribute(:status, @current_user.status)
     #
     log_out
+    #
     redirect_to("/users/sign_in")
     #
   end

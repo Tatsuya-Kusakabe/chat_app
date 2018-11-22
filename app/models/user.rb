@@ -49,9 +49,9 @@ class User < ActiveRecord::Base
   # Including default devise modules. Others available are: { :omniauthable }
   # ** https://qiita.com/Salinger/items/873e3c667462746ae707
   #
-  devise :database_authenticatable,  :recoverable,  :registerable,
-         :confirmable, :lockable,    :rememberable,
-         :validatable, :timeoutable, :trackable
+  devise :database_authenticatable,   :rememberable, :recoverable,
+         :registerable, :confirmable, :lockable,
+         :validatable,  :timeoutable, :trackable
   #
   # Adding validations
   #

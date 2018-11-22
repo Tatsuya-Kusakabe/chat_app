@@ -2,6 +2,11 @@
 
 class Users::ConfirmationsController < Devise::ConfirmationsController
   #
+  # Deactivating 'new' and 'create' (because the process is unclear)
+  #
+  before_action :block_authenticated_user,   { only: [:new, :create] }
+  before_action :block_unauthenticated_user, { only: [:new, :create] }
+  #
   # GET /users/confirmation/new
   #
   def new
@@ -11,11 +16,7 @@ class Users::ConfirmationsController < Devise::ConfirmationsController
   # POST /users/confirmation
   #
   def create
-    #
-    # Displaying a flash message and redirecting
-    #
     super
-    flash[:notice] = "You will receive the instruction to activate your account!"
   end
   #
   # GET /users/confirmation?confirmation_token=...
@@ -27,10 +28,9 @@ class Users::ConfirmationsController < Devise::ConfirmationsController
     @user  = User.find_by(email: params[:email])
     #
     # If a user has a valid token and has been successfully saved
-    # ** '@token' is not encrypted!!
     #
     if (@user.confirmation_token == params[:confirmation_token]) \
-     && @user.update_attributes(create_params)
+     && @user.update_attribute(:confirmed_at, Time.zone.now)
       #
       flash[:notice] = "Welcome to this tutorial!"
       #
@@ -49,12 +49,12 @@ class Users::ConfirmationsController < Devise::ConfirmationsController
   #
   private
     #
-    # Defining 'create_params', for which 'user' key is must-have, and
+    # Defining 'cfm_params', for which 'user' key is must-have, and
     # 'email', ..., 'confirmed_at' are modifiable
     # ** https://stackoverflow.com/questions/1531047/update-attributes-unless-blank
     # ** https://ruby-doc.org/core-2.1.5/Hash.html#method-i-reject
     #
-    def create_params
+    def cfm_params
       params.permit(
         :email, :password, :password_confirmation,
         :confirmation_token, :confirmed_at
