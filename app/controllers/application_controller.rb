@@ -1,5 +1,11 @@
 class ApplicationController < ActionController::Base
   #
+  # Including 'SignInOut' module to override 'sign_in' and 'sign_out'
+  # ** https://github.com/plataformatec/devise/blob/715192a7709a4c02127afb067e66230061b82cf2
+  #    /lib/devise/controllers/sign_in_out.rb
+  #
+  include Devise::Controllers::SignInOut
+  #
   # Defining '@current_user' whenever calling all actions
   #
   before_action :current_user
@@ -9,17 +15,33 @@ class ApplicationController < ActionController::Base
   #
   protect_from_forgery with: :exception
   #
-  # Remembering a 'log in' state
+  # Remembering a 'sign in' state
   #
-  def log_in(user)
+  def sign_in(user)
+    #
+    # Overriding from 'SignInOut'
+    #
+    super
+    #
+    # Updating 'session'
+    #
     session[:user_id] = user.id
+    #
   end
   #
   # Abondoning a 'log in' state
   #
-  def log_out
+  def sign_out
+    #
+    # Overriding from 'SignInOut'
+    #
+    super
+    #
+    # Updating 'session' and '@current_user'
+    #
     session[:user_id] = nil
     @current_user     = nil
+    #
   end
   #
   # Defining '@current_user'

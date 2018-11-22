@@ -42,7 +42,7 @@ class Users::SessionsController < Devise::SessionsController
       #
       # Signing in
       #
-      log_in(@user)
+      sign_in(@user)
       #
       # Updating 'status'
       # ** Limiting updatable parameters
@@ -85,7 +85,7 @@ class Users::SessionsController < Devise::SessionsController
     @current_user.status = "offline"
     @current_user.update_attribute(:status, @current_user.status)
     #
-    log_out
+    sign_out
     #
     redirect_to("/users/sign_in")
     #
