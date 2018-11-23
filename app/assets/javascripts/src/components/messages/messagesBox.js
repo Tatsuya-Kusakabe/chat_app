@@ -85,7 +85,7 @@ class MessagesBox extends React.Component {
 
     if (lastMessage.sent_from === currentUserID) {
       if (this.state.lastAccess.partner >= lastMessage.timestamp) {
-        const date = Utils.getShortDate(this.state.lastAccess.partner)
+        const date = Utils.getNiceDate(this.state.lastAccess.partner)
         messages.push(
             <li key='read' className='message-box__item'>
               <div className='message-box__read'>

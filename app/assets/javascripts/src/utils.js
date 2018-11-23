@@ -28,75 +28,109 @@ export function CSRFToken() {
 // Defining 'Utils' for calculating dates
 //
 const Utils = {
-  getShortDate(timestamp) {
-    const distance = Math.round((+new Date() - timestamp) / 60000)
-    const date = new Date(timestamp)
-
-    const hour = (`0${date.getHours()}`).slice(-2)
-    const minutes = (`0${date.getMinutes()}`).slice(-2)
-
-    if (distance > 2879) {
-      if (distance > 14567) {
-        return this.getNiceDate(timestamp)
-      } else {
-        return `Yesterday at ${hour}:${minutes}`
-      }
-    } else {
-      return `at ${hour}:${minutes}`
-    }
-  },
+  //
+  // Modifing from default, integrating itself and 'getShortDate()'
+  //
   getNiceDate(timestamp) {
-    const defaultString = '%d %f%y at %h:%i'
-
-    const language = {
-      0: 'less than a minute ago',
-      1: '1 minute ago',
-      59: '%distance minutes ago',
-      118: 'an hour ago',
-      1439: '%r hours ago',
-      2879: 'Yesterday at %h:%i',
-      14567: '%l at %h:%i',
-    }
-    const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
-    const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
-
-    const date = new Date(timestamp)
-    const distance = Math.round((+new Date() - timestamp) / 60000)
-
-    let string
-    for (const i in language) {
-      if (distance < i) {
-        string = language[i]
-
-        break
-      }
-    }
-
-    const hour = (`0${date.getHours()}`).slice(-2)
-    const minutes = (`0${date.getMinutes()}`).slice(-2)
-    const day = days[date.getDay()]
-    const month = months[date.getMonth()]
-
-    let year = date.getFullYear()
+    //
+    // Calculating the posted date from 'timestamp'
+    //
+    const def_days   = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
+    const def_months = ['Jan.', 'Feb.', 'Mar.', 'Apr.', 'May', 'Jun.', 'Jul.', 'Aug.',
+                        'Sep.', 'Oct.', 'Nov.', 'Dec.']
+    //
+    // ** ex) '3' -> '03' -> '03', '21' -> '021' -> '21'
+    //
+    const full_date = new Date(timestamp)
+    const minute    = (`0${full_date.getMinutes()}`).slice(-2)
+    const hour      = (`0${full_date.getHours()}`).slice(-2)
+    const date      = (`0${full_date.getDate()}`).slice(-2)
+    const day       = def_days[full_date.getDay()]
+    const month     = def_months[full_date.getMonth()]
+    //
+    // ** Writing 'let year' because 'year' could be updated to 'nil'
+    //
+    let year = full_date.getFullYear()
     if (new Date().getFullYear() === year) {
       year = ''
     }
-
-    if (string) {
-      const hoursAgo = Math.round(distance / 60)
-
-      return string.replace(/%distance/i, distance)
-        .replace(/%r/i, hoursAgo)
-        .replace(/%h/i, hour)
-        .replace(/%i/i, minutes)
-        .replace(/%l/i, day)
+    //
+    // Defining 'post_date' showing how early the message was post
+    //
+    const post_date = {
+      //
+      within_day: {
+        0:    'less than a minute ago',
+        1:    'a minute ago',
+        59:   '%dist_min minutes ago',
+        119:  'an hour ago',
+        1439: '%dist_hrs hours ago',
+      },
+      //
+      beyond_day: {
+        1: 'Yesterday at %hrs:%min',
+        7: '%day at %hrs:%min',
+      }
+      //
     }
-
-    return defaultString.replace(/%d/i, day)
-      .replace(/%f/i, month)
-      .replace(/%y/i, year)
-      .replace(/%h/i, hour)
-      .replace(/%i/i, minutes)
+    //
+    // Calculating 'distance' between now and the post date, on the basis of 'minute' and 'day'
+    //
+    const minute_now  = Math.round(+new Date() / 60000)
+    const minute_post = Math.round(timestamp / 60000)
+    const dist_minute = minute_now - minute_post
+    const dist_day    = Math.round(minute_now / (60 * 24)) - Math.round(minute_post / (60 * 24))
+    //
+    // Defining 'hash' and 'dist' for making up 'string' to return
+    //
+    let hash
+    let dist
+    //
+    // If 'distance' is within 24 hours,
+    // using 'post[:within_day]' as 'hash' and 'distance_within_day' as 'dist'
+    //
+    if (dist_minute < 1440) {
+      hash = post_date["within_day"]
+      dist = dist_minute
+    //
+    // If not, referring 'post[:beyond_day]' as 'hash' and 'distance_beyond_day' as 'dist'
+    //
+    } else {
+      hash = post_date["beyond_day"]
+      dist = dist_day
+    }
+    //
+    // Defining 'time_hash' which has keys of 'post_date'
+    //
+    const time_hash = Object.keys(hash).map(key => parseInt(key, 10))
+    //
+    // Making up 'string' to return
+    //
+    let   string
+    //
+    for (let i = 0; i < time_hash.length; i++) {
+      if (dist < time_hash[i]) {
+        string = hash[time_hash[i]]
+        break
+      }
+    }
+    //
+    // If 'string' is null (when posted earlier than 7 days ago), making up a default 'string'
+    //
+    if (!string) {
+      string = '%date %mth %year at %hrs:%min'
+    }
+    //
+    // Returning 'string'
+    //
+    return string.replace(/%dist_min/i, dist_minute)
+      .replace(/%dist_hrs/i, Math.round(dist_minute / 60))
+      .replace(/%min/i,  minute)
+      .replace(/%hrs/i,  hour)
+      .replace(/%date/i, date)
+      .replace(/%day/i,  day)
+      .replace(/%mth/i,  month)
+      .replace(/%year/i, year)
   },
 }
 
