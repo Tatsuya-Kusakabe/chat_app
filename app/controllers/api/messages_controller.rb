@@ -39,6 +39,7 @@ class Api::MessagesController < ApplicationController
         num += 1
         next
       end
+      #
       # 'partner_active',  in which the 'partner' has 'active_relationship'  to '@current_user', and
       # 'partner_passive', in which the 'partner' has 'passive_relationship' to '@current_user'
       #
@@ -84,6 +85,10 @@ class Api::MessagesController < ApplicationController
       num += 1
       #
     end
+    #
+    # Adding information on '@current_user'
+    #
+    @messages[@current_user.id] = {id_current: true}
     #
     # Rendering a result
     #

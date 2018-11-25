@@ -1,5 +1,8 @@
+//
 // utils.js
-
+//
+// Importing components
+//
 import keyMirror from 'keymirror'
 //
 // Defining 'Action types', which makes 'Stores' decide what 'Action' to handle
@@ -35,18 +38,18 @@ const Utils = {
     //
     // Calculating the posted date from 'timestamp'
     //
-    const def_days   = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
+    const def_days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
     const def_months = ['Jan.', 'Feb.', 'Mar.', 'Apr.', 'May', 'Jun.', 'Jul.', 'Aug.',
                         'Sep.', 'Oct.', 'Nov.', 'Dec.']
     //
     // ** ex) '3' -> '03' -> '03', '21' -> '021' -> '21'
     //
     const full_date = new Date(timestamp)
-    const minute    = (`0${full_date.getMinutes()}`).slice(-2)
-    const hour      = (`0${full_date.getHours()}`).slice(-2)
-    const date      = (`0${full_date.getDate()}`).slice(-2)
-    const day       = def_days[full_date.getDay()]
-    const month     = def_months[full_date.getMonth()]
+    const minute = (`0${full_date.getMinutes()}`).slice(-2)
+    const hour = (`0${full_date.getHours()}`).slice(-2)
+    const date = (`0${full_date.getDate()}`).slice(-2)
+    const day = def_days[full_date.getDay()]
+    const month = def_months[full_date.getMonth()]
     //
     // ** Writing 'let year' because 'year' could be updated to 'nil'
     //
@@ -60,26 +63,26 @@ const Utils = {
     const post_date = {
       //
       within_day: {
-        0:    'less than a minute ago',
-        1:    'a minute ago',
-        59:   '%dist_min minutes ago',
-        119:  'an hour ago',
+        0: 'less than a minute ago',
+        1: 'a minute ago',
+        59: '%dist_min minutes ago',
+        119: 'an hour ago',
         1439: '%dist_hrs hours ago',
       },
       //
       beyond_day: {
         1: 'Yesterday at %hrs:%min',
         7: '%day at %hrs:%min',
-      }
+      },
       //
     }
     //
     // Calculating 'distance' between now and the post date, on the basis of 'minute' and 'day'
     //
-    const minute_now  = Math.round(+new Date() / 60000)
+    const minute_now = Math.round(+new Date() / 60000)
     const minute_post = Math.round(timestamp / 60000)
     const dist_minute = minute_now - minute_post
-    const dist_day    = Math.round(minute_now / (60 * 24)) - Math.round(minute_post / (60 * 24))
+    const dist_day = Math.round(minute_now / (60 * 24)) - Math.round(minute_post / (60 * 24))
     //
     // Defining 'hash' and 'dist' for making up 'string' to return
     //
@@ -90,13 +93,13 @@ const Utils = {
     // using 'post[:within_day]' as 'hash' and 'distance_within_day' as 'dist'
     //
     if (dist_minute < 1440) {
-      hash = post_date["within_day"]
+      hash = post_date['within_day']
       dist = dist_minute
     //
     // If not, referring 'post[:beyond_day]' as 'hash' and 'distance_beyond_day' as 'dist'
     //
     } else {
-      hash = post_date["beyond_day"]
+      hash = post_date['beyond_day']
       dist = dist_day
     }
     //
@@ -106,7 +109,7 @@ const Utils = {
     //
     // Making up 'string' to return
     //
-    let   string
+    let string
     //
     for (let i = 0; i < time_hash.length; i++) {
       if (dist < time_hash[i]) {
@@ -125,11 +128,11 @@ const Utils = {
     //
     return string.replace(/%dist_min/i, dist_minute)
       .replace(/%dist_hrs/i, Math.round(dist_minute / 60))
-      .replace(/%min/i,  minute)
-      .replace(/%hrs/i,  hour)
+      .replace(/%min/i, minute)
+      .replace(/%hrs/i, hour)
       .replace(/%date/i, date)
-      .replace(/%day/i,  day)
-      .replace(/%mth/i,  month)
+      .replace(/%day/i, day)
+      .replace(/%mth/i, month)
       .replace(/%year/i, year)
   },
 }

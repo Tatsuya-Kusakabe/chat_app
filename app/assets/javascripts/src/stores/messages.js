@@ -1,101 +1,130 @@
+//
 // stores/messages.js
-
+//
+// Importing components
+//
 import Dispatcher from '../dispatcher'
 import BaseStore from '../base/store'
 import {ActionTypes} from '../utils'
-
+import _ from 'lodash'
 //
 // Designating a temporary 'messages'
 // ** At least one account has to have enough data (with ':messages' in an array)
-//   to define 'this.initialState' in 'components/userList.js'
+//   to define 'this.initialState' in 'components'
 //
 const messages = {
-  1: {
-    user: { id: 1, name: 'Alright? official account', profile_picture: '', status: 'online' },
+  //
+  2: {
+    user: { id: 2, name: 'Alright? official account', profile_picture: '', status: 'online' },
     lastAccess: { partner: 1424469794050, current_user: 1424469794080 },
-    messages: [{ id: 1, sent_from: 1, sent_to: 2, contents: 'Hey!', timestamp: 1424469793023 }],
+    messages: [{ id: 1, sent_from: 2, sent_to: 1, contents: 'Hey!', timestamp: 1424469793023 }],
   },
+  //
+  1: { id_current: true }
+  //
 }
 //
-// Designating a temporary 'currentUserID' to '1'
-//
-// const currentUserID = 1
-// {
-//   user: { id: 1, name: 'John Doek', profile_picture: '',  status: 'online' },
-// }
-//
 // Designating a temporary 'openChatUserID' to '2'
-// ** Object.keys(messages), which is [2], is an array of keys in 'messages'
 //
-var openChatUserID = parseInt(Object.keys(messages)[0], 10)
-
+const openChatUserID = 2
+//
+// Creating a new class 'AppStore'
+//
 class AppStore extends BaseStore {
   //
-  // 1. Associating the key "messages" with '[]'
-  // 2. Associating the key "messages" with 'messages'
-  // 3. Returning 'messages' or 'messages[openChatUserID]'
-  // ** If defined as 'setMessages(messages)', 'messages' is overwritten, which should be avoided
-  //
-  getMessages(tmpMsgID) {
-    if (!this.get('messages')) this.setMessages([])
+  getMessages(initial) {
     //
-    // If called as 'getMessages()',       returning 'messages'
-    // If called as 'getMessages(tmpID)',  returning 'messages[tmpID]'
+    // If the key 'messages_init' is not associated yet,
+    // associating the key 'messages_init' and 'messages'
+    // ** 'If' condition avoids calling 'this.setMessages(messages)' endlessly
+    // ** http://www.sumimasen.com/tech/47146106.html
     //
-    if (!tmpMsgID) return this.get('messages')
-    return this.get('messages')[tmpMsgID]
+    if (!this.get('messages_init')) this.setMessages(messages)
+    //
+    // If calling 'getStateFromStore(initial)', returning 'tmpMsgDgt' from 'messages'
+    //
+    if (!!initial) return this.get('messages_init')
+    //
+    // Else, returning 'tmpMsgDgt' from a JSON string
+    //
+    return this.get('messages')
+    //
   }
+  //
   setMessages(tmpMsg) {
     //
-    // Unfortunately, 'var tmpMsg' violates "no-redeclare"
+    // From 'tmpMsg', 'x: {id_current: true}' is removed
+    // ** https://stackoverflow.com/questions/40065836/lodash-reject-get-return-object
     //
-    if (!this.get('messages')) tmpMsg = messages
+    let tmpMsgDgt = ( _.pickBy(tmpMsg, (o) => !o.id_current) )
     //
-    // Updating 'openChatUserID'
+    // If the key 'messages_init' is not associated yet,
+    // associating the key 'messages_init' with 'tmpMsgDgt'
+    // Else, associating the key 'messages' with 'tmpMsgDgt'
     //
-    var tmpUsrID = this.getOpenChatUserID()
+    !this.get('messages_init')
+      ? this.set('messages_init', tmpMsgDgt)
+      : this.set('messages', tmpMsgDgt)
     //
-    // Extracting a 'messages' hash to facilitate defining 'currentUserID'
-    //
-    const tmpMsgDgt = tmpMsg[tmpUsrID]['messages'][0]
-    //
-    // If 'sent_from_id' is equal to 'tmpUsrID'
-    // ** Using '===' to ensure that they are also equal in terms of object types
-    //
-    if (tmpMsgDgt['sent_from'] === tmpUsrID) {
-      //
-      // 'sent_to_id' is equal to 'currentUserID'
-      // ** Adding 'currentUserID' only at 'messages[openChatUsertID]'
-      //
-      tmpMsg[tmpUsrID].currentUserID = tmpMsgDgt['sent_to']
-    //
-    // Else, 'sent_from_id' is equal to 'currentUserID'
-    //
-    } else {
-      tmpMsg[tmpUsrID].currentUserID = tmpMsgDgt['sent_from']
-    }
-    //
-    // Associating the key "messages" with 'messages'
-    //
-    this.set('messages', tmpMsg)
   }
   //
-  // 1. Associating the key "open_user_id" with '[]'
-  // 2. Associating the key "open_user_id" with 'openChatUserID'
-  // 3. Returning 'openChatUserID'
-  // ** If defined as 'setOpenChatUserID(openChatUserID)',
-  //    'openChatUserID' is overwritten, which should be avoided
-  //
-  getOpenChatUserID() {
-    if (!this.get('open_user_id')) this.setOpenChatUserID([])
-    return this.get('open_user_id')
+  getCurrentUserID(initial) {
+    //
+    if (!this.get('id_current_init')) this.setCurrentUserID(messages)
+    //
+    // If calling 'getStateFromStore(initial)', returning 'crtUsrID' from 'messages'
+    //
+    if (!!initial) return this.get('id_current_init')
+    //
+    // Else, returning 'crtUsrID' from a JSON string
+    //
+    return this.get('id_current')
+    //
   }
+  //
+  setCurrentUserID(tmpMsg) {
+    //
+    // From 'tmpMsg', which contains 'x: {id_current: true}', 'x' is assigned to 'crtUsrID'
+    // ** https://stackoverflow.com/questions/40065836/lodash-reject-get-return-object
+    //
+    let crtUsrID
+    crtUsrID = Object.keys( _.pickBy(tmpMsg, (o) => !!o.id_current) )[0]
+    crtUsrID = parseInt(crtUsrID, 10)
+    //
+    // If the key 'id_current_init' is not associated yet,
+    // associating the key 'id_current_init' with 'crtUsrID'
+    // Else, associating the key 'id_current' with 'crtUsrID'
+    //
+    !this.get('id_current_init')
+      ? this.set('id_current_init', crtUsrID)
+      : this.set('id_current', crtUsrID)
+    //
+  }
+  //
+  getOpenChatUserID(initial) {
+    //
+    if (!this.get('id_open_init')) this.setOpenChatUserID(openChatUserID)
+    //
+    // If calling 'getStateFromStore(initial)', returning 'tmpOpnUsrID' from 'openChatUserID'
+    //
+    if (!!initial) return this.get('id_open_init')
+    //
+    // Else, returning 'tmpOpnUsrID' from a JSON string
+    //
+    return this.get('id_open')
+    //
+  }
+  //
   setOpenChatUserID(tmpOpnUsrID) {
     //
-    // Unfortunately, 'var tmpMsg' violates "no-redeclare"
+    // If the key 'id_open_init' is not associated yet,
+    // associating the key 'id_open_init' with 'tmpOpnUsrID'
+    // Else, associating the key 'id_open' with 'tmpOpnUsrID'
     //
-    if (!this.get('open_user_id')) tmpOpnUsrID = openChatUserID
-    this.set('open_user_id', tmpOpnUsrID)
+    !this.get('id_open_init')
+      ? this.set('id_open_init', tmpOpnUsrID)
+      : this.set('id_open', tmpOpnUsrID)
+    //
   }
   //
   // ??
@@ -106,62 +135,97 @@ class AppStore extends BaseStore {
   removeChangeListener(callback) {
     this.off('change', callback)
   }
+  //
 }
-
 //
 // Creating a new instance 'MessagesStore' from 'AppStore'
 //
 const MessagesStore = new AppStore()
-
+//
 MessagesStore.dispatchToken = Dispatcher.register(payload => {
+  //
   const action = payload.action
-
+  let tmpMsg
+  let tmpUsrID
+  //
   switch (action.type) {
     //
-    // When called from 'constructor(props)' in 'components/messageBox.js',
-    // getting a JSON string from "GET '/api/messages'", and
-    // updating 'openChatUserID' and 'messages' with it
-    // ** 'emitChange()' is necessary to activate 'onStoreChange()'
-    // **  in 'components/userList.js' and 'components/messageBox.js'
+    // When called from 'constructor(props)' in 'components/messageBox.js'
     //
     case ActionTypes.GET_MESSAGES:
-      const tmpMsg_g = action.json
-      const tmpUsrID_g = parseInt(Object.keys(tmpMsg_g)[0], 10)
-      MessagesStore.setOpenChatUserID(tmpUsrID_g)
-      MessagesStore.setMessages(tmpMsg_g)
+      //
+      // Getting a JSON string from "GET '/api/messages'"
+      //
+      tmpMsg = action.json
+      //
+      // Getting a first user from 'tmpMsg' which removed 'x: {id_current: true}'
+      //
+      tmpUsrID = Object.keys( _.pickBy(tmpMsg, (o) => !o.id_current) )[0]
+      tmpUsrID = parseInt(tmpUsrID, 10)
+      //
+      // Calling setters
+      //
+      MessagesStore.setOpenChatUserID(tmpUsrID)
+      MessagesStore.setCurrentUserID(tmpMsg)
+      MessagesStore.setMessages(tmpMsg)
+      //
+      // ** 'emitChange()' is necessary to activate 'onStoreChange()' in 'components'
       //
       MessagesStore.emitChange()
       break
     //
-    // When called from 'handleKeyDown(e)' in 'components/replyBox.js',
-    // getting a JSON string from "POST '/api/messages'", and
-    // and updating 'messages' and the access log with it
+    // When called from 'handleKeyDown(e)' in 'components/replyBox.js'
     //
     case ActionTypes.SEND_MESSAGE:
-      const tmpMsg_s = MessagesStore.getMessages()
-      const tmpUsrID_s = action.userID
-      tmpMsg_s[tmpUsrID_s].messages.push(action.json)
-      tmpMsg_s[tmpUsrID_s].lastAccess.current_user = +new Date().getTime()
-      MessagesStore.setMessages(tmpMsg_s)
+      //
+      // let tmpMsg
+      // let tmpUsrID
+      //
+      // Getting messages and a recipient
+      //
+      tmpMsg = MessagesStore.getMessages()
+      tmpUsrID = action.userID
+      //
+      // Updating messages and the access log
+      //
+      tmpMsg[tmpUsrID].messages.push(action.json)
+      tmpMsg[tmpUsrID].lastAccess.current_user = +new Date().getTime()
+      //
+      // Calling setters
+      //
+      MessagesStore.setMessages(tmpMsg)
       //
       MessagesStore.emitChange()
       break
     //
-    // When called from 'changeOpenChat(id)' in 'components/userList.js',
-    // updating 'openChatUserID' and the access log
+    // When called from 'changeOpenChat(id)' in 'components/userList.js'
     //
     case ActionTypes.UPDATE_OPEN_CHAT_ID:
-      const tmpMsg_u = MessagesStore.getMessages()
-      const tmpUsrID_u = action.userID
-      tmpMsg_u[tmpUsrID_u].lastAccess.current_user = +new Date().getTime()
-      MessagesStore.setOpenChatUserID(tmpUsrID_u)
-      MessagesStore.setMessages(tmpMsg_u)
+      //
+      // let tmpMsg
+      // let tmpUsrID
+      //
+      // Getting messages and a user clicked
+      //
+      tmpMsg = MessagesStore.getMessages()
+      tmpUsrID = action.userID
+      //
+      // Updating the access log
+      //
+      tmpMsg[tmpUsrID].lastAccess.current_user = +new Date().getTime()
+      //
+      // Calling setters
+      //
+      MessagesStore.setOpenChatUserID(tmpUsrID)
+      MessagesStore.setMessages(tmpMsg)
       //
       MessagesStore.emitChange()
       break
+    //
   }
-
+  //
   return true
+  //
 })
-
+//
 export default MessagesStore
