@@ -6,10 +6,11 @@ import {ActionTypes, APIEndpoints, CSRFToken} from '../utils'
 
 export default {
   //
-  // Connecting from 'constructor(props)' in 'components/messageBox.js'
+  // Connecting from 'constructor(props)' in 'components/messagesBox.js'
   //              to 'GET_MESSAGES'       in 'stores/messages.js'
   //
   getMessages() {
+    //
     return new Promise((resolve, reject) => {
       //
       // Exerting 'api/messages#index', then proceeding next
@@ -28,7 +29,7 @@ export default {
           //
           const json = JSON.parse(res.text)
           //
-          // Calling GET_MESSAGES from 'stores/messages'
+          // Calling GET_MESSAGES in 'stores/messages.js'
           // ** Changing data on 'stores/messages' (locally)
           //
           Dispatcher.handleServerAction({
@@ -48,6 +49,7 @@ export default {
   //              to 'SEND_MESSAGE'     in 'stores/messages.js'
   //
   sendMessage(userID, message) {
+    //
     return new Promise((resolve, reject) => {
       //
       // Defining a timestamp
@@ -74,7 +76,7 @@ export default {
           //
           const json = JSON.parse(res.text)
           //
-          // Calling SEND_MESSAGE from 'stores/messages'
+          // Calling SEND_MESSAGE in 'stores/messages.js'
           // ** Changing data on 'stores/messages' (locally)
           //
           Dispatcher.handleViewAction({
@@ -92,10 +94,11 @@ export default {
     })
   },
   //
-  // Connecting from 'changeOpenChat(id)'  in 'components/userList.js'
-  //              to 'UPDATE_OPEN_CHAT_ID' in 'stores/messages.js'
+  // Connecting from 'changeOpenUserID(id)'  in 'components/friendsList.js'
+  //              to 'UPDATE_OPEN_USER_ID'   in 'stores/messages.js'
   //
-  changeOpenChat(newUserID) {
+  changeOpenUserID(newUserID) {
+    //
     return new Promise((resolve, reject) => {
       //
       // Defining a timestamp
@@ -117,11 +120,11 @@ export default {
         //
         if (!error && res.status === 200) {
           //
-          // Calling UPDATE_OPEN_CHAT_ID from 'stores/messages'
+          // Calling UPDATE_OPEN_USER_ID in 'stores/messages.js'
           // ** Changing data on 'stores/messages' (locally)
           //
           Dispatcher.handleViewAction({
-            type: ActionTypes.UPDATE_OPEN_CHAT_ID,
+            type: ActionTypes.UPDATE_OPEN_USER_ID,
             userID: newUserID,
           })
         //
@@ -130,5 +133,17 @@ export default {
         }
       })
     })
+  },
+  //
+  // Connecting from 'changeOpenTabName(name)' in 'components/usersList.js'
+  //              to 'UPDATE_OPEN_TAB_NAME'    in 'stores/messages.js'
+  //
+  changeOpenTabName(newTabName) {
+    //
+    Dispatcher.handleViewAction({
+      type: ActionTypes.UPDATE_OPEN_TAB_NAME,
+      name: newTabName,
+    })
+    //
   },
 }

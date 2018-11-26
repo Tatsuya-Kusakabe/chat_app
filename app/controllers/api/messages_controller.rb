@@ -6,6 +6,7 @@
 #    Rendering in 'json' format
 
 class Api::MessagesController < ApplicationController
+  #
   def index
     #
     # Creating a blank hash '@messages', with a default value 'hash[key] = {}'
@@ -88,13 +89,14 @@ class Api::MessagesController < ApplicationController
     #
     # Adding information on '@current_user'
     #
-    @messages[@current_user.id] = {id_current: true}
+    @messages[@current_user.id] = {current_user_id: true}
     #
     # Rendering a result
     #
     render json: @messages
+    #
   end
-
+  #
   def create
     #
     # If 'ActionTypes.SEND_MESSAGE' (judged by 'params[:contents] != nil')
@@ -149,5 +151,7 @@ class Api::MessagesController < ApplicationController
     # Rendering a result
     #
     render json: @messages
+    #
   end
+  #
 end

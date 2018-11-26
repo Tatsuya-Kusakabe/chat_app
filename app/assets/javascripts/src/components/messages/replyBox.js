@@ -1,9 +1,14 @@
-// components/messages/replyBox.js
-
+//
+// components/replyBox.js
+//
+// Importing components
+//
 import React from 'react'
 import MessagesAction from '../../actions/messages'
 import MessagesStore from '../../stores/messages'
-
+//
+// Creating a new class 'ReplyBox'
+//
 class ReplyBox extends React.Component {
 
   constructor(props) {
@@ -13,6 +18,7 @@ class ReplyBox extends React.Component {
     //
     super(props)
     this.state = this.initialState
+    //
   }
   //
   // Equalizing 'this.initialState' and '{ value: '', }'
@@ -34,7 +40,7 @@ class ReplyBox extends React.Component {
   //
   handleKeyDown(e) {
     if (e.keyCode === 13) {
-      MessagesAction.sendMessage(MessagesStore.getOpenChatUserID(), this.state.value)
+      MessagesAction.sendMessage(MessagesStore.getOpenUserID(), this.state.value)
       this.setState({ value: '' })
     }
   }

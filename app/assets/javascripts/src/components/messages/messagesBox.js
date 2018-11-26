@@ -5,7 +5,6 @@
 //
 import React from 'react'
 import classNames from 'classNames'
-import _ from 'lodash'
 import Utils from '../../utils'
 import MessagesAction from '../../actions/messages'
 import MessagesStore from '../../stores/messages'
@@ -29,6 +28,7 @@ class MessagesBox extends React.Component {
     // ** If so, the constructor will return promise objects, not 'this'...
     //
     MessagesAction.getMessages()
+    //
   }
   //
   // Equalizing 'this.initialState' and 'this.getStateFromStore(initial)'
@@ -39,17 +39,14 @@ class MessagesBox extends React.Component {
     return this.getStateFromStore(initial)
   }
   //
-  getStateFromStore(_init) {
+  getStateFromStore(initial) {
     //
-    // If 'this.getStateFromStore()' contains an argument 'initial = true',
-    // setting an argument 'initial = true' to getters
+    // Defining 'currentUserID', 'openUserID' and 'messages'
+    // ** If calling 'this.getStateFromStore(initial)', defining 'get...(initial)'
+    // ** If calling 'this.getStateFromStore()',        defining 'get...()'
     //
-    let initial = (!!_init) ? true : false
-    //
-    // Defining 'openChatUserID', 'currentUserID' and 'messages'
-    //
-    let openChatUserID = MessagesStore.getOpenChatUserID(initial)
     let currentUserID = MessagesStore.getCurrentUserID(initial)
+    let openUserID = MessagesStore.getOpenUserID(initial)
     let messages = MessagesStore.getMessages(initial)
     //
     // If 'messages' has information only about 'x: {current_user: true}',
@@ -61,20 +58,20 @@ class MessagesBox extends React.Component {
       //    https://stackoverflow.com/questions/26264956/
       //    convert-object-array-to-hash-map-indexed-by-an-attribute-value-of-the-object
       //
-      // ** 'keys' ... ["currentUserID", "openChatUserID", "messageList"]
+      // ** 'keys' ... ["currentUserID", "openUserID", "messageList"]
       // ** 'cum_obj' accumulates a process done after '=>'
       // ** 'elm' is each element of 'keys'
       // ** 'cum_obj' adds the key 'elm' with the value 'null'
       // ** 'cum_obj' is finally assigned to 'emp_obj'
       // ** 'cum_obj' starts with '{}', which is an empty object
       //
-      return Object.keys(this.initialState).reduce( (cum_obj, elm) => (cum_obj[elm] = null, cum_obj), {} )
+      return Object.keys(this.initialState).reduce((cum_obj, elm) => (cum_obj[elm] = null, cum_obj), {})
     //
-    // If not, returning 'messages[openChatUserID]' with 'currentUserID' added
+    // If not, returning 'messages[openUserID]' with 'currentUserID' added
     //
     } else {
       //
-      const tmpMsg = messages[openChatUserID]
+      const tmpMsg = messages[openUserID]
       tmpMsg.currentUserID = currentUserID
       return tmpMsg
       //
@@ -125,7 +122,7 @@ class MessagesBox extends React.Component {
             <div className='message-box__list message-box__list__empty'>
               No messages
             </div>
-            <ReplyBox />,
+            <ReplyBox />
           </div>
         )
       //
@@ -139,7 +136,7 @@ class MessagesBox extends React.Component {
         const messagesLength = this.state.messages.length
         const lastMessage = this.state.messages[messagesLength - 1]
         //
-        // Dismantling 'this.state.messages' into 'messages'
+        // Creating each 'message-box' item from 'this.state.messages'
         //
         const messages = this.state.messages.map((message, index) => {
           //
@@ -158,7 +155,7 @@ class MessagesBox extends React.Component {
             'message-box__content__from-partner': message.sent_from !== currentUserID,
           })
           //
-          // Returing 'messages' including each 'message.contents'
+          // Returing each 'message.contents'
           //
           return (
               <li key={ message.timestamp + '-' + message.sent_from } className={ itemClasses }>
@@ -196,7 +193,7 @@ class MessagesBox extends React.Component {
               <ul className='message-box__list'>
                 { messages }
               </ul>
-              <ReplyBox />,
+              <ReplyBox />
             </div>
         )
       //

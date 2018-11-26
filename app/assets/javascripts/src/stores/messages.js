@@ -20,13 +20,14 @@ const messages = {
     messages: [{ id: 1, sent_from: 2, sent_to: 1, contents: 'Hey!', timestamp: 1424469793023 }],
   },
   //
-  1: { id_current: true }
+  1: { current_user_id: true },
   //
 }
 //
-// Designating a temporary 'openChatUserID' to '2'
+// Designating a temporary 'openUserID' and 'openTabName'
 //
-const openChatUserID = 2
+const openUserID = 2
+const openTabName = 'Friends'
 //
 // Creating a new class 'AppStore'
 //
@@ -43,7 +44,7 @@ class AppStore extends BaseStore {
     //
     // If calling 'getStateFromStore(initial)', returning 'tmpMsgDgt' from 'messages'
     //
-    if (!!initial) return this.get('messages_init')
+    if (initial) return this.get('messages_init')
     //
     // Else, returning 'tmpMsgDgt' from a JSON string
     //
@@ -53,10 +54,10 @@ class AppStore extends BaseStore {
   //
   setMessages(tmpMsg) {
     //
-    // From 'tmpMsg', 'x: {id_current: true}' is removed
+    // From 'tmpMsg', 'x: {current_user_id: true}' is removed
     // ** https://stackoverflow.com/questions/40065836/lodash-reject-get-return-object
     //
-    let tmpMsgDgt = ( _.pickBy(tmpMsg, (o) => !o.id_current) )
+    let tmpMsgDgt = (_.pickBy(tmpMsg, (o) => !o.current_user_id))
     //
     // If the key 'messages_init' is not associated yet,
     // associating the key 'messages_init' with 'tmpMsgDgt'
@@ -70,60 +71,86 @@ class AppStore extends BaseStore {
   //
   getCurrentUserID(initial) {
     //
-    if (!this.get('id_current_init')) this.setCurrentUserID(messages)
+    if (!this.get('current_user_id_init')) this.setCurrentUserID(messages)
     //
     // If calling 'getStateFromStore(initial)', returning 'crtUsrID' from 'messages'
     //
-    if (!!initial) return this.get('id_current_init')
+    if (initial) return this.get('current_user_id_init')
     //
     // Else, returning 'crtUsrID' from a JSON string
     //
-    return this.get('id_current')
+    return this.get('current_user_id')
     //
   }
   //
   setCurrentUserID(tmpMsg) {
     //
-    // From 'tmpMsg', which contains 'x: {id_current: true}', 'x' is assigned to 'crtUsrID'
+    // From 'tmpMsg', which contains 'x: {current_user_id: true}', 'x' is assigned to 'crtUsrID'
     // ** https://stackoverflow.com/questions/40065836/lodash-reject-get-return-object
     //
     let crtUsrID
-    crtUsrID = Object.keys( _.pickBy(tmpMsg, (o) => !!o.id_current) )[0]
+    crtUsrID = Object.keys(_.pickBy(tmpMsg, (o) => !!o.current_user_id))[0]
     crtUsrID = parseInt(crtUsrID, 10)
     //
-    // If the key 'id_current_init' is not associated yet,
-    // associating the key 'id_current_init' with 'crtUsrID'
-    // Else, associating the key 'id_current' with 'crtUsrID'
+    // If the key 'current_user_id_init' is not associated yet,
+    // associating the key 'current_user_id_init' with 'crtUsrID'
+    // Else, associating the key 'current_user_id' with 'crtUsrID'
     //
-    !this.get('id_current_init')
-      ? this.set('id_current_init', crtUsrID)
-      : this.set('id_current', crtUsrID)
+    !this.get('current_user_id_init')
+      ? this.set('current_user_id_init', crtUsrID)
+      : this.set('current_user_id', crtUsrID)
     //
   }
   //
-  getOpenChatUserID(initial) {
+  getOpenUserID(initial) {
     //
-    if (!this.get('id_open_init')) this.setOpenChatUserID(openChatUserID)
+    if (!this.get('open_user_id_init')) this.setOpenUserID(openUserID)
     //
-    // If calling 'getStateFromStore(initial)', returning 'tmpOpnUsrID' from 'openChatUserID'
+    // If calling 'getStateFromStore(initial)', returning 'tmpOpnUsrID' from 'openUserID'
     //
-    if (!!initial) return this.get('id_open_init')
+    if (initial) return this.get('open_user_id_init')
     //
     // Else, returning 'tmpOpnUsrID' from a JSON string
     //
-    return this.get('id_open')
+    return this.get('open_user_id')
     //
   }
   //
-  setOpenChatUserID(tmpOpnUsrID) {
+  setOpenUserID(tmpOpnUsrID) {
     //
-    // If the key 'id_open_init' is not associated yet,
-    // associating the key 'id_open_init' with 'tmpOpnUsrID'
-    // Else, associating the key 'id_open' with 'tmpOpnUsrID'
+    // If the key 'open_user_id_init' is not associated yet,
+    // associating the key 'open_user_id_init' with 'tmpOpnUsrID'
+    // Else, associating the key 'open_user_id' with 'tmpOpnUsrID'
     //
-    !this.get('id_open_init')
-      ? this.set('id_open_init', tmpOpnUsrID)
-      : this.set('id_open', tmpOpnUsrID)
+    !this.get('open_user_id_init')
+      ? this.set('open_user_id_init', tmpOpnUsrID)
+      : this.set('open_user_id', tmpOpnUsrID)
+    //
+  }
+  //
+  getOpenTabName(initial) {
+    //
+    if (!this.get('open_tab_name_init')) this.setOpenTabName(openTabName)
+    //
+    // If calling 'getStateFromStore(initial)', returning 'tmpOpnTab' from 'openUserID'
+    //
+    if (initial) return this.get('open_tab_name_init')
+    //
+    // Else, returning 'tmpOpnTab' from a dispatcher
+    //
+    return this.get('open_tab_name')
+    //
+  }
+  //
+  setOpenTabName(tmpOpnTab) {
+    //
+    // If the key 'open_tab_name_init' is not associated yet,
+    // associating the key 'open_tab_name_init' with 'tmpOpnTab'
+    // Else, associating the key 'open_tab_name' with 'tmpOpnTab'
+    //
+    !this.get('open_tab_name_init')
+      ? this.set('open_tab_name_init', tmpOpnTab)
+      : this.set('open_tab_name', tmpOpnTab)
     //
   }
   //
@@ -150,7 +177,7 @@ MessagesStore.dispatchToken = Dispatcher.register(payload => {
   //
   switch (action.type) {
     //
-    // When called from 'constructor(props)' in 'components/messageBox.js'
+    // When called from 'constructor(props)' in 'components/messagesBox.js'
     //
     case ActionTypes.GET_MESSAGES:
       //
@@ -158,15 +185,18 @@ MessagesStore.dispatchToken = Dispatcher.register(payload => {
       //
       tmpMsg = action.json
       //
-      // Getting a first user from 'tmpMsg' which removed 'x: {id_current: true}'
+      // Getting a first user from 'tmpMsg' which removed 'x: {current_user_id: true}'
       //
-      tmpUsrID = Object.keys( _.pickBy(tmpMsg, (o) => !o.id_current) )[0]
+      tmpUsrID = Object.keys(_.pickBy(tmpMsg, (o) => !o.current_user_id))[0]
       tmpUsrID = parseInt(tmpUsrID, 10)
       //
       // Calling setters
+      // ** 'setCurrentUserID(tmpMsg)' is called only once here
       //
-      MessagesStore.setOpenChatUserID(tmpUsrID)
       MessagesStore.setCurrentUserID(tmpMsg)
+      //
+      MessagesStore.setOpenTabName("Friends")
+      MessagesStore.setOpenUserID(tmpUsrID)
       MessagesStore.setMessages(tmpMsg)
       //
       // ** 'emitChange()' is necessary to activate 'onStoreChange()' in 'components'
@@ -178,9 +208,6 @@ MessagesStore.dispatchToken = Dispatcher.register(payload => {
     //
     case ActionTypes.SEND_MESSAGE:
       //
-      // let tmpMsg
-      // let tmpUsrID
-      //
       // Getting messages and a recipient
       //
       tmpMsg = MessagesStore.getMessages()
@@ -191,19 +218,14 @@ MessagesStore.dispatchToken = Dispatcher.register(payload => {
       tmpMsg[tmpUsrID].messages.push(action.json)
       tmpMsg[tmpUsrID].lastAccess.current_user = +new Date().getTime()
       //
-      // Calling setters
-      //
       MessagesStore.setMessages(tmpMsg)
       //
       MessagesStore.emitChange()
       break
     //
-    // When called from 'changeOpenChat(id)' in 'components/userList.js'
+    // When called from 'changeOpenUserID(id)' in 'components/userList.js'
     //
-    case ActionTypes.UPDATE_OPEN_CHAT_ID:
-      //
-      // let tmpMsg
-      // let tmpUsrID
+    case ActionTypes.UPDATE_OPEN_USER_ID:
       //
       // Getting messages and a user clicked
       //
@@ -214,10 +236,17 @@ MessagesStore.dispatchToken = Dispatcher.register(payload => {
       //
       tmpMsg[tmpUsrID].lastAccess.current_user = +new Date().getTime()
       //
-      // Calling setters
-      //
-      MessagesStore.setOpenChatUserID(tmpUsrID)
+      MessagesStore.setOpenUserID(tmpUsrID)
       MessagesStore.setMessages(tmpMsg)
+      //
+      MessagesStore.emitChange()
+      break
+    //
+    // When called from 'changeOpenTabName(name)' in 'components/messagesBox.js'
+    //
+    case ActionTypes.UPDATE_OPEN_TAB_NAME:
+      //
+      MessagesStore.setOpenTabName(action.name)
       //
       MessagesStore.emitChange()
       break

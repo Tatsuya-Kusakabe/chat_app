@@ -1,14 +1,19 @@
-// components/userList.js
-
+//
+// components/friendsList.js
+//
+// Importing components
+//
 import React from 'react'
 import classNames from 'classnames'
 import _ from 'lodash'
 import Utils from '../../utils'
 import MessagesAction from '../../actions/messages'
 import MessagesStore from '../../stores/messages'
-
-class UserList extends React.Component {
-
+//
+// Creating a new class 'FriendsList'
+//
+class FriendsList extends React.Component {
+  //
   constructor(props) {
     //
     // Inheriting props  (modifiable   values) from 'React.component'
@@ -16,6 +21,7 @@ class UserList extends React.Component {
     //
     super(props)
     this.state = this.initialState
+    //
   }
   //
   // Equalizing 'this.initialState' and 'this.getStateFromStore(init)'
@@ -26,17 +32,14 @@ class UserList extends React.Component {
     return this.getStateFromStore(initial)
   }
   //
-  getStateFromStore(_init) {
+  getStateFromStore(initial) {
     //
-    // If 'this.getStateFromStore()' contains an argument 'initial = true',
-    // setting an argument 'initial = true' to getters
+    // Defining 'currentUserID', 'openUserID' and 'messages'
+    // ** If calling 'this.getStateFromStore(initial)', defining 'get...(initial)'
+    // ** If calling 'this.getStateFromStore()',        defining 'get...()'
     //
-    let initial = (!!_init) ? true : false
-    //
-    // Defining 'openChatUserID', 'currentUserID' and 'messages'
-    //
-    let openChatUserID = MessagesStore.getOpenChatUserID(initial)
     let currentUserID = MessagesStore.getCurrentUserID(initial)
+    let openUserID = MessagesStore.getOpenUserID(initial)
     let messages = MessagesStore.getMessages(initial)
     //
     // If 'messages' has information only about 'x: {current_user: true}',
@@ -44,7 +47,7 @@ class UserList extends React.Component {
     //
     if (!Object.keys(messages).length) {
       //
-      return { currentUserID: currentUserID, openChatUserID: null, messageList: null }
+      return { currentUserID: currentUserID, openUserID: null, messageList: null }
     //
     // If not
     //
@@ -61,9 +64,9 @@ class UserList extends React.Component {
         })
       })
       //
-      // Returning 'currentUserID', 'openChatUserID' and 'messageList'
+      // Returning 'currentUserID', 'openUserID' and 'messageList'
       //
-      return { currentUserID: currentUserID, openChatUserID: openChatUserID, messageList: messageList }
+      return { currentUserID: currentUserID, openUserID: openUserID, messageList: messageList }
     //
     }
   }
@@ -76,8 +79,8 @@ class UserList extends React.Component {
   //
   // When an account is clicked, changing chats displayed
   //
-  changeOpenChat(id) {
-    MessagesAction.changeOpenChat(id)
+  changeOpenUserID(id) {
+    MessagesAction.changeOpenUserID(id)
   }
   //
   // ??
@@ -98,11 +101,11 @@ class UserList extends React.Component {
       // When 'current_user' has no friends, displaying 'No messages'
       // ** 'return' ends 'switch (true)', so 'break' is not necessary
       //
-      case (!this.state.openChatUserID):
+      case (!this.state.openUserID):
         //
         return (
-            <div className='user-list'>
-              <div className='user-list__list user-list__list__empty'>
+            <div className='friends-list'>
+              <div className='friends-list__list friends-list__list__empty'>
                 No messages
               </div>
             </div>
@@ -111,6 +114,9 @@ class UserList extends React.Component {
       // When 'current_user' has any messages
       //
       default:
+        //
+        // ??
+        //
         this.state.messageList.sort((a, b) => {
           if (a.lastMessage.timestamp > b.lastMessage.timestamp) {
             return -1
@@ -120,24 +126,29 @@ class UserList extends React.Component {
           }
           return 0
         })
-
+        //
+        // Creating each 'friends-list' item from 'this.state.messageList'
+        //
         const messages = this.state.messageList.map((message, index) => {
+          //
+          // Calculating when 'last_message' was post
+          //
           const date = Utils.getNiceDate(message.lastMessage.timestamp)
-
+          //
           var statusIcon
           //
           // If the last message was posted after the last access, showing a 'circle' icon
           //
           if (message.lastAccess.current_user < message.lastMessage.timestamp) {
-            statusIcon = (<i className='fa fa-circle user-list__item__icon' />)
+            statusIcon = (<i className='fa fa-circle friends-list__item__icon' />)
           }
           //
           // If the last message was posted from a current user, showing a 'reply' icon
           //
           if (message.lastMessage.sent_from === this.state.currentUserID) {
-            statusIcon = (<i className='fa fa-reply user-list__item__icon' />)
+            statusIcon = (<i className='fa fa-reply friends-list__item__icon' />)
           }
-
+          //
           var isNewMessage = false
           //
           // If the last message was posted after the last access, and
@@ -147,50 +158,55 @@ class UserList extends React.Component {
           if (message.lastAccess.current_user < message.lastMessage.timestamp) {
             isNewMessage = (message.lastMessage.sent_from !== this.state.currentUserID)
           }
-
+          //
+          // Defining 'item_classes' for each message icon
+          //
           const itemClasses = classNames({
-            'user-list__item': true,
             'clear': true,
-            'user-list__item--new': isNewMessage,
-            'user-list__item--active': this.state.openChatUserID === message.user.id,
+            'friends-list__item': true,
+            'friends-list__item--new': isNewMessage,
+            'friends-list__item--active': this.state.openUserID === message.user.id,
           })
-
+          //
+          // Returning each 'friends-list' item
+          //
           return (
+            //
+            // When an account is clicked, returning 'changeOpenUserID(message.user.id)'
+            //
             <li
-              //
-              // When an account is clicked, returning 'changeOpenChat(message.user.id)'
-              //
-              onClick={ this.changeOpenChat.bind(this, message.user.id) }
+              onClick={ this.changeOpenUserID.bind(this, message.user.id) }
               className={ itemClasses }
               key={ message.user.id }
             >
-              <div className='user-list__item__picture'>
+              <div className='friends-list__item__picture'>
                 <img src={ message.user.profile_picture } />
               </div>
-              <div className='user-list__item__details'>
-                <h4 className='user-list__item__name'>
+              <div className='friends-list__item__details'>
+                <h4 className='friends-list__item__name'>
                   { message.user.name }
-                  <abbr className='user-list__item__timestamp'>
+                  <abbr className='friends-list__item__timestamp'>
                     { date }
                   </abbr>
                 </h4>
-                <span className='user-list__item__message'>
+                <span className='friends-list__item__message'>
                   { statusIcon } { message.lastMessage.contents }
                 </span>
               </div>
             </li>
           )
         }, this)
+        //
+        // Returning 'messages'
+        //
         return (
-          <div className='user-list'>
-            <ul className='user-list__list'>
-              { messages }
-            </ul>
-          </div>
+          <ul className='friends-list__list'>
+            { messages }
+          </ul>
         )
       //
     }
   }
 }
 
-export default UserList
+export default FriendsList

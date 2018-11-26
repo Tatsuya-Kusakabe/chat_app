@@ -8,9 +8,10 @@ import keyMirror from 'keymirror'
 // Defining 'Action types', which makes 'Stores' decide what 'Action' to handle
 //
 export const ActionTypes = keyMirror({
-  UPDATE_OPEN_CHAT_ID: null,
-  SEND_MESSAGE: null,
   GET_MESSAGES: null,
+  SEND_MESSAGE: null,
+  UPDATE_OPEN_USER_ID: null,
+  UPDATE_OPEN_TAB_NAME: null,
 })
 //
 // Defining 'API endpoints', which names POST routing
@@ -63,15 +64,15 @@ const Utils = {
     const post_date = {
       //
       within_day: {
-        0: 'less than a minute ago',
-        1: 'a minute ago',
-        59: '%dist_min minutes ago',
-        119: 'an hour ago',
-        1439: '%dist_hrs hours ago',
+        1: 'less than a minute ago',
+        2: 'a minute ago',
+        60: '%dist_min minutes ago',
+        120: 'an hour ago',
+        1440: '%dist_hrs hours ago',
       },
       //
       beyond_day: {
-        1: 'Yesterday at %hrs:%min',
+        2: 'Yesterday at %hrs:%min',
         7: '%day at %hrs:%min',
       },
       //

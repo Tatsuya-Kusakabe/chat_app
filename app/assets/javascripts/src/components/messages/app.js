@@ -1,12 +1,12 @@
 import React from 'react'
-import UserList from './userList'
+import UsersList from './usersList'
 import MessagesBox from './messagesBox'
 
 class App extends React.Component {
   render() {
     return (
         <div className='app'>
-          <UserList />
+          <UsersList />
           <MessagesBox />
         </div>
       )

@@ -3,11 +3,14 @@
   &__list {
     //
     position:   absolute; // Positioning based on 'body'
+    padding:    30px;
+    //
     top:        90px;
-    bottom:     67px;
+    bottom:     70px;
     left:       300px;
     right:      0;
-    padding:    30px;
+    //
+    border-bottom: 1px solid rgba( 0, 0, 0, 0.1 );
     //
     overflow-y: scroll;
     //
@@ -58,15 +61,6 @@
     //
     background:  none;
     color:       rgba( 0, 0, 0, 0.8 );
-    //
-  }
-  //
-  .reply-box {
-    //
-    position: absolute; // Positioning based on 'body'
-    bottom:   0;
-    left:     300px;
-    right:    0;
     //
   }
   //

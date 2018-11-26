@@ -1,0 +1,127 @@
+.friends-list {
+  //
+  &__list {
+    //
+    position:     absolute; // Positioning based on 'body'
+    top:          120px;
+    bottom:       0;
+    left:         0;
+    //
+    background:   rgba( 0, 0, 0, 0.03 );
+    border-right: 1px solid rgba( 0, 0, 0, 0.1 );
+    //
+    &__empty {
+      //
+      padding:     30px;
+      font-size:   15px;
+      font-weight: 400;
+      //
+    }
+    //
+  }
+  //
+  &__item {
+    //
+    text-align:   left;     // Canceling 'text-align: center' on 'body'
+    //
+    padding:       15px;
+    border-bottom: 1px solid rgba( 0, 0, 0, 0.1 );
+    //
+    cursor:        pointer;
+    //
+    &__picture {
+      //
+      width:         50px;
+      height:        50px;
+      float:         left;
+      //
+      border-radius: 50%;
+      overflow:      hidden; // Keeping a profile picture round
+      //
+      img {
+        width: inherit;
+      }
+      //
+    }
+    //
+    &__details {
+      //
+      width:        219px; // Keeping 'friends-list__item' 300px wide including 'border-right'
+      padding-left: 15px;
+      float:        left;
+      //
+    }
+    //
+    &__name {
+      //
+      height:      25px;
+      margin:      0 auto;
+      //
+      font-size:   15px;
+      font-weight: inherit;
+      //
+    }
+    //
+    &__timestamp {
+      //
+      line-height: 25px;
+      float:       right;
+      //
+      font-size:   10px;
+      font-weight: inherit;
+      //
+    }
+    //
+    &__message {
+      //
+      line-height:   25px;
+      width:         200px;
+      float:         left;
+      //
+      display:       block;
+      //
+      white-space:   nowrap;   // Keeping a text single-line
+      overflow:      hidden;   // Stopping a text from going into 'messagesBox'
+      text-overflow: ellipsis; // Abbreviating a text with '...'
+      //
+    }
+    //
+    &--new {
+      //
+      background:  #EEF1F6;
+      font-weight: 500;
+      //
+      .friends-list__item__icon {
+        color:        #1D9BCE;
+        margin-right: 3px;
+      }
+      //
+    }
+    //
+    &--active {
+      //
+      background:  #93C26D;
+      color:       #fff;
+      font-weight: 500;
+      position:    relative;
+      //
+      &:before {
+        //
+        width:        0;
+        height:       0;
+        border-style: solid;
+        border-width: 40px 0px 40px 20px;
+        border-color: transparent transparent transparent #93C26D;
+        position:     absolute;
+        display:      block;
+        right:        -20px;
+        top:          0;
+        content:      " ";
+        //
+      }
+      //
+    }
+    //
+  }
+  //
+}
