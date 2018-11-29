@@ -1,18 +1,19 @@
+#
 # 1. 'config/routes.rb'
-#    Creating routings for 'api/messages' (index, create, etc...)
-
+#    Creating routings for 'api/messages' (index, create)
+#
 # 2. 'app/controllers/api/message_controller.rb'
-#    Creating actions for index, create, etc...
-#    Rendering in 'json' format
-
+#    Creating actions for index, create, and rendering in 'json' format
+#
 Rails.application.routes.draw do
   #
   root 'messages#index'
   #
-  # Creating routes for '/api/messages' (index, create, etc...)
+  # Creating routes for '/api/messages' and '/api/suggestions' (index, create)
   #
   namespace :api, { format: 'json' } do
-    resources :messages
+    resources :friends,     { only: [:index, :create] }
+    resources :suggestions, { only: [:index, :create] }
   end
   #
   # Creating routes for '/users' with 'devise'

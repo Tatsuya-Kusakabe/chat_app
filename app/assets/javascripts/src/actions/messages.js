@@ -1,23 +1,53 @@
+//
 // actions/messages.js
-
+//
+// Importing components
+//
 import request from 'superagent'
 import Dispatcher from '../dispatcher'
 import {ActionTypes, APIEndpoints, CSRFToken} from '../utils'
-
+//
+let path, action, openUserTab
+//
 export default {
+  //
+  // Connecting from 'changeOpenTabName(name)' in 'components/usersTab.js'
+  //              to 'UPDATE_OPEN_TAB_NAME'    in 'stores/messages.js'
+  //
+  changeOpenTabName(newTabName) {
+    //
+    Dispatcher.handleViewAction({
+      type: ActionTypes.UPDATE_OPEN_TAB_NAME,
+      name: newTabName,
+    })
+    //
+  },
   //
   // Connecting from 'constructor(props)' in 'components/messagesBox.js'
   //              to 'GET_MESSAGES'       in 'stores/messages.js'
   //
   getMessages() {
+    this.getDataFromStore(path = 'api/friends', action = ActionTypes.GET_MESSAGES)
+  },
+  //
+  // Connecting from 'constructor(props)' in 'components/_suggestionsList.js'
+  //              to 'GET_SUGGESTIONS'    in 'stores/messages.js'
+  //
+  getSuggestions() {
+    this.getDataFromStore(path = 'api/suggestions', action = ActionTypes.GET_SUGGESTIONS)
+  },
+  //
+  // Defining 'getDataFromStore'
+  //
+  getDataFromStore(path, action) {
     //
     return new Promise((resolve, reject) => {
       //
-      // Exerting 'api/messages#index', then proceeding next
+      // Designating a path, then proceeding next
       // ** Getting data on a server
       //
       request
-      .get('/api/messages')
+      .get(path)
       .end((error, res) => {
         //
         // When successfully accessed (status code: 200)
@@ -33,7 +63,7 @@ export default {
           // ** Changing data on 'stores/messages' (locally)
           //
           Dispatcher.handleServerAction({
-            type: ActionTypes.GET_MESSAGES,
+            type: action,
             json: json,
           })
           //
@@ -135,15 +165,4 @@ export default {
     })
   },
   //
-  // Connecting from 'changeOpenTabName(name)' in 'components/usersList.js'
-  //              to 'UPDATE_OPEN_TAB_NAME'    in 'stores/messages.js'
-  //
-  changeOpenTabName(newTabName) {
-    //
-    Dispatcher.handleViewAction({
-      type: ActionTypes.UPDATE_OPEN_TAB_NAME,
-      name: newTabName,
-    })
-    //
-  },
 }

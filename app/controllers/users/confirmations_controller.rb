@@ -34,7 +34,13 @@ class Users::ConfirmationsController < Devise::ConfirmationsController
       #
       flash[:notice] = "Welcome to this tutorial!"
       #
-      log_in(@user)
+      sign_in(@user)
+      #
+      @user.status = "online"
+      @user.update_attribute(:status, @user.status)
+      #
+      @user.remember_me!
+      #
       redirect_to("/")
       #
     else

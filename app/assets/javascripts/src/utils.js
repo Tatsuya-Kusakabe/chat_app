@@ -20,7 +20,7 @@ const Root = window.location.origin || `${window.location.protocol}//${window.lo
 const APIRoot = `${Root}/api`
 //
 export const APIEndpoints = {
-  CREATE: APIRoot + '/messages',
+  CREATE: APIRoot + '/friends',
 }
 //
 // Defining 'CSRF token' for security
@@ -80,10 +80,10 @@ const Utils = {
     //
     // Calculating 'distance' between now and the post date, on the basis of 'minute' and 'day'
     //
-    const minute_now = Math.round(+new Date() / 60000)
-    const minute_post = Math.round(timestamp / 60000)
+    const minute_now = Math.floor(+new Date() / 60000)
+    const minute_post = Math.floor(timestamp / 60000)
     const dist_minute = minute_now - minute_post
-    const dist_day = Math.round(minute_now / (60 * 24)) - Math.round(minute_post / (60 * 24))
+    const dist_day = Math.floor(minute_now / (60 * 24)) - Math.floor(minute_post / (60 * 24))
     //
     // Defining 'hash' and 'dist' for making up 'string' to return
     //

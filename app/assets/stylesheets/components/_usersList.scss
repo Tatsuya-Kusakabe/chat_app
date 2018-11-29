@@ -1,4 +1,4 @@
-.friends-list {
+.users-list {
   //
   &__list {
     //
@@ -12,7 +12,9 @@
     //
     &__empty {
       //
+      width:       300px; // Keeping 'users-list__list' 300px wide including 'border-right'
       padding:     30px;
+      //
       font-size:   15px;
       font-weight: 400;
       //
@@ -46,7 +48,7 @@
     //
     &__details {
       //
-      width:        219px; // Keeping 'friends-list__item' 300px wide including 'border-right'
+      width:        219px; // Keeping 'users-list__item' 300px wide including 'border-right'
       padding-left: 15px;
       float:        left;
       //
@@ -56,6 +58,7 @@
       //
       height:      25px;
       margin:      0 auto;
+      float: left;
       //
       font-size:   15px;
       font-weight: inherit;
@@ -64,7 +67,8 @@
     //
     &__timestamp {
       //
-      line-height: 25px;
+      height:      25px;
+      margin:      0 auto;
       float:       right;
       //
       font-size:   10px;
@@ -91,7 +95,7 @@
       background:  #EEF1F6;
       font-weight: 500;
       //
-      .friends-list__item__icon {
+      .users-list__item__icon {
         color:        #1D9BCE;
         margin-right: 3px;
       }

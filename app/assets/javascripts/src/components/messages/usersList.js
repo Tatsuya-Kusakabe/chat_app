@@ -1,141 +1,206 @@
 //
-// components/usersList.js
+// components/friendsList.js
+//
+// ** The class extention from 'usersList.js' to 'friendsList' and 'suggestionsList'
+//    are avoided, because most of the similarities are deep inside the loop
 //
 // Importing components
 //
 import React from 'react'
 import classNames from 'classnames'
-// import Utils from '../../utils'
+import _ from 'lodash'
+import Utils from '../../utils'
 import MessagesAction from '../../actions/messages'
 import MessagesStore from '../../stores/messages'
-import FriendsList from '../../components/messages/friendsList'
 //
-// Creating a new class 'usersList'
+// Creating a new class 'FriendsList'
 //
-class UsersList extends React.Component {
+class FriendsList extends React.Component {
   //
   constructor(props) {
     //
-    // Inheriting props  (modifiable   values) from 'React.component'
-    // Inheriting states (unmodifiable values) as   'this.getStateFromStore()'
+    // Inheriting props (unmodifiable attributes) from 'React.component'
     //
     super(props)
-    this.state = this.initialState
     //
   }
   //
-  // Equalizing 'this.initialState' and 'this.getStateFromStore(init)'
-  // ** If you write "get hoge() {return fuga}", this.hoge does fuga
+  // When an account is clicked, changing chats displayed
   //
-  get initialState() {
-    const initial = true
-    return this.getStateFromStore(initial)
-  }
-  //
-  getStateFromStore(initial) {
-    //
-    // Defining 'OpenTabName'
-    //
-    let openTabName = MessagesStore.getOpenTabName(initial)
-    //
-    // Returning 'OpenTabName' and 'tabName'
-    //
-    return { openTabName: openTabName, tabName: ['Friends', 'Suggestions'] }
-    //
-  }
-  //
-  // Updating a state from 'this.getStateFromStore()' to 'this.getStateFromStore()'
-  //
-  onStoreChange() {
-    this.setState(this.getStateFromStore())
-  }
-  //
-  // When a tab (friends or suggestions) is clicked, changing a tab displayed
-  //
-  changeOpenTabName(name) {
-    MessagesAction.changeOpenTabName(name)
-  }
-  //
-  // ??
-  //
-  componentWillMount() {
-    MessagesStore.onChange(this.onStoreChange.bind(this))
-  }
-  componentWillUnmount() {
-    MessagesStore.offChange(this.onStoreChange.bind(this))
+  changeOpenUserID(id) {
+    MessagesAction.changeOpenUserID(id)
   }
   //
   // Rendering results
   //
   render() {
     //
-    // Creating each 'users-tab' item from 'this.state.tabName'
+    console.log(this.props)
+    let users
     //
-    const messages = this.state.tabName.map((message, index) => {
-      //
-      // Defining 'item_classes' for each message icon
-      //
-      const itemClasses = classNames({
-        'clear': true,
-        'users-tab__item': true,
-        'users-tab__item--active': this.state.openTabName === message,
-      })
-      //
-      // Returning each 'users-tab' item
+    // When 'current_user' has no numerical 'openUserID' (namely having no friends)
+    // ** 'return' ends 'switch (true)', so 'break' is not necessary
+    //
+    if (! (_.isNumber(this.props.openUserID)) ) {
       //
       return (
-        //
-        // When a tab is clicked, returning 'changeOpenTabName(message)'
-        //
-        <li
-          onClick={ this.changeOpenTabName.bind(this, message) }
-          className={ itemClasses }
-          key={ message }
-        >
-          { message }
-        </li>
+          <div className='users-list__list users-list__list__empty'>
+            No {this.props.openTabName}
+          </div>
       )
-    })
     //
-    switch(this.state.openTabName) {
+    // When 'Suggestions' tab is open
+    //
+    } else if (this.props.openTabName === 'Suggestions') {
       //
-      // If 'Friends' tab is open
+      // Getting details on the users as 'suggestionsList'
       //
-      case 'Friends':
+      const suggestionsRaw = this.props.suggestions
+      const suggestionsList = []
+      //
+      _.each(suggestionsRaw, (suggestion) => {
+        suggestionsList.push({ user: suggestion.user })
+      })
+      //
+      // Creating each 'users-list' item from 'suggestionsList'
+      //
+      users = suggestionsList.map((suggestion, index) => {
         //
-        // Returning 'FriendsList'
+        // Defining 'item_classes' for each message icon
+        //
+        const itemClasses = classNames({
+          'clear': true,
+          'users-list__item': true,
+          'users-list__item--active': this.props.openUserID === suggestion.user.id,
+        })
+        //
+        // Returning each 'users-list' item
         //
         return (
-          <div className='users-list'>
-            <ul className='users-tab__list'>
-              { messages }
-            </ul>
-            <FriendsList />
-          </div>
+          //
+          // When an account is clicked, returning 'changeOpenUserID(friend.user.id)'
+          //
+          <li
+            onClick={ this.changeOpenUserID.bind(this, suggestion.user.id) }
+            className={ itemClasses }
+            key={ suggestion.user.id }
+          >
+            <div className='users-list__item__picture'>
+              <img src={ suggestion.user.profile_picture } />
+            </div>
+            <div className='users-list__item__details'>
+              <h4 className='users-list__item__name'>
+                { suggestion.user.name }
+              </h4>
+              {/*
+              <span className='users-list__item__message'>
+                { statusIcon } { friend.lastMessage.contents }
+              </span>
+              */}
+            </div>
+          </li>
         )
-        //
-        break
+      }, this)
+    //
+    // When 'Friends' tab is open
+    //
+    } else {
       //
-      // If 'Suggestions' tab is open
+      // Getting details on the users as 'friendsList'
       //
-      case 'Suggestions':
+      const friendsRaw = this.props.messages
+      const friendsList = []
+      //
+      _.each(friendsRaw, (friend) => {
+        friendsList.push({
+          lastMessage: friend.messages[friend.messages.length - 1],
+          lastAccess: friend.lastAccess,
+          user: friend.user,
+        })
+      })
+      //
+      // Creating each 'users-list' item from 'friendsList'
+      //
+      users = friendsList.map((friend, index) => {
         //
-        // Returning 'SuggestionsList'
+        // Calculating when 'last_message' was post
+        //
+        const date = Utils.getNiceDate(friend.lastMessage.timestamp)
+        //
+        var statusIcon
+        //
+        // If the last message was posted after the last access, showing a 'circle' icon
+        //
+        if (friend.lastAccess.current_user < friend.lastMessage.timestamp) {
+          statusIcon = (<i className='fa fa-circle users-list__item__icon' />)
+        }
+        //
+        // If the last message was posted from a current user, showing a 'reply' icon
+        //
+        if (friend.lastMessage.sent_from === this.props.currentUserID) {
+          statusIcon = (<i className='fa fa-reply users-list__item__icon' />)
+        }
+        //
+        var isNewMessage = false
+        //
+        // If the last message was posted after the last access, and
+        // if the last message was posted from a partner,
+        // 'isNewMessage' becomes 'true'
+        //
+        if (friend.lastAccess.current_user < friend.lastMessage.timestamp) {
+          isNewMessage = (friend.lastMessage.sent_from !== this.props.currentUserID)
+        }
+        //
+        // Defining 'item_classes' for each message icon
+        //
+        const itemClasses = classNames({
+          'clear': true,
+          'users-list__item': true,
+          'users-list__item--new': isNewMessage,
+          'users-list__item--active': this.props.openUserID === friend.user.id,
+        })
+        //
+        // Returning each 'users-list' item
         //
         return (
-          <div className='users-list'>
-            <ul className='users-tab__list'>
-              { messages }
-            </ul>
-            <SuggestionsList />
-          </div>
+          //
+          // When an account is clicked, returning 'changeOpenUserID(friend.user.id)'
+          //
+          <li
+            onClick={ this.changeOpenUserID.bind(this, friend.user.id) }
+            className={ itemClasses }
+            key={ friend.user.id }
+          >
+            <div className='users-list__item__picture'>
+              <img src={ friend.user.profile_picture } />
+            </div>
+            <div className='users-list__item__details'>
+              <h4 className='users-list__item__name'>
+                { friend.user.name }
+              </h4>
+              <h6 className='users-list__item__timestamp'>
+                { date }
+              </h6>
+              <span className='users-list__item__message'>
+                { statusIcon } { friend.lastMessage.contents }
+              </span>
+            </div>
+          </li>
         )
-        //
-        break
+      }, this)
+    //
     }
+    //
+    // Returning 'users'
+    //
+    return (
+      <ul className='users-list__list'>
+        { users }
+      </ul>
+    )
     //
   }
   //
 }
 
-export default UsersList
+export default FriendsList

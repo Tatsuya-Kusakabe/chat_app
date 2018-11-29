@@ -1,17 +1,22 @@
+//
 // Basic frames
+//
 @import '_defaults';
 @import '_header';
 @import '_misc';
 @import '_print';
-
+//
 // Icons
+//
 @import 'fonts/_fontawesome';
-
+//
 // Components
+//
 @import 'components/_usersTab';
-@import 'components/_friendsList';
+@import 'components/_usersList';
 @import 'components/_messagesBox';
 @import 'components/_replyBox';
-
+//
 // Devise
+//
 @import 'devise/_form'

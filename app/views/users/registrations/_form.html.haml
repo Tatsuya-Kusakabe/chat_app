@@ -1,8 +1,9 @@
 -#
 -# A partial 'form_for' in response to 'create' and 'update' action
 -# Information will be contained in params[:user]
+-# 'multipart: true' should be added when uploading files
 -#
-= form_for(@user, url: yield(:url), html: { method: yield(:html) }) do |f|
+= form_for(@user, url: yield(:url), html: { method: yield(:html), multipart: true }) do |f|
   -#
   -# Rendering 'error_messages' if existing
   -#
@@ -26,13 +27,16 @@
     = render "users/registrations/leave_blank"
   -#
   -# 'Profile picture' field
+  -# ** Only 'image' file acceptable
+  -# ** http://html5.cyberlab.info/elements/forms/input-accept.html
   -#
   .field
     -#
     = f.label :profile_picture
     %br/
     -#
-    = f.file_field :profile_picture, autocomplete: "profile_picture"
+    = f.file_field :profile_picture, autocomplete: "profile_picture",
+                                     accept: "image/png, image/jpeg, image/gif"
     -#
     = render "users/registrations/leave_blank"
   -#

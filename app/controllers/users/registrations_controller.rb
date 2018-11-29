@@ -35,9 +35,13 @@ class Users::RegistrationsController < Devise::RegistrationsController
     #
     @user = User.new(create_params)
     #
+    # Uploading 'profile_picture' if existing
+    #
+    profile_picture_upload("create")
+    #
     # If a user has been successfully saved
     #
-    if @user.save
+    if @user.update_attributes(create_params)
       #
       # ** '@token' is not encrypted!!
       #     Creating and encrypted '@token' is not needed unlike 'passwords_controller'
@@ -81,6 +85,10 @@ class Users::RegistrationsController < Devise::RegistrationsController
     #    disabling us to find a user if filling in a wrong password
     #
     @user = @current_user
+    #
+    # Uploading 'profile_picture' if existing
+    #
+    profile_picture_upload("update")
     #
     # If a user has a valid password and has been successfully saved
     #
@@ -135,6 +143,43 @@ class Users::RegistrationsController < Devise::RegistrationsController
     #
     def update_params
       create_params.reject{ |k, v| v.blank? }
+    end
+    #
+    # Uploading 'profile_picture'
+    #
+    def profile_picture_upload(state)
+      #
+      # If 'profile_picture' is uploaded
+      #
+      if params[:user][:profile_picture]
+        #
+        # Copying 'profile_picture'
+        #
+        pic = params[:user][:profile_picture]
+        #
+        # Renaming 'profile_picture', and saving its ""name"" to the database
+        # ** 'img src' should start with '/assets/...'
+        # ** (Attributes of 'ActionDispatch::Http::UploadedFile')
+        # ** https://qiita.com/selmertsx/items/2beb0d7ec0774cbbf050
+        # ** https://qiita.com/k6i/items/d2c72394a490293277cc
+        # ** (extname) https://www.xmisao.com/2013/11/29/ruby-file-basename-extname.html
+        #
+        ext_name = File.extname(pic.original_filename)
+        params[:user][:profile_picture] = "/#{profile_picture_path}/#{@user.id}#{ext_name}"
+        #
+        # Saving its ""data"" to the designated directory
+        # ** A saving directory should start with 'public/assets/...'
+        #
+        File.binwrite("public/#{params[:user][:profile_picture]}", pic.read)
+      #
+      # If not, defining 'profile_picture' as 'default.png'
+      #
+      elsif state == "create"
+        #
+        params[:user][:profile_picture] = "/#{profile_picture_path}/default.png"
+        #
+      end
+      #
     end
 
   # GET /users/cancel

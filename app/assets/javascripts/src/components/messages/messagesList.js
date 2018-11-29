@@ -5,10 +5,13 @@
 //
 import React from 'react'
 import classNames from 'classNames'
+import _ from 'lodash'
 import Utils from '../../utils'
 import MessagesAction from '../../actions/messages'
 import MessagesStore from '../../stores/messages'
-import ReplyBox from '../../components/messages/replyBox'
+import ReplyBox from '../../components/messages/_replyBox'
+//
+let initial_bln
 //
 // Creating a new class 'MessagesBox'
 //
@@ -16,71 +19,17 @@ class MessagesBox extends React.Component {
   //
   constructor(props) {
     //
-    // Inheriting props  (modifiable   values) from 'React.component'
-    // Inheriting states (unmodifiable values) as   'this.getStateFromStore()'
+    // Inheriting props (unmodifiable attributes) from 'React.component'
     //
     super(props)
     this.state = this.initialState
     //
-    // Calling getMessages() from 'actions/messages'
-    // While calling, proceeding next
-    // ** Do not prepend "return" to objects (in this case, promise objects).
-    // ** If so, the constructor will return promise objects, not 'this'...
-    //
-    MessagesAction.getMessages()
-    //
-  }
-  //
-  // Equalizing 'this.initialState' and 'this.getStateFromStore(initial)'
-  // ** If you write "get hoge() {return fuga}", 'this.hoge' does 'fuga'
-  //
-  get initialState() {
-    const initial = true
-    return this.getStateFromStore(initial)
-  }
-  //
-  getStateFromStore(initial) {
-    //
-    // Defining 'currentUserID', 'openUserID' and 'messages'
-    // ** If calling 'this.getStateFromStore(initial)', defining 'get...(initial)'
-    // ** If calling 'this.getStateFromStore()',        defining 'get...()'
-    //
-    let currentUserID = MessagesStore.getCurrentUserID(initial)
-    let openUserID = MessagesStore.getOpenUserID(initial)
-    let messages = MessagesStore.getMessages(initial)
-    //
-    // If 'messages' has information only about 'x: {current_user: true}',
-    // clearing values of 'this.initialState' and returning it
-    //
-    if (!Object.keys(messages).length) {
-      //
-      // ** How to use 'reduce' is described below
-      //    https://stackoverflow.com/questions/26264956/
-      //    convert-object-array-to-hash-map-indexed-by-an-attribute-value-of-the-object
-      //
-      // ** 'keys' ... ["currentUserID", "openUserID", "messageList"]
-      // ** 'cum_obj' accumulates a process done after '=>'
-      // ** 'elm' is each element of 'keys'
-      // ** 'cum_obj' adds the key 'elm' with the value 'null'
-      // ** 'cum_obj' is finally assigned to 'emp_obj'
-      // ** 'cum_obj' starts with '{}', which is an empty object
-      //
-      return Object.keys(this.initialState).reduce((cum_obj, elm) => (cum_obj[elm] = null, cum_obj), {})
-    //
-    // If not, returning 'messages[openUserID]' with 'currentUserID' added
-    //
-    } else {
-      //
-      const tmpMsg = messages[openUserID]
-      tmpMsg.currentUserID = currentUserID
-      return tmpMsg
-      //
-    }
   }
   //
   // Updating a state from 'this.getStateFromStore()' to 'this.getStateFromStore()'
   //
   onStoreChange() {
+    console.log("set state messages box")
     this.setState(this.getStateFromStore())
   }
   //
@@ -96,6 +45,7 @@ class MessagesBox extends React.Component {
   // Rendering results
   //
   render() {
+    console.log("render messages box")
     //
     switch (true) {
       //
@@ -118,12 +68,12 @@ class MessagesBox extends React.Component {
       case (!this.state.messages):
         //
         return (
-          <div className='message-box'>
-            <div className='message-box__list message-box__list__empty'>
-              No messages
+            <div className='message-box'>
+              <div className='message-box__list message-box__list__empty'>
+                No messages
+              </div>
+              <ReplyBox />
             </div>
-            <ReplyBox />
-          </div>
         )
       //
       // When 'current_user' has any messages
@@ -189,12 +139,9 @@ class MessagesBox extends React.Component {
         // Returning 'messages'
         //
         return (
-            <div className='message-box'>
               <ul className='message-box__list'>
                 { messages }
               </ul>
-              <ReplyBox />
-            </div>
         )
       //
     }
