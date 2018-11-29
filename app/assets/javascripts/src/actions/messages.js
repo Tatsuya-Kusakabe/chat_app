@@ -7,18 +7,18 @@ import request from 'superagent'
 import Dispatcher from '../dispatcher'
 import {ActionTypes, APIEndpoints, CSRFToken} from '../utils'
 //
-let path, action, openUserTab
+// var path, action
 //
 export default {
   //
-  // Connecting from 'changeOpenTabName(name)' in 'components/usersTab.js'
+  // Connecting from 'changeOpenUserTab(name)' in 'components/usersTab.js'
   //              to 'UPDATE_OPEN_TAB_NAME'    in 'stores/messages.js'
   //
-  changeOpenTabName(newTabName) {
+  changeOpenUserTab(newUserTab) {
     //
     Dispatcher.handleViewAction({
       type: ActionTypes.UPDATE_OPEN_TAB_NAME,
-      name: newTabName,
+      name: newUserTab,
     })
     //
   },
@@ -27,14 +27,18 @@ export default {
   //              to 'GET_MESSAGES'       in 'stores/messages.js'
   //
   getMessages() {
-    this.getDataFromStore(path = 'api/friends', action = ActionTypes.GET_MESSAGES)
+    let path = 'api/friends'
+    let action = ActionTypes.GET_MESSAGES
+    this.getDataFromStore(path, action)
   },
   //
   // Connecting from 'constructor(props)' in 'components/_suggestionsList.js'
   //              to 'GET_SUGGESTIONS'    in 'stores/messages.js'
   //
   getSuggestions() {
-    this.getDataFromStore(path = 'api/suggestions', action = ActionTypes.GET_SUGGESTIONS)
+    let path = 'api/suggestions'
+    let action = ActionTypes.GET_SUGGESTIONS
+    this.getDataFromStore(path, action)
   },
   //
   // Defining 'getDataFromStore'

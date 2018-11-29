@@ -2,15 +2,12 @@
 // https://www.to-r.net/media/react-tutorial10/
 //
 import React from 'react'
-import classNames from 'classnames'
-import MessagesAction from '../../actions/messages'
 import MessagesStore from '../../stores/messages'
+import _ from 'lodash'
 import UsersTab from './usersTab'
 import UsersList from './usersList'
-// import MessagesList from './messagesList'
-// import ReplyBox from './replyBox'
-//
-let initial_bln
+import MessagesList from './messagesList'
+import ReplyBox from './replyBox'
 //
 // Creating a new class 'App'
 //
@@ -36,9 +33,9 @@ class App extends React.Component {
     //
     return {
       //
-      // Defining 'messages', 'suggestions', 'currentUserID', 'openUserID' and 'openTabName'
+      // Defining 'messages', 'suggestions', 'currentUserID', 'openUserID' and 'openUserTab'
       //
-      openTabName: MessagesStore.getOpenTabName(),
+      openUserTab: MessagesStore.getOpenUserTab(),
       messages: MessagesStore.getMessages(),
       suggestions: MessagesStore.getSuggestions(),
       currentUserID: MessagesStore.getCurrentUserID(),
@@ -53,7 +50,7 @@ class App extends React.Component {
   // ** https://likealunatic.jp/2015/07/reactjs-setstate
   //
   onStoreChange() {
-    console.log("state changed")
+    console.log('state changed')
     this.setState(this.getStateFromStore())
   }
   //
@@ -74,25 +71,46 @@ class App extends React.Component {
     // Defining an object for facilitation
     // ** https://qiita.com/uto-usui/items/a9d17447fe81c17c41fa
     //
-    const {messages, suggestions, currentUserID, openUserID, openTabName} = this.state
-    // <MessagesList {...this.state} />
-    // <ReplyBox />
+    const {openUserTab} = this.state
     //
-    // Rendering
+    // If 'Friends' tab is open and 'current_user' has any friends
     //
-    return (
-        <div className='app'>
-          <div className='users-box'>
-            <UsersTab openTabName={openTabName} />
-            <UsersList {...this.state} />
+    if ((_.isNumber(this.state.openUserID)) && (openUserTab === 'Friends')) {
+      //
+      // Rendering 'MessagesList' and 'ReplyBox'
+      //
+      return (
+          <div className='app'>
+            <div className='users-box'>
+              <UsersTab openUserTab={openUserTab} />
+              <UsersList {...this.state} />
+            </div>
+            <div className='message-box'>
+              <MessagesList {...this.state} />
+              <ReplyBox />
+            </div>
           </div>
-          <div className='message-box'>
+      )
+      //
+    } else {
+      //
+      // Else, ...
+      //
+      return (
+          <div className='app'>
+            <div className='users-box'>
+              <UsersTab openUserTab={openUserTab} />
+              <UsersList {...this.state} />
+            </div>
+            <div className='message-box'>
+            </div>
           </div>
-        </div>
-    )
+      )
+      //
+    }
     //
   }
   //
 }
-
+//
 export default App

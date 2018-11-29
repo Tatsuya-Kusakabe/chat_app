@@ -1,21 +1,18 @@
 //
 // components/friendsList.js
 //
-// ** The class extention from 'usersList.js' to 'friendsList' and 'suggestionsList'
-//    are avoided, because most of the similarities are deep inside the loop
-//
 // Importing components
 //
 import React from 'react'
+import PropTypes from 'prop-types'
 import classNames from 'classnames'
-import _ from 'lodash'
-import Utils from '../../utils'
 import MessagesAction from '../../actions/messages'
-import MessagesStore from '../../stores/messages'
+import Utils from '../../utils'
+import _ from 'lodash'
 //
-// Creating a new class 'FriendsList'
+// Creating a new class 'UsersList'
 //
-class FriendsList extends React.Component {
+class UsersList extends React.Component {
   //
   constructor(props) {
     //
@@ -41,17 +38,17 @@ class FriendsList extends React.Component {
     // When 'current_user' has no numerical 'openUserID' (namely having no friends)
     // ** 'return' ends 'switch (true)', so 'break' is not necessary
     //
-    if (! (_.isNumber(this.props.openUserID)) ) {
+    if (!(_.isNumber(this.props.openUserID))) {
       //
       return (
           <div className='users-list__list users-list__list__empty'>
-            No {this.props.openTabName}
+            No {this.props.openUserTab}
           </div>
       )
     //
     // When 'Suggestions' tab is open
     //
-    } else if (this.props.openTabName === 'Suggestions') {
+    } else if (this.props.openUserTab === 'Suggestions') {
       //
       // Getting details on the users as 'suggestionsList'
       //
@@ -202,5 +199,16 @@ class FriendsList extends React.Component {
   }
   //
 }
-
-export default FriendsList
+//
+// Defining 'propTypes'
+// ** https://morizyun.github.io/javascript/react-js-proptypes-validator.html
+//
+UsersList.propTypes = {
+  messages: PropTypes.array,
+  suggestions: PropTypes.array,
+  currentUserID: PropTypes.number,
+  openUserID: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  openUserTab: PropTypes.string,
+}
+//
+export default UsersList

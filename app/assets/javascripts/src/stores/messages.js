@@ -22,15 +22,11 @@ const messages = [
   //
 ]
 //
-// Designating temporary 'currentUserID', 'openUserID' and 'openTabName'
+// Designating temporary 'currentUserID', 'openUserID' and 'openUserTab'
 //
 const currentUserID = 1
 const openUserID = 2
-const openTabName = 'Friends'
-//
-// Defining variables used in 'AppStore'
-//
-let initial_obj, obj, key
+const openUserTab = 'Friends'
 //
 // Creating a new class 'AppStore'
 //
@@ -54,66 +50,68 @@ class AppStore extends BaseStore {
   //
   // Defining a conprehensive 'setter' (Associating 'key' with 'obj')
   //
-  setProperties(obj, key) { this.set(`${key}`, obj) }
+  setProperties(obj, key) {
+    this.set(`${key}`, obj)
+  }
   //
   // Getting an object associated with 'messages'
   //
   getMessages() {
-    return this.getProperties(initial_obj = messages, key = 'messages')
+    return this.getProperties(messages, 'messages')
   }
   //
   // Setting an object associated with 'messages'
   //
   setMessages(msg) {
-    this.setProperties(obj = msg, key = 'messages')
+    this.setProperties(msg, 'messages')
   }
   //
   // Getting an object associated with 'suggestions'
   //
   getSuggestions() {
-    return this.getProperties(initial_obj = messages, key = 'suggestions')
+    return this.getProperties(messages, 'suggestions')
   }
   //
   // Setting an object associated with 'suggestions'
   //
   setSuggestions(sgt) {
-    this.setProperties(obj = sgt, key = 'suggestions')
+    this.setProperties(sgt, 'suggestions')
   }
   //
   // Getting an object associated with 'current_user_id'
   //
   getCurrentUserID() {
-    return this.getProperties(initial_obj = currentUserID, key = 'current_user_id')
+    return this.getProperties(currentUserID, 'current_user_id')
   }
   //
   // Setting an object associated with 'current_user_id'
   //
   setCurrentUserID(crtUsrID) {
-    this.setProperties(obj = crtUsrID, key = 'current_user_id')
+    this.setProperties(crtUsrID, 'current_user_id')
   }
   //
   // Getting an object associated with 'open_user_id'
   //
   getOpenUserID() {
-    return this.getProperties(initial_obj = openUserID, key = 'open_user_id')
+    return this.getProperties(openUserID, 'open_user_id')
   }
   //
   // Setting an object associated with 'open_user_id'
   //
   setOpenUserID(tmpOpnUsrID) {
-    this.setProperties(obj = tmpOpnUsrID, key = 'open_user_id')
+    this.setProperties(tmpOpnUsrID, 'open_user_id')
   }
   //
-  // Getting an object associated with 'open_tab_name'
+  // Getting an object associated with 'open_user_tab'
   //
-  getOpenTabName() {
-    return this.getProperties(initial_obj = openTabName, key = 'open_tab_name')
+  getOpenUserTab() {
+    return this.getProperties(openUserTab, 'open_user_tab')
   }
   //
-  // Setting an object associated with 'open_tab_name'
+  // Setting an object associated with 'open_user_tab'
   //
-  setOpenTabName(tmpOpnTab) {
-    this.setProperties(obj = tmpOpnTab, key = 'open_tab_name')
+  setOpenUserTab(tmpOpnTab) {
+    this.setProperties(tmpOpnTab, 'open_user_tab')
   }
   //
   // ??
@@ -138,17 +136,17 @@ MessagesStore.dispatchToken = Dispatcher.register(payload => {
   //
   switch (action.type) {
     //
-    // When called from 'changeOpenTabName(name)' in 'components/messagesBox.js'
+    // When called from 'changeOpenUserTab(name)' in 'components/messagesBox.js'
     //
     case ActionTypes.UPDATE_OPEN_TAB_NAME:
       //
       // Calling setters
       //
-      MessagesStore.setOpenTabName(action.name)
+      MessagesStore.setOpenUserTab(action.name)
       //
-      // ** 'emitChange()' is necessary to activate 'onStoreChange()' in 'components'
+      // ** 'emitChange()' is skipped because 'UPDATE_OPEN_TAB_NAME' is
+      //    always followed by 'GET_MESSAGES' of 'GET_SUGGESTIONS'
       //
-      MessagesStore.emitChange()
       break
     //
     // When called from 'constructor(props)' in 'components/_friendsList.js'
@@ -175,7 +173,7 @@ MessagesStore.dispatchToken = Dispatcher.register(payload => {
       //
       // If 'msg' does exist
       //
-      if (!!msg.length) {
+      if (msg.length !== 0) {
         //
         // Sorting by the last message's timestamp or user's name
         // ** https://stackoverflow.com/questions/43371092/
@@ -184,7 +182,7 @@ MessagesStore.dispatchToken = Dispatcher.register(payload => {
           ? _.sortBy(msg, obj => obj.lastAccess.post).reverse()
           : _.sortBy(msg, obj => obj.user.name)
         //
-        // Setting a first user as 'opnUsrID', from 'tmpMsg' which removed 'x: {current_user_id: true}'
+        // Setting a first user as 'opnUsrID' from 'msg'
         //
         opnUsrID = msg[0]['user']['id']
         opnUsrID = parseInt(opnUsrID, 10)
@@ -195,16 +193,19 @@ MessagesStore.dispatchToken = Dispatcher.register(payload => {
         // ** 'null' or 'undefined' does not trigger 'setState'
         //
         msg = []
-        opnUsrID = []
+        opnUsrID = "none"
         //
       }
       //
       MessagesStore.setCurrentUserID(crtUsrID)
       MessagesStore.setOpenUserID(opnUsrID)
       //
+      console.log(action.type)
       action.type === ActionTypes.GET_MESSAGES
         ? MessagesStore.setMessages(msg)
         : MessagesStore.setSuggestions(msg)
+      //
+      // ** 'emitChange()' is necessary to activate 'onStoreChange()' in 'components'
       //
       MessagesStore.emitChange()
       break
@@ -219,7 +220,7 @@ MessagesStore.dispatchToken = Dispatcher.register(payload => {
       //
       msg = MessagesStore.getMessages()
       opnUsrID = action.userID
-      opnTabNm = MessagesStore.getOpenTabName()
+      opnTabNm = MessagesStore.getOpenUserTab()
       //
       // Defining 'msg' with 'opnUsrID'
       //

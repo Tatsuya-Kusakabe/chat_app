@@ -9,6 +9,7 @@ import keyMirror from 'keymirror'
 //
 export const ActionTypes = keyMirror({
   GET_MESSAGES: null,
+  GET_SUGGESTIONS: null,
   SEND_MESSAGE: null,
   UPDATE_OPEN_USER_ID: null,
   UPDATE_OPEN_TAB_NAME: null,

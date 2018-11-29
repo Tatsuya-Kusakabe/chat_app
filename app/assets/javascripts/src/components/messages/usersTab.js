@@ -4,9 +4,9 @@
 // Importing components
 //
 import React from 'react'
+import PropTypes from 'prop-types'
 import classNames from 'classnames'
 import MessagesAction from '../../actions/messages'
-import MessagesStore from '../../stores/messages'
 //
 // Creating a new class 'usersBox'
 //
@@ -21,7 +21,7 @@ class UsersTab extends React.Component {
     // When opening 'Friends' tab, calling getMessages() from 'actions/messages'
     // When opening 'Suggestions' tab, calling getSuggestions() from 'actions/messages'
     //
-    this.props.openTabName === 'Friends'
+    this.props.openUserTab === 'Friends'
       ? MessagesAction.getMessages()
       : MessagesAction.getSuggestions()
     //
@@ -33,13 +33,13 @@ class UsersTab extends React.Component {
   //
   // When a tab (friends or suggestions) is clicked
   //
-  changeOpenTabName(name) {
+  changeOpenUserTab(name) {
     //
-    // Updating 'openTabName'
+    // Updating 'openUserTab'
     //
-    MessagesAction.changeOpenTabName(name)
+    MessagesAction.changeOpenUserTab(name)
     //
-    // Getting a JSON string according to 'openTabName'
+    // Getting a JSON string according to 'openUserTab'
     //
     name === 'Friends'
       ? MessagesAction.getMessages()
@@ -61,17 +61,17 @@ class UsersTab extends React.Component {
       const itemClasses = classNames({
         'clear': true,
         'users-tab__item': true,
-        'users-tab__item--active': this.props.openTabName === tab,
+        'users-tab__item--active': this.props.openUserTab === tab,
       })
       //
       // Returning each 'users-tab' item
       //
       return (
           //
-          // When a tab is clicked, returning 'changeOpenTabName(message)'
+          // When a tab is clicked, returning 'changeOpenUserTab(message)'
           //
           <li
-            onClick={ this.changeOpenTabName.bind(this, tab) }
+            onClick={ this.changeOpenUserTab.bind(this, tab) }
             className={ itemClasses }
             key={ tab }
           >
@@ -94,5 +94,12 @@ class UsersTab extends React.Component {
   }
   //
 }
-
+//
+// Defining 'propTypes'
+// ** https://morizyun.github.io/javascript/react-js-proptypes-validator.html
+//
+UsersTab.propTypes = {
+  openUserTab: PropTypes.string,
+}
+//
 export default UsersTab
