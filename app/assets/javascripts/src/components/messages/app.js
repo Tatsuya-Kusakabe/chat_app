@@ -4,8 +4,10 @@
 import React from 'react'
 import MessagesStore from '../../stores/messages'
 import _ from 'lodash'
-import UsersTab from './usersTab'
-import UsersList from './usersList'
+import UsersTab from './1_usersTab'
+import FriendsList from './2_friendsList'
+import SuggestionsList from './3_suggestionsList'
+import UsersInfo from './usersInfo'
 import MessagesList from './messagesList'
 import ReplyBox from './replyBox'
 //
@@ -73,9 +75,9 @@ class App extends React.Component {
     //
     const {openUserTab} = this.state
     //
-    // If 'Friends' tab is open and 'current_user' has any friends
+    // If 'Suggestions' tab is open and 'current_user' has any friends
     //
-    if ((_.isNumber(this.state.openUserID)) && (openUserTab === 'Friends')) {
+    if (openUserTab === 'Suggestions') {
       //
       // Rendering 'MessagesList' and 'ReplyBox'
       //
@@ -83,15 +85,15 @@ class App extends React.Component {
           <div className='app'>
             <div className='users-box'>
               <UsersTab openUserTab={openUserTab} />
-              <UsersList {...this.state} />
+              <SuggestionsList {...this.state} />
             </div>
             <div className='message-box'>
-              <MessagesList {...this.state} />
-              <ReplyBox />
+              <UsersInfo {...this.state} />
             </div>
           </div>
       )
       //
+    // (_.isNumber(this.state.openUserID)
     } else {
       //
       // Else, ...
@@ -100,9 +102,11 @@ class App extends React.Component {
           <div className='app'>
             <div className='users-box'>
               <UsersTab openUserTab={openUserTab} />
-              <UsersList {...this.state} />
+              <FriendsList {...this.state} />
             </div>
             <div className='message-box'>
+              <MessagesList {...this.state} />
+              <ReplyBox />
             </div>
           </div>
       )

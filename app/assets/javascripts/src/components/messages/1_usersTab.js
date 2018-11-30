@@ -58,8 +58,11 @@ class UsersTab extends React.Component {
       //
       // Defining 'item_classes' for each message icon
       //
+      console.log(tab)
       const itemClasses = classNames({
         'clear': true,
+        'friends': tab === 'Friends',
+        'suggestions': tab === 'Suggestions',
         'users-tab__item': true,
         'users-tab__item--active': this.props.openUserTab === tab,
       })

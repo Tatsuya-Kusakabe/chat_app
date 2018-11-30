@@ -1,14 +1,16 @@
-.users-list {
+.friends-list, .suggestions-list {
   //
   &__list {
     //
-    position:     absolute; // Positioning based on 'body'
+    // Positioning based on 'body'
+    //
+    position:     absolute;
     top:          120px;
     bottom:       0;
     left:         0;
     //
     background:   rgba( 0, 0, 0, 0.03 );
-    border-right: 1px solid rgba( 0, 0, 0, 0.1 );
+    border-right: 0.5px solid rgba( 0, 0, 0, 0.1 );
     //
     &__empty {
       //
@@ -25,11 +27,14 @@
   &__item {
     //
     text-align:   left;     // Canceling 'text-align: center' on 'body'
-    //
     padding:       15px;
-    border-bottom: 1px solid rgba( 0, 0, 0, 0.1 );
     //
-    cursor:        pointer;
+    background:    rgba( 0, 0, 0, 0.03 );
+    border-top:    0.5px solid rgba( 0, 0, 0, 0.1 );
+    border-bottom: 0.5px solid rgba( 0, 0, 0, 0.1 );
+    border-right: 0.5px solid rgba( 0, 0, 0, 0.1 );
+    //
+    cursor: pointer;
     //
     &__picture {
       //
@@ -37,11 +42,25 @@
       height:        50px;
       float:         left;
       //
+      // Keeping a profile picture round
+      //
       border-radius: 50%;
-      overflow:      hidden; // Keeping a profile picture round
+      overflow:      hidden;
+      //
+      // Th child class 'img' should be centered against the parent class '&__picture'
+      // ** http://nor-asu.work/contents/design/html-css-oyayouso-koyouso-jyougechuou-centering
+      //
+      position: relative;
       //
       img {
-        width: inherit;
+        //
+        position:  absolute;
+        top:       50%;
+        left:      50%;
+        transform: translate(-50%, -50%);
+        //
+        height: 50px;
+        //
       }
       //
     }
@@ -95,7 +114,7 @@
       background:  #EEF1F6;
       font-weight: 500;
       //
-      .users-list__item__icon {
+      .friends-list__item__icon {
         color:        #1D9BCE;
         margin-right: 3px;
       }
@@ -104,25 +123,32 @@
     //
     &--active {
       //
-      background:  #93C26D;
+      // Changing 'background' according to the class name
+      // ** https://www.nishi2002.com/6976.html
+      // ** https://stackoverflow.com/questions/22510423/
+      //
+      &[class*='friends']     { background:  #93C26D; }
+      &[class*='suggestions'] { background:  #ffb732; }
+      //
       color:       #fff;
       font-weight: 500;
-      position:    relative;
       //
-      &:before {
+      // position:    relative;
+      //
+      // &:before {
         //
-        width:        0;
-        height:       0;
-        border-style: solid;
-        border-width: 40px 0px 40px 20px;
-        border-color: transparent transparent transparent #93C26D;
-        position:     absolute;
-        display:      block;
-        right:        -20px;
-        top:          0;
-        content:      " ";
+        // position:     absolute;
+        // width:        0;
+        // height:       0;
+        // border-style: solid;
+        // border-width: 40px 0px 40px 20px;
+        // border-color: transparent transparent transparent #93C26D;
+        // display:      block;
+        // right:        -20px;
+        // top:          0;
+        // content:      " ";
         //
-      }
+      // }
       //
     }
     //

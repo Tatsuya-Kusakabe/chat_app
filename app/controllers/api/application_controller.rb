@@ -75,6 +75,7 @@ class Api::ApplicationController < ApplicationController
       @messages[num]["user"]["id"]                = partner.id
       @messages[num]["user"]["name"]              = partner.name
       @messages[num]["user"]["profile_picture"]   = partner.profile_picture
+      @messages[num]["user"]["profile_comment"]   = partner.profile_comment
       @messages[num]["user"]["status"]            = partner.status
       @messages[num]["user"]["read"]              = partner.read
       #

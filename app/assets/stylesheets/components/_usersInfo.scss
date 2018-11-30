@@ -1,0 +1,91 @@
+.users-info__item {
+  //
+  // Positioning based on 'body'
+  //
+  position:   absolute;
+  top:        90px;
+  bottom:     0;
+  left:       300px;
+  right:      0;
+  //
+  padding:    30px;
+  min-width:  260px;
+  //
+  // https://coliss.com/articles/build-websites/operation/css/css3-flexbox-properties-by-scotch.html
+  //
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  overflow: scroll;
+  //
+  &__picture {
+    //
+    // Defining the size as exactly '200px * 200px'
+    //
+    min-width:     200px;
+    max-width:     200px;
+    min-height:    200px;
+    max-height:    200px;
+    //
+    margin: 0 auto 20px;
+    border: 3px solid #ffa500;
+    //
+    // Keeping a profile picture round
+    //
+    border-radius: 50%;
+    overflow:      hidden;
+    //
+    // Th child class 'img' should be centered against the parent class '&__picture'
+    // ** http://nor-asu.work/contents/design/html-css-oyayouso-koyouso-jyougechuou-centering
+    //
+    position: relative;
+    //
+    img {
+      //
+      position:  absolute;
+      top:       50%;
+      left:      50%;
+      transform: translate(-50%, -50%);
+      //
+      height: 194px;
+      //
+    }
+    //
+  }
+  //
+  &__name {
+    //
+    margin:      0 auto;
+    //
+    font-size:   30px;
+    font-weight: 500;
+    //
+  }
+  //
+  &__message {
+    //
+    margin:    0 auto;
+    //
+    font-size: 15px;
+    font-weight: 400;
+    //
+  }
+  //
+  &__friendship {
+    //
+    margin: 20px auto 0;
+    //
+    font-size: 23px;
+    font-weight: 400;
+    //
+    cursor: pointer;
+    //
+    &:hover {
+      color: #ffa500;
+      text-decoration: underline;
+    }
+    //
+  }
+  //
+}
