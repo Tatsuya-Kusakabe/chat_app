@@ -1,0 +1,49 @@
+.users-name__item {
+  //
+  // Positioning based on 'body'
+  //
+  position:   absolute;
+  top:        90px;
+  height:     50px;
+  left:       300px;
+  right:      0;
+  //
+  // padding:    30px;
+  min-width:  260px;
+  //
+  // https://coliss.com/articles/build-websites/operation/css/css3-flexbox-properties-by-scotch.html
+  //
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  overflow: scroll;
+  //
+  &__name {
+    //
+    margin:      0 auto;
+    float: left;
+    //
+    font-size:   15px;
+    font-weight: 500;
+    //
+  }
+  //
+  &__content {
+    //
+    margin: 0 auto;
+    float: right;
+    //
+    font-size: 15px;
+    font-weight: 400;
+    //
+    cursor: pointer;
+    //
+    &:hover {
+      color: #93C26D;
+      text-decoration: underline;
+    }
+    //
+  }
+  //
+}

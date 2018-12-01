@@ -15,6 +15,13 @@ class ApplicationController < ActionController::Base
   #
   protect_from_forgery with: :exception
   #
+  # Rendering a root page by 'react-main'
+  #
+  before_action :block_unauthenticated_user, { only: [:index] }
+  #
+  def index
+  end
+  #
   # Remembering a 'sign in' state
   #
   def sign_in(user)

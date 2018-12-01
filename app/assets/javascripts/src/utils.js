@@ -8,21 +8,19 @@ import keyMirror from 'keymirror'
 // Defining 'Action types', which makes 'Stores' decide what 'Action' to handle
 //
 export const ActionTypes = keyMirror({
-  GET_MESSAGES: null,
+  UPDATE_OPEN_USER_TAB: null,
+  GET_FRIENDS: null,
   GET_SUGGESTIONS: null,
   SEND_MESSAGE: null,
   UPDATE_OPEN_USER_ID: null,
-  UPDATE_OPEN_TAB_NAME: null,
+  UPDATE_OPEN_CONTENT: null,
+  UPDATE_FRIENDSHIP: null,
 })
 //
 // Defining 'API endpoints', which names POST routing
 //
 const Root = window.location.origin || `${window.location.protocol}//${window.location.hostname}`
-const APIRoot = `${Root}/api`
-//
-export const APIEndpoints = {
-  CREATE: APIRoot + '/friends',
-}
+export const APIRoot = `${Root}/api`
 //
 // Defining 'CSRF token' for security
 //

@@ -1,11 +1,11 @@
 //
-// components/replyBox.js
+// components/7_replyBox.js
 //
 // Importing components
 //
 import React from 'react'
 import MessagesAction from '../../actions/messages'
-import MessagesStore from '../../stores/messages'
+import UsersStore from '../../stores/users'
 //
 // Creating a new class 'ReplyBox'
 //
@@ -35,12 +35,14 @@ class ReplyBox extends React.Component {
   }
   //
   // When pressing Enter (code 13),
-  // calling sendMessage() from 'stores/messages' and
+  // calling sendMessage() and getMessages() from 'actions/messages', and
   // updating a state from '{ value: this.state.value, }' to '{ value: '', }'
   //
   handleKeyDown(e) {
     if (e.keyCode === 13) {
-      MessagesAction.sendMessage(MessagesStore.getOpenUserID(), this.state.value)
+      let userID = UsersStore.getOpenUserID()
+      MessagesAction.sendMessage(userID, this.state.value)
+      MessagesAction.getMessages('Friends')
       this.setState({ value: '' })
     }
   }

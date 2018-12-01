@@ -1,13 +1,13 @@
 //
-// components/friendsList.js
+// components/3_suggestionsList.js
 //
 // Importing components
 //
 import React from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
-import MessagesAction from '../../actions/messages'
-import Utils from '../../utils'
+import UsersAction from '../../actions/users'
+// import Utils from '../../utils'
 import _ from 'lodash'
 //
 // Creating a new class 'SuggestionsList'
@@ -25,7 +25,7 @@ class SuggestionsList extends React.Component {
   // When an account is clicked, changing chats displayed
   //
   changeOpenUserID(id) {
-    MessagesAction.changeOpenUserID(id)
+    UsersAction.changeOpenUserID(id)
   }
   //
   // Rendering results
@@ -51,7 +51,7 @@ class SuggestionsList extends React.Component {
       //
       // Getting details on the users as 'suggestionsList'
       //
-      const suggestionsRaw = this.props.suggestions
+      const suggestionsRaw = this.props.messages
       const suggestionsList = []
       //
       _.each(suggestionsRaw, (suggestion) => {
@@ -115,10 +115,10 @@ class SuggestionsList extends React.Component {
 //
 SuggestionsList.propTypes = {
   messages: PropTypes.array,
-  suggestions: PropTypes.array,
   currentUserID: PropTypes.number,
   openUserID: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   openUserTab: PropTypes.string,
+  openContent: PropTypes.string,
 }
 //
 export default SuggestionsList

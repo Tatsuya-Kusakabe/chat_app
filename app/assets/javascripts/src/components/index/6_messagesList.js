@@ -1,5 +1,5 @@
 //
-// components/messagesBox.js
+// components/6_messagesList.js
 //
 // Importing components
 //
@@ -24,7 +24,6 @@ class MessagesList extends React.Component {
   // Rendering results
   //
   render() {
-    console.log(this.props)
     //
     // When 'current_user' has no friends, displaying 'No messages' without 'reply_box'
     // ** 'return' ends 'switch (true)', so 'break' is not necessary
@@ -49,7 +48,6 @@ class MessagesList extends React.Component {
     // When 'current_user' has no messages with 'openUserID',
     // displaying 'No messages' with 'reply_box'
     //
-    console.log(opnUsrRaw)
     if (!opnUsrMsg.length) {
       //
       return (
@@ -135,10 +133,8 @@ class MessagesList extends React.Component {
 //
 MessagesList.propTypes = {
   messages: PropTypes.array,
-  suggestions: PropTypes.array,
   currentUserID: PropTypes.number,
   openUserID: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-  openUserTab: PropTypes.string,
 }
 //
 export default MessagesList

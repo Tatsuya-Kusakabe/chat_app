@@ -1,5 +1,5 @@
 //
-// components/usersBox.js
+// components/1_usersTab.js
 //
 // Importing components
 //
@@ -8,7 +8,7 @@ import PropTypes from 'prop-types'
 import classNames from 'classnames'
 import MessagesAction from '../../actions/messages'
 //
-// Creating a new class 'usersBox'
+// Creating a new class 'usersTab'
 //
 class UsersTab extends React.Component {
   //
@@ -18,12 +18,9 @@ class UsersTab extends React.Component {
     //
     super(props)
     //
-    // When opening 'Friends' tab, calling getMessages() from 'actions/messages'
-    // When opening 'Suggestions' tab, calling getSuggestions() from 'actions/messages'
+    // Getting a JSON string 'messages'
     //
-    this.props.openUserTab === 'Friends'
-      ? MessagesAction.getMessages()
-      : MessagesAction.getSuggestions()
+    MessagesAction.getMessages(this.props.openUserTab)
     //
     // ** While calling, proceeding next
     // ** Do not prepend "return" to objects (in this case, promise objects).
@@ -33,17 +30,12 @@ class UsersTab extends React.Component {
   //
   // When a tab (friends or suggestions) is clicked
   //
-  changeOpenUserTab(name) {
+  changeOpenUserTab(openUserTab) {
     //
-    // Updating 'openUserTab'
+    // Updating 'openUserTab', and getting a JSON string 'messages'
     //
-    MessagesAction.changeOpenUserTab(name)
-    //
-    // Getting a JSON string according to 'openUserTab'
-    //
-    name === 'Friends'
-      ? MessagesAction.getMessages()
-      : MessagesAction.getSuggestions()
+    MessagesAction.changeOpenUserTab(openUserTab)
+    MessagesAction.getMessages(openUserTab)
     //
   }
   //
@@ -58,7 +50,6 @@ class UsersTab extends React.Component {
       //
       // Defining 'item_classes' for each message icon
       //
-      console.log(tab)
       const itemClasses = classNames({
         'clear': true,
         'friends': tab === 'Friends',

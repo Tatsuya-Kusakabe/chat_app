@@ -5,40 +5,48 @@
 //
 import request from 'superagent'
 import Dispatcher from '../dispatcher'
-import {ActionTypes, APIEndpoints, CSRFToken} from '../utils'
+import {ActionTypes, APIRoot, CSRFToken} from '../utils'
 //
-// var path, action
+let verb, path, action, dbInfo, storeInfo, timestamp
 //
 export default {
   //
-  // Connecting from 'changeOpenUserTab(name)' in 'components/usersTab.js'
-  //              to 'UPDATE_OPEN_TAB_NAME'    in 'stores/messages.js'
+  // Defining 'setDataToStore'
   //
-  changeOpenUserTab(newUserTab) {
+  setDataToStore(path, action, dbInfo, storeInfo) {
     //
-    Dispatcher.handleViewAction({
-      type: ActionTypes.UPDATE_OPEN_TAB_NAME,
-      name: newUserTab,
+    return new Promise((resolve, reject) => {
+      //
+      // Calling 'path' securely while sending 'dbInfo', then proceeding next
+      // (** Sending data on a server)
+      //
+      // ** 'post' or 'put' available if defined as '[verb]'
+      //    https://kuroeveryday.blogspot.com/2016/10/variable-as-function-name.html
+      //
+      request[verb](path).set('X-CSRF-Token', CSRFToken()).send(dbInfo)
+      .end((error, res) => {
+        //
+        // When successfully accessed (status code: 200)
+        //
+        if (!error && res.status === 200) {
+          //
+          // Converting a JavaScript Object Notation (JSON) string into an object
+          // ** Writing "console.log(json)" and "console.log(res.text)" visualizes difference
+          //
+          const json = (res.text) ? JSON.parse(res.text) : ''
+          //
+          // Calling 'action' in 'stores' (** Changing data on 'stores' locally)
+          //
+          Dispatcher.handleViewAction(Object.assign({ type: action, json: json }, storeInfo))
+        //
+        } else {
+          reject(res)
+        }
+        //
+      })
+      //
     })
     //
-  },
-  //
-  // Connecting from 'constructor(props)' in 'components/messagesBox.js'
-  //              to 'GET_MESSAGES'       in 'stores/messages.js'
-  //
-  getMessages() {
-    let path = 'api/friends'
-    let action = ActionTypes.GET_MESSAGES
-    this.getDataFromStore(path, action)
-  },
-  //
-  // Connecting from 'constructor(props)' in 'components/_suggestionsList.js'
-  //              to 'GET_SUGGESTIONS'    in 'stores/messages.js'
-  //
-  getSuggestions() {
-    let path = 'api/suggestions'
-    let action = ActionTypes.GET_SUGGESTIONS
-    this.getDataFromStore(path, action)
   },
   //
   // Defining 'getDataFromStore'
@@ -47,8 +55,7 @@ export default {
     //
     return new Promise((resolve, reject) => {
       //
-      // Designating a path, then proceeding next
-      // ** Getting data on a server
+      // Designating a path, then proceeding next (** Getting data on a server)
       //
       request
       .get(path)
@@ -64,7 +71,7 @@ export default {
           const json = JSON.parse(res.text)
           //
           // Calling GET_MESSAGES in 'stores/messages.js'
-          // ** Changing data on 'stores/messages' (locally)
+          // ** Changing data on 'stores' (locally)
           //
           Dispatcher.handleServerAction({
             type: action,
@@ -75,98 +82,53 @@ export default {
         } else {
           reject(res)
         }
+        //
       })
+      //
     })
+    //
   },
   //
-  // Connecting from 'handleKeyDown(e)' in 'components/replyBox.js'
+  // Connecting from 'changeOpenUserTab(userTab)' in 'components/1_usersTab.js'
+  //              to 'UPDATE_OPEN_TAB_NAME'          in 'stores/messages.js'
+  //
+  changeOpenUserTab(userTab) {
+    //
+    Dispatcher.handleViewAction({
+      type: ActionTypes.UPDATE_OPEN_USER_TAB,
+      name: userTab,
+    })
+    //
+  },
+  //
+  // Connecting from 'handleKeyDown(e)' in 'components/7_replyBox.js'
   //              to 'SEND_MESSAGE'     in 'stores/messages.js'
   //
   sendMessage(userID, message) {
     //
-    return new Promise((resolve, reject) => {
-      //
-      // Defining a timestamp
-      //
-      const timestamp = new Date().getTime()
-      //
-      // Exerting 'api/messages#create' securely
-      // by posting information in '.send({})',
-      // then proceeding next
-      // ** Posting data on a server
-      //
-      request
-      .post(`${APIEndpoints.CREATE}`)
-      .set('X-CSRF-Token', CSRFToken())
-      .send({sent_to: userID, timestamp: timestamp, contents: message})
-      .end((error, res) => {
-        //
-        // When successfully accessed (status code: 200)
-        //
-        if (!error && res.status === 200) {
-          //
-          // Converting a JavaScript Object Notation (JSON) string into an object
-          // ** Writing "console.log(json)" and "console.log(res.text)" visualizes difference
-          //
-          const json = JSON.parse(res.text)
-          //
-          // Calling SEND_MESSAGE in 'stores/messages.js'
-          // ** Changing data on 'stores/messages' (locally)
-          //
-          Dispatcher.handleViewAction({
-            type: ActionTypes.SEND_MESSAGE,
-            userID: userID,
-            message: message,
-            timestamp: timestamp,
-            json: json,
-          })
-        //
-        } else {
-          reject(res)
-        }
-      })
-    })
+    timestamp = new Date().getTime()
+    //
+    verb = 'post'
+    path = `${APIRoot}/messages`
+    action = ActionTypes.SEND_MESSAGE
+    dbInfo = { sent_to: userID, contents: message, timestamp: timestamp }
+    storeInfo = {}
+    //
+    this.setDataToStore(path, action, dbInfo, storeInfo)
+    //
   },
   //
-  // Connecting from 'changeOpenUserID(id)'  in 'components/friendsList.js'
-  //              to 'UPDATE_OPEN_USER_ID'   in 'stores/messages.js'
+  // Connecting from 'constructor(props)' in 'components/1_usersTab.js'
+  //              to 'GET_FRIENDS'        in 'stores/messages.js'
+  //              or 'GET_SUGGESTIONS'    in 'stores/messages.js'
   //
-  changeOpenUserID(newUserID) {
+  getMessages(openUserTab) {
     //
-    return new Promise((resolve, reject) => {
-      //
-      // Defining a timestamp
-      //
-      const timestamp = new Date().getTime()
-      //
-      // Exerting 'api/messages#create' securely
-      // by posting information in '.send({})',
-      // then proceeding next
-      // ** Posting data on a server
-      //
-      request
-      .post(`${APIEndpoints.CREATE}`)
-      .set('X-CSRF-Token', CSRFToken())
-      .send({clicked_on: newUserID, timestamp: timestamp})
-      .end((error, res) => {
-        //
-        // When successfully accessed (status code: 200)
-        //
-        if (!error && res.status === 200) {
-          //
-          // Calling UPDATE_OPEN_USER_ID in 'stores/messages.js'
-          // ** Changing data on 'stores/messages' (locally)
-          //
-          Dispatcher.handleViewAction({
-            type: ActionTypes.UPDATE_OPEN_USER_ID,
-            userID: newUserID,
-          })
-        //
-        } else {
-          reject(res)
-        }
-      })
-    })
+    path = (openUserTab === 'Friends') ? 'api/friends' : 'api/suggestions'
+    action = (openUserTab === 'Friends') ? ActionTypes.GET_FRIENDS : ActionTypes.GET_SUGGESTIONS
+    //
+    this.getDataFromStore(path, action)
+    //
   },
   //
 }

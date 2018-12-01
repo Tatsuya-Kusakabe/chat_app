@@ -2,12 +2,12 @@
 # 1. 'config/routes.rb'
 #    Creating routings for 'api/messages' (index, create)
 #
-# 2. 'app/controllers/api/application_controller.rb'
+# 2. 'app/controllers/api/messages_controller.rb'
 #    Creating actions for index, create, and rendering in 'json' format
 #
-class Api::ApplicationController < ApplicationController
+class Api::MessagesController < ApplicationController
   #
-  def index(friends_bln)
+  def index(friend_bln)
     #
     # Defining '@messages'
     #
@@ -43,22 +43,22 @@ class Api::ApplicationController < ApplicationController
       #
       # Defining 'partner_active',  in which 'partner' has 'active_relationship'  to '@current_user'
       # Defining 'partner_passive', in which 'partner' has 'passive_relationship' to '@current_user'
-      # Defining 'partner', which describes if 'partner' has any relationship with '@current_user'
+      # Defining 'partner_bln', which describes if 'partner' has any relationship with '@current_user'
       #
       partner_active  = partner.active_relationship.find_by(recipient_id:  @current_user)
       partner_passive = partner.passive_relationship.find_by(applicant_id: @current_user)
       partner_bln     = (!!partner_active) || (!!partner_passive)
       #
-      # If 'partner' has any relationship in 'SuggestionsController', skipping the iteration
+      # If 'partner' has any relationship in 'GET_SUGGESTIONS', skipping the iteration
       #
-      if (!!partner_bln) && (!friends_bln)
+      if (!!partner_bln) && (!friend_bln)
         num_id += 1
         next
       end
       #
-      # If 'partner' has no relationship in 'FriendsController', skipping the iteration
+      # If 'partner' has no relationship in 'GET_FRIENDS', skipping the iteration
       #
-      if (!partner_bln) && (!!friends_bln)
+      if (!partner_bln) && (!!friend_bln)
         num_id += 1
         next
       end
@@ -81,7 +81,7 @@ class Api::ApplicationController < ApplicationController
       #
       # If calling 'SuggestionsController', finishing the iteration
       #
-      if (!friends_bln)
+      if (!friend_bln)
         num    += 1
         num_id += 1
         next
@@ -113,6 +113,7 @@ class Api::ApplicationController < ApplicationController
         "(sent_from = ? and sent_to = ?) or (sent_from = ? and sent_to = ?)",
         num_id, @current_user, @current_user, num_id
       )
+      logger.debug(@messages[num]["messages"])
       #
       # Adding the last message's timestamp on 'lastAccess'
       #
@@ -137,4 +138,70 @@ class Api::ApplicationController < ApplicationController
     #
   end
   #
+  def create
+    #
+    # If 'ActionTypes.SEND_MESSAGE' (judged by 'params[:contents] != nil')
+    #
+    if params[:contents]
+      #
+      # Building '@messages' by extracting data from 'actions/messages.js'
+      #
+      @messages = Message.new(
+        sent_from: @current_user.id,
+        sent_to:   params[:sent_to],
+        contents:  params[:contents],
+        timestamp: params[:timestamp]
+      )
+      #
+      # ** '.save!' returns error messages if failing to save
+      #
+      @messages.update_attributes(msg_params)
+      #
+      # Extracting '@user' the message is 'sent_to'
+      # ** The column 'ID' should be a primary key, otherwise
+      #    it won't be able to find the record for update
+      #    https://github.com/rails/rails/issues/20755
+      #
+      @user = User.find_by(id: params[:sent_to])
+    #
+    # If 'ActionTypes.UPDATE_OPEN_CHAT_ID'
+    #
+    else
+      #
+      # Extracting '@user' the account is 'clicked_on'
+      #
+      @user = User.find_by(id: params[:clicked_on])
+    #
+    end
+    #
+    # Extracting the relationship as in 'api/messages#index'
+    #
+    user_active  = @user.active_relationship.find_by(recipient_id:  @current_user)
+    user_passive = @user.passive_relationship.find_by(applicant_id: @current_user)
+    #
+    # Updating the timestamp
+    #
+    if !!user_active
+      user_active.timestamp_recipient  = params[:timestamp]
+      user_active.save!
+    elsif !!user_passive
+      user_passive.timestamp_applicant = params[:timestamp]
+      user_passive.save!
+    end
+    #
+    # Rendering a result
+    #
+    render json: @messages
+    #
+  end
+  #
+  private
+    #
+    def msg_params
+      params.permit(
+        :applicant_id, :recipient_id,
+        :timestamp_applicant, :timestamp_recipient
+      )
+    end
+    #
 end

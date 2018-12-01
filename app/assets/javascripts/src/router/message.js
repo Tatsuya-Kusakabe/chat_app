@@ -1,6 +1,6 @@
 import ReactDecorator from '../base/react_decorator'
 import BaseRouter from '../base/router'
-import App from '../components/messages/app'
+import App from '../components/index/app'
 
 export default class MessageRouter extends BaseRouter {
   register() {

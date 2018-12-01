@@ -2,13 +2,15 @@
   //
   &__list {
     //
-    position:   absolute; // Positioning based on 'body'
-    padding:    30px;
+    // Positioning based on 'body'
     //
-    top:        90px;
+    position:   absolute;
+    top:        140px;
     bottom:     70px;
     left:       300px;
     right:      0;
+    //
+    padding:    0 30px 30px 30px;
     //
     border-bottom: 1px solid rgba( 0, 0, 0, 0.1 );
     //

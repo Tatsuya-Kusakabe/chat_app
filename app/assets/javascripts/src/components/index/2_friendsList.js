@@ -1,12 +1,12 @@
 //
-// components/friendsList.js
+// components/2_friendsList.js
 //
 // Importing components
 //
 import React from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
-import MessagesAction from '../../actions/messages'
+import UsersAction from '../../actions/users'
 import Utils from '../../utils'
 import _ from 'lodash'
 //
@@ -25,14 +25,12 @@ class FriendsList extends React.Component {
   // When an account is clicked, changing chats displayed
   //
   changeOpenUserID(id) {
-    MessagesAction.changeOpenUserID(id)
+    UsersAction.changeOpenUserID(id)
   }
   //
   // Rendering results
   //
   render() {
-    //
-    console.log(this.props)
     //
     // When 'current_user' has no numerical 'openUserID' (namely having no friends)
     // ** 'return' ends 'switch (true)', so 'break' is not necessary
@@ -151,10 +149,10 @@ class FriendsList extends React.Component {
 //
 FriendsList.propTypes = {
   messages: PropTypes.array,
-  suggestions: PropTypes.array,
   currentUserID: PropTypes.number,
   openUserID: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   openUserTab: PropTypes.string,
+  openContent: PropTypes.string,
 }
 //
 export default FriendsList

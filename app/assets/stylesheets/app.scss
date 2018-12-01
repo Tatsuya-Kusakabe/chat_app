@@ -12,11 +12,12 @@
 //
 // Components
 //
-@import 'components/1_usersTab';
-@import 'components/2_usersList';
-@import 'components/_usersInfo';
-@import 'components/_messagesBox';
-@import 'components/_replyBox';
+@import 'components/index/1_usersTab';
+@import 'components/index/2_usersList';
+@import 'components/index/3_usersName';
+@import 'components/index/4_usersInfo';
+@import 'components/index/5_messagesBox';
+@import 'components/index/6_replyBox';
 //
 // Devise
 //

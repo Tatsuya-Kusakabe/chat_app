@@ -1,9 +1,9 @@
 #
-class Api::SuggestionsController < Api::ApplicationController
+class Api::SuggestionsController < Api::MessagesController
   #
-  def index(friends_bln = false)
+  def index(friend_bln = false)
     #
-    # Inheriting 'index(friends_bln = false)' from 'Api::ApplicationController'
+    # Inheriting 'index(friends_bln = false)' from 'Api::MessagesController'
     #
     super
     #
