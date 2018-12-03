@@ -111,7 +111,7 @@ class Api::MessagesController < ApplicationController
       #
       @messages[num]["messages"] = Message.where(
         "(sent_from = ? and sent_to = ?) or (sent_from = ? and sent_to = ?)",
-        num_id, @current_user, @current_user, num_id
+        num_id, @current_user.id, @current_user.id, num_id
       )
       logger.debug(@messages[num]["messages"])
       #

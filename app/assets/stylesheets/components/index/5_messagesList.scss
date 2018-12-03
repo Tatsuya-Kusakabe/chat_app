@@ -1,4 +1,10 @@
-.message-box {
+//
+// Importing various 'mixin'
+//
+@import '../mixin/color';
+@import '../mixin/flexbox';
+//
+.messages-list {
   //
   &__list {
     //
@@ -10,9 +16,9 @@
     left:       300px;
     right:      0;
     //
-    padding:    0 30px 30px 30px;
+    padding:    15px 30px;
     //
-    border-bottom: 1px solid rgba( 0, 0, 0, 0.1 );
+    border-bottom: border('normal');
     //
     overflow-y: scroll;
     //
@@ -61,8 +67,8 @@
     font-size:   12px;
     font-weight: bold;
     //
-    background:  none;
     color:       rgba( 0, 0, 0, 0.8 );
+    background:  none;
     //
   }
   //

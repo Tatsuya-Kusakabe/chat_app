@@ -1,13 +1,12 @@
 //
-// components/5_usersInfo.js
+// components/5_userInfo.js
 //
 // Importing components
 //
 import React from 'react'
 import PropTypes from 'prop-types'
-import UsersAction from '../../actions/users'
-import MessagesAction from '../../actions/messages'
-// import Utils from '../../utils'
+import classNames from 'classnames'
+import IndexAction from '../../actions/index'
 import _ from 'lodash'
 //
 // Creating a new class 'UsersInfo'
@@ -33,15 +32,15 @@ class UsersInfo extends React.Component {
   //
   changeFriendship(friendship) {
     //
-    UsersAction.changeFriendship(friendship, this.props.openUserID)
+    IndexAction.changeFriendship(friendship, this.props.openUserID)
     //
     if (friendship === 'Suggestions') {
-      MessagesAction.sendMessage(this.props.openUserID, 'You made friends!')
+      IndexAction.sendMessage(this.props.openUserID, 'You made friends!')
     }
     //
     let oppState = (friendship === 'Suggestions') ? 'Friends' : 'Suggestions'
-    MessagesAction.changeOpenUserTab(oppState)
-    MessagesAction.getMessages(oppState)
+    IndexAction.changeOpenUserTab(oppState)
+    IndexAction.getMessages(oppState)
     //
   }
   //
@@ -49,18 +48,18 @@ class UsersInfo extends React.Component {
   //
   render() {
     //
-    // When 'current_user' is defined as 'none' (namely having no friends), displaying 'No...'
+    // When 'openUserID' is defined as 'none' (namely having no friends), displaying 'No...'
     // ** 'return' ends 'switch (true)', so 'break' is not necessary
     //
     if (_.isString(this.props.openUserID)) {
       //
       return (
-          <div className='users-info__list users-info__list__empty'>
+          <div className='user-prof__list user-prof__list__empty'>
             No { this.props.openUserTab }
           </div>
       )
     //
-    // When 'current_user' has any 'openUserID'
+    // When 'openUserID' does exist
     //
     } else {
       //
@@ -69,17 +68,28 @@ class UsersInfo extends React.Component {
       const userInfo = _.filter(this.props.messages, {'user': {'id': this.props.openUserID}})[0]['user']
       const friendshipMsg = (this.props.openUserTab === 'Friends') ? 'Unfriend?' : 'Be friends!'
       //
-      // Returning each 'users-info' item
+      // Defining 'item_classes' to distinguish 'openUserTab'
+      // ** https://www.npmjs.com/package/classnames
+      //
+      const itemClasses = [{
+        'friends': this.props.openUserTab === 'Friends',
+        'suggestions': this.props.openUserTab === 'Suggestions',
+      }]
+      //
+      const picClasses = classNames('user-prof__item__picture', itemClasses)
+      const frsClasses = classNames('user-prof__item__friendship', itemClasses)
+      //
+      // Returning each 'user-prof' item
       //
       return (
-        <div className='clear users-info__item'>
-          <div className='users-info__item__picture'>
+        <div className="clear user-prof__item">
+          <div className={ picClasses }>
             <img src={ userInfo.profile_picture } />
           </div>
-          <h4 className='users-info__item__name'>
+          <h4 className='user-prof__item__name'>
             { userInfo.name }
           </h4>
-          <h6 className='users-info__item__message'>
+          <h6 className='user-prof__item__message'>
             { userInfo.profile_comment }
           </h6>
           {/*
@@ -88,7 +98,7 @@ class UsersInfo extends React.Component {
           // ** https://gist.github.com/primaryobjects/aacf6fa49823afb2f6ff065790a5b402
           */}
           <h4
-            className='users-info__item__friendship'
+            className={ frsClasses }
             onClick={() => {
               if (window.confirm('Are you sure?')) { this.changeFriendship(this.props.openUserTab) }
             } }
@@ -108,11 +118,11 @@ class UsersInfo extends React.Component {
 // ** https://morizyun.github.io/javascript/react-js-proptypes-validator.html
 //
 UsersInfo.propTypes = {
+  openUserTab: PropTypes.string,
+  openContent: PropTypes.string,
   messages: PropTypes.array,
-  suggestions: PropTypes.array,
   currentUserID: PropTypes.number,
   openUserID: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-  openUserTab: PropTypes.string,
 }
 //
 export default UsersInfo

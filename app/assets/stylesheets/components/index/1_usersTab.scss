@@ -1,3 +1,8 @@
+//
+// Importing various 'mixin'
+//
+@import '../mixin/color';
+//
 .users-tab {
   //
   &__list {
@@ -8,7 +13,7 @@
     top:          90px;
     left:         0;
     //
-    background:   rgba( 0, 0, 0, 0.03 );
+    background:   color('content');
     //
   }
   //
@@ -17,12 +22,11 @@
     display: inline-block;
     float:   left;
     //
-    line-height: 29px;  // Excluding 'border-top' and 'border-bottom'
+    line-height: 29px;  // Excluding 'border-bottom'
     width:       150px; // Including 'border-right'
     //
-    border-top:    0.5px solid rgba( 0, 0, 0, 0.1 );
-    border-bottom: 0.5px solid rgba( 0, 0, 0, 0.1 );
-    border-right:  1.0px solid rgba( 0, 0, 0, 0.1 );
+    border-bottom: border('normal_opc_1');
+    border-right:  border('normal_opc_1');
     //
     font-weight: 400;
     //
@@ -34,8 +38,8 @@
       // ** https://www.nishi2002.com/6976.html
       // ** https://stackoverflow.com/questions/22510423/
       //
-      &[class*='friends']     { background:  #93C26D; }
-      &[class*='suggestions'] { background:  #ffb732; }
+      &[class*='friends']     { background: color('friends');     }
+      &[class*='suggestions'] { background: color('suggestions'); }
       //
       color:       #fff;
       font-size:   15px;

@@ -1,25 +1,55 @@
+//
+// Importing various 'mixin'
+//
+@import 'components/mixin/picture';
+@import 'components/mixin/color';
+@import 'components/mixin/shortProf';
+@import 'components/mixin/flexbox';
+//
+.login_user__item {
+  //
+  @include flexbox;
+  //
+  // Positioning based on 'body'
+  //
+  position: absolute;
+  top:      30px;
+  height:   60px;
+  left:     0;
+  right:    0;
+  //
+  background:    color('header');
+  border-bottom: border('strong');
+  //
+  @include short_prof($name_color: #fff);
+  //
+  &__link {
+    //
+    float:  right;
+    margin: 0 15px;
+    //
+    font-size:   15px;
+    font-weight: 500;
+    //
+    a {
+      color:           white;
+      text-decoration: none;
+    }
+    //
+  }
+  //
+}
+//
 .notice {
+  //
   text-align:  center;
-  height:      30px;
   margin:      0 auto;  // Default: 13px on top and bottom
+  height:      30px;
   padding-top: 5px;
   //
-  background:  #2AADE5;
-  color:       white;
   font-weight: bold;
-}
-
-.container {
-  // position: relative; // 'messageBox' and 'userList' are positioned based on 'header.container'
-  background: #2AADE5;
-  top: 30px;
-
-  ul {
-    line-height: 60px;
-    text-align:  center;
-    left:        0;
-    right:       0;
-    font-weight: bold;
-    color:       white;
-  }
+  color:       white;
+  //
+  background:  color('header');
+  //
 }

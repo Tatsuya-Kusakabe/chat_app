@@ -1,5 +1,5 @@
 //
-// actions/users.js
+// actions/index.js
 //
 // Importing components
 //
@@ -32,7 +32,7 @@ export default {
           //
           const json = JSON.parse(res.text)
           //
-          // Calling GET_MESSAGES in 'stores/messages.js'
+          // Calling GET_MESSAGES in 'stores/index.js'
           // ** Changing data on 'stores' (locally)
           //
           Dispatcher.handleServerAction({
@@ -89,8 +89,24 @@ export default {
     //
   },
   //
+  // Connecting from 'changeOpenUserTab(userTab)' in 'components/1_usersTab.js'
+  //              to 'UPDATE_OPEN_USER_TAB'       in 'stores/index.js'
+  //
+  // ** Nothing to 'get' from, or 'post' to the database
+  //
+  changeOpenUserTab(userTab) {
+    //
+    Dispatcher.handleViewAction({
+      type: ActionTypes.UPDATE_OPEN_USER_TAB,
+      name: userTab,
+    })
+    //
+  },
+  //
   // Connecting from 'changeOpenContent(cntState)' in 'components/4_usersName.js'
   //              to 'UPDATE_OPEN_CONTENT'         in 'stores/users.js'
+  //
+  // ** Nothing to 'get' from, or 'post' to the database
   //
   changeOpenContent(content) {
     //
@@ -98,6 +114,36 @@ export default {
       type: ActionTypes.UPDATE_OPEN_CONTENT,
       name: content,
     })
+    //
+  },
+  //
+  // Connecting from 'constructor(props)' in 'components/1_usersTab.js'
+  //              to 'GET_FRIENDS'        in 'stores/index.js'
+  //              or 'GET_SUGGESTIONS'    in 'stores/index.js'
+  //
+  getMessages(openUserTab) {
+    //
+    path = (openUserTab === 'Friends') ? 'api/friends' : 'api/suggestions'
+    action = (openUserTab === 'Friends') ? ActionTypes.GET_FRIENDS : ActionTypes.GET_SUGGESTIONS
+    //
+    this.getDataFromStore(path, action)
+    //
+  },
+  //
+  // Connecting from 'handleKeyDown(e)' in 'components/7_replyBox.js'
+  //              to 'SEND_MESSAGE'     in 'stores/index.js'
+  //
+  sendMessage(userID, message) {
+    //
+    timestamp = new Date().getTime()
+    //
+    verb = 'post'
+    path = `${APIRoot}/messages`
+    action = ActionTypes.SEND_MESSAGE
+    dbInfo = { sent_to: userID, contents: message, timestamp: timestamp }
+    storeInfo = {}
+    //
+    this.setDataToStore(path, action, dbInfo, storeInfo)
     //
   },
   //

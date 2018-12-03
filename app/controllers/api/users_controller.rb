@@ -10,7 +10,9 @@ class Api::UsersController < ApplicationController
   def update
     #
     # If 'partner' is on 'suggestions' list, creating a new 'relationship' and saving it
-    # 'contents' should be enclosed by "...#{}", not by '...#{}' or `...#{}`
+    # ** 'contents' should be enclosed by "...#{}", not by '...#{}' or `...#{}`
+    # ** 'timestamp_recipient' should be earlier than 'timestamp_applicant'
+    #    to make sure the welcome message is unread
     #
     if (params[:frs_state] == 'Suggestions')
       #
@@ -18,7 +20,7 @@ class Api::UsersController < ApplicationController
         applicant_id: @current_user.id,
         recipient_id: params[:id],
         timestamp_applicant: params[:timestamp],
-        timestamp_recipient: params[:timestamp],
+        timestamp_recipient: params[:timestamp] - 100,
       )
       #
       new_relationship.update_attributes(rls_params)
@@ -29,7 +31,7 @@ class Api::UsersController < ApplicationController
       #
       brk_relationship = Relationship.find_by(
         "(applicant_id = ? and recipient_id = ?) or (applicant_id = ? and recipient_id = ?)",
-        @current_user.id, params[:id], params[:id], @current_user.id
+        @current_user.id, params[:id].to_i, params[:id].to_i, @current_user.id
       )
       #
       brk_relationship.destroy
@@ -38,11 +40,11 @@ class Api::UsersController < ApplicationController
       # ** Too complicated to validate within 'model'
       #
       brk_messages = Message.where(
-        "(sent_from = ? and sent_to = ?) or (sent_to = ? and sent_from = ?)",
-        @current_user.id, params[:id], params[:id], @current_user.id
+        "(sent_from = ? and sent_to = ?) or (sent_from = ? and sent_to = ?)",
+        params[:id].to_i, @current_user.id, @current_user.id, params[:id].to_i
       )
       #
-      brk_messages.destroy
+      brk_messages.destroy_all
       #
     end
     #

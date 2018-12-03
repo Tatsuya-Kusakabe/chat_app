@@ -5,9 +5,9 @@
 //
 import React from 'react'
 import PropTypes from 'prop-types'
+import _ from 'lodash'
 import classNames from 'classNames'
 import Utils from '../../utils'
-import _ from 'lodash'
 //
 // Creating a new class 'MessagesList'
 //
@@ -24,15 +24,16 @@ class MessagesList extends React.Component {
   // Rendering results
   //
   render() {
+    console.log(this.props)
     //
-    // When 'current_user' has no friends, displaying 'No messages' without 'reply_box'
+    // When 'openUserID' is defined as 'none' (namely having no friends), displaying 'No...'
     // ** 'return' ends 'switch (true)', so 'break' is not necessary
     //
-    if (!(_.isNumber(this.props.openUserID))) {
+    if (_.isString(this.props.openUserID)) {
       //
       return (
-          <div className='message-box'>
-            <div className='message-box__list message-box__list__empty'>
+          <div className='messages-list'>
+            <div className='messages-list__list messages-list__list__empty'>
               No messages
             </div>
           </div>
@@ -51,8 +52,8 @@ class MessagesList extends React.Component {
     if (!opnUsrMsg.length) {
       //
       return (
-          <div className='message-box'>
-            <div className='message-box__list message-box__list__empty'>
+          <div className='messages-list'>
+            <div className='messages-list__list messages-list__list__empty'>
               No messages
             </div>
           </div>
@@ -66,23 +67,23 @@ class MessagesList extends React.Component {
       //
       const lastMessage = opnUsrMsg[opnUsrMsg.length - 1]
       //
-      // Creating each 'message-box' item from 'this.props.messages'
+      // Creating each 'messages-list' item from 'this.props.messages'
       //
       const messages = opnUsrMsg.map((message, index) => {
         //
         // Defining 'item_classes' for each message icon
         //
         const itemClasses = classNames({
-          'message-box__item': true,
+          'messages-list__item': true,
           'clear': true,
         })
         //
         // Defining 'content_classes' for each message string
         //
         const contentClasses = classNames({
-          'message-box__content': true,
-          'message-box__content__from-current': message.sent_from === this.props.currentUserID,
-          'message-box__content__from-partner': message.sent_from !== this.props.currentUserID,
+          'messages-list__content': true,
+          'messages-list__content__from-current': message.sent_from === this.props.currentUserID,
+          'messages-list__content__from-partner': message.sent_from !== this.props.currentUserID,
         })
         //
         // Returing each 'message.contents'
@@ -107,8 +108,8 @@ class MessagesList extends React.Component {
         const date = Utils.getNiceDate(opnUsrRaw.lastAccess.partner)
         //
         messages.push(
-            <li key='read' className='message-box__item'>
-              <div className='message-box__read'>
+            <li key='read' className='messages-list__item'>
+              <div className='messages-list__read'>
                 Read { date }
               </div>
             </li>
@@ -119,7 +120,7 @@ class MessagesList extends React.Component {
       // Returning 'messages'
       //
       return (
-            <ul className='message-box__list'>
+            <ul className='messages-list__list'>
               { messages }
             </ul>
       )

@@ -4,8 +4,8 @@
 // Importing components
 //
 import React from 'react'
-import MessagesAction from '../../actions/messages'
-import UsersStore from '../../stores/users'
+import PropTypes from 'prop-types'
+import IndexAction from '../../actions/index'
 //
 // Creating a new class 'ReplyBox'
 //
@@ -40,9 +40,8 @@ class ReplyBox extends React.Component {
   //
   handleKeyDown(e) {
     if (e.keyCode === 13) {
-      let userID = UsersStore.getOpenUserID()
-      MessagesAction.sendMessage(userID, this.state.value)
-      MessagesAction.getMessages('Friends')
+      IndexAction.sendMessage(this.props.openUserID, this.state.value)
+      IndexAction.getMessages('Friends')
       this.setState({ value: '' })
     }
   }
@@ -66,5 +65,12 @@ class ReplyBox extends React.Component {
     )
   }
 }
-
+//
+// Defining 'propTypes'
+// ** https://morizyun.github.io/javascript/react-js-proptypes-validator.html
+//
+ReplyBox.propTypes = {
+  openUserID: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+}
+//
 export default ReplyBox

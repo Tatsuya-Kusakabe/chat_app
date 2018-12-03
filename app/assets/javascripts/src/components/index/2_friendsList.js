@@ -6,9 +6,9 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
-import UsersAction from '../../actions/users'
-import Utils from '../../utils'
 import _ from 'lodash'
+import IndexAction from '../../actions/index'
+import Utils from '../../utils'
 //
 // Creating a new class 'FriendsList'
 //
@@ -25,17 +25,17 @@ class FriendsList extends React.Component {
   // When an account is clicked, changing chats displayed
   //
   changeOpenUserID(id) {
-    UsersAction.changeOpenUserID(id)
+    IndexAction.changeOpenUserID(id)
   }
   //
   // Rendering results
   //
   render() {
     //
-    // When 'current_user' has no numerical 'openUserID' (namely having no friends)
+    // When 'openUserID' is defined as 'none' (namely having no friends), displaying 'No...'
     // ** 'return' ends 'switch (true)', so 'break' is not necessary
     //
-    if (!(_.isNumber(this.props.openUserID))) {
+    if (_.isString(this.props.openUserID)) {
       //
       return (
           <div className='friends-list__list friends-list__list__empty'>
@@ -43,7 +43,7 @@ class FriendsList extends React.Component {
           </div>
       )
     //
-    // When 'current_user' has any 'openUserID'
+    // When 'openUserID' does exist
     //
     } else {
       //
@@ -151,8 +151,6 @@ FriendsList.propTypes = {
   messages: PropTypes.array,
   currentUserID: PropTypes.number,
   openUserID: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-  openUserTab: PropTypes.string,
-  openContent: PropTypes.string,
 }
 //
 export default FriendsList

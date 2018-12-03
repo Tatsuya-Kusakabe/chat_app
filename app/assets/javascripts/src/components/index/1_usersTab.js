@@ -6,7 +6,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
-import MessagesAction from '../../actions/messages'
+import IndexAction from '../../actions/index'
 //
 // Creating a new class 'usersTab'
 //
@@ -20,7 +20,7 @@ class UsersTab extends React.Component {
     //
     // Getting a JSON string 'messages'
     //
-    MessagesAction.getMessages(this.props.openUserTab)
+    IndexAction.getMessages(this.props.openUserTab)
     //
     // ** While calling, proceeding next
     // ** Do not prepend "return" to objects (in this case, promise objects).
@@ -34,8 +34,8 @@ class UsersTab extends React.Component {
     //
     // Updating 'openUserTab', and getting a JSON string 'messages'
     //
-    MessagesAction.changeOpenUserTab(openUserTab)
-    MessagesAction.getMessages(openUserTab)
+    IndexAction.changeOpenUserTab(openUserTab)
+    IndexAction.getMessages(openUserTab)
     //
   }
   //

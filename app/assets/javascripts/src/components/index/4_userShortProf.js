@@ -1,11 +1,11 @@
 //
-// components/4_usersName.js
+// components/4_userShortProf.js
 //
 // Importing components
 //
 import React from 'react'
 import PropTypes from 'prop-types'
-import UsersAction from '../../actions/users'
+import IndexAction from '../../actions/index'
 // import Utils from '../../utils'
 import _ from 'lodash'
 //
@@ -24,18 +24,18 @@ class UsersName extends React.Component {
   // When clicked, changing a main content displayed
   //
   changeOpenContent(content) {
-    //
-    UsersAction.changeOpenContent(content)
-    //
+    IndexAction.changeOpenContent(content)
   }
   //
   // Rendering results
   //
   render() {
     //
+    // Defining 'content' name to be displayed as an icon
+    //
     const dispContent = (this.props.openContent === 'Profile') ? 'Messages' : 'Profile'
     //
-    // When 'current_user' is defined as 'none' (namely having no friends),
+    // When 'openUserID' is defined as 'none' (namely having no friends),
     // or 'suggestions' tab is open, displaying nothing
     // ** 'return' ends 'switch (true)', so 'break' is not necessary
     //
@@ -49,15 +49,18 @@ class UsersName extends React.Component {
     //
     const userInfo = _.filter(this.props.messages, {'user': {'id': this.props.openUserID}})[0]['user']
     //
-    // Returning each 'users-name' item
+    // Returning each 'user-short-prof' item
     //
     return (
-        <div className='clear users-name__item'>
-          <h4 className='users-name__item__name'>
+        <div className='clear user-short-prof__item'>
+          <div className='user-short-prof__item__picture'>
+            <img src={ userInfo.profile_picture } />
+          </div>
+          <h4 className='user-short-prof__item__name'>
             { userInfo.name }
           </h4>
           <h6
-            className='users-name__item__content'
+            className='user-short-prof__item__content'
             onClick={ this.changeOpenContent.bind(this, dispContent) }
           >
             See { dispContent }
@@ -73,11 +76,11 @@ class UsersName extends React.Component {
 // ** https://morizyun.github.io/javascript/react-js-proptypes-validator.html
 //
 UsersName.propTypes = {
+  openUserTab: PropTypes.string,
+  openContent: PropTypes.string,
   messages: PropTypes.array,
   currentUserID: PropTypes.number,
   openUserID: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-  openUserTab: PropTypes.string,
-  openContent: PropTypes.string,
 }
 //
 export default UsersName

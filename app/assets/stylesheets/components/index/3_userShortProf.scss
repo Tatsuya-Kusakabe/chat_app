@@ -1,0 +1,43 @@
+//
+// Importing various 'mixin'
+//
+@import '../mixin/picture';
+@import '../mixin/color';
+@import '../mixin/shortProf';
+@import 'components/mixin/flexbox';
+//
+.user-short-prof__item {
+  //
+  @include flexbox;
+  //
+  // Positioning based on 'body'
+  //
+  position: absolute;
+  top:      90px;
+  height:   50px;
+  left:     300px;
+  right:    0;
+  //
+  background:    color('content-strong');
+  border-bottom: border('normal');
+  //
+  @include short_prof();
+  //
+  &__content {
+    //
+    float:  right;
+    margin: 0 15px;
+    //
+    font-size:   15px;
+    font-weight: 400;
+    //
+    cursor: pointer;
+    //
+    &:hover {
+      color: color('friends');
+      text-decoration: underline;
+    }
+    //
+  }
+  //
+}
