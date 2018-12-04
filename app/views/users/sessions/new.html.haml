@@ -2,40 +2,42 @@
 -# POST method for '/users/sign_in'
 -# Information will be contained in params[:session]
 -#
--# Displaying a page title
--#
-%h2 Sign in
--#
--# Creating 'form_for' (descriptions available on '.../registrations/form')
--#
-= form_for(@user, url: user_session_path, method: "post") do |f|
+.devise_contents
   -#
-  = devise_error_messages!
+  -# Displaying a page title
   -#
-  .field
+  %h2.devise_title Sign in
+  -#
+  -# Creating 'form_for' (descriptions available on '.../registrations/form')
+  -#
+  = form_for(@user, url: user_session_path, method: "post") do |f|
     -#
-    = f.label :email
-    %br/
+    = devise_error_messages!
     -#
-    = f.email_field :email, autofocus: true, autocomplete: "email"
-  -#
-  .field
-    -#
-    = f.label :password
-    %br/
-    -#
-    = f.password_field :password, autocomplete: "current-password"
-  -#
-  -# ??
-  -#
-  - if devise_mapping.rememberable?
     .field
-      = f.check_box :remember_me
-      = f.label :remember_me
+      -#
+      = f.label :email
+      %br/
+      -#
+      = f.email_field :email, autofocus: true, autocomplete: "email"
+    -#
+    .field
+      -#
+      = f.label :password
+      %br/
+      -#
+      = f.password_field :password, autocomplete: "current-password"
+    -#
+    -# ??
+    -#
+    - if devise_mapping.rememberable?
+      .field
+        = f.check_box :remember_me
+        = f.label :remember_me
+    -#
+    .actions
+      = f.submit "Sign in"
   -#
-  .actions
-    = f.submit "Sign in"
--#
--# Rendering a series of 'links'
--#
-= render "users/shared/links"
+  -# Rendering a series of 'links'
+  -#
+  = render "users/shared/links"

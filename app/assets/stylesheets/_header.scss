@@ -1,12 +1,26 @@
 //
 // Importing various 'mixin'
 //
-@import 'components/mixin/picture';
-@import 'components/mixin/color';
-@import 'components/mixin/shortProf';
-@import 'components/mixin/flexbox';
+@import 'mixin/picture';
+@import 'mixin/color';
+@import 'mixin/shortProf';
+@import 'mixin/flexbox';
 //
-.login_user__item {
+.header {
+  //
+  // Always fixing on top
+  //
+  position: fixed;
+  top:      0;
+  height:   90px;
+  left:     0;
+  width:    100%;
+  //
+  z-index: 100;
+  //
+}
+//
+.login_user__item, .header__item {
   //
   @include flexbox;
   //
@@ -25,8 +39,23 @@
   //
   &__link {
     //
-    float:  right;
-    margin: 0 15px;
+    &[class*='left'] {
+      //
+      float:  left;
+      margin: 0 15px;
+      //
+      &[class*='wide'] { margin: 0 auto 0 15px; }
+      //
+    }
+    //
+    &[class*='right'] {
+      //
+      float:  right;
+      margin: 0 15px;
+      //
+      &[class*='wide'] { margin: 0 15px 0 auto; }
+      //
+    }
     //
     font-size:   15px;
     font-weight: 500;

@@ -52,10 +52,10 @@ class UsersTab extends React.Component {
       //
       const itemClasses = classNames({
         'clear': true,
-        'friends': tab === 'Friends',
-        'suggestions': tab === 'Suggestions',
         'users-tab__item': true,
         'users-tab__item--active': this.props.openUserTab === tab,
+        'friends': tab === 'Friends',
+        'suggestions': tab === 'Suggestions',
       })
       //
       // Returning each 'users-tab' item

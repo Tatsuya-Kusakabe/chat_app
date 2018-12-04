@@ -7,10 +7,11 @@ import IndexStore from '../../stores/index'
 import UsersTab from './1_usersTab'
 import FriendsList from './2_friendsList'
 import SuggestionsList from './3_suggestionsList'
-import UsersName from './4_userShortProf'
-import UsersInfo from './5_userProf'
-import MessagesList from './6_messagesList'
-import ReplyBox from './7_replyBox'
+import SearchBox from './4_searchBox'
+import UserShortProf from './5_userShortProf'
+import UserProf from './6_userProf'
+import MessagesList from './7_messagesList'
+import ReplyBox from './8_replyBox'
 //
 // Creating a new class 'App'
 //
@@ -81,17 +82,18 @@ class App extends React.Component {
     //
     if (this.state.openUserTab === 'Suggestions') {
       //
-      // Rendering 'SuggestionsList' and 'UsersInfo'
+      // Rendering 'SuggestionsList' and 'UserProf'
       //
       return (
           <div className='app'>
             <div className='users-box'>
               <UsersTab openUserTab={openUserTab} />
+              <SearchBox openUserTab={openUserTab} />
               <SuggestionsList {...this.state} />
             </div>
             <div className='messages-box'>
-              <UsersName {...this.state} />
-              <UsersInfo {...this.state} />
+              <UserShortProf {...this.state} />
+              <UserProf {...this.state} />
             </div>
           </div>
       )
@@ -100,17 +102,18 @@ class App extends React.Component {
     //
     } else if (this.state.openContent === 'Profile') {
       //
-      // Rendering 'FriendsList' and 'UsersInfo'
+      // Rendering 'FriendsList' and 'UserProf'
       //
       return (
           <div className='app'>
             <div className='users-box'>
               <UsersTab openUserTab={openUserTab} />
+              <SearchBox openUserTab={openUserTab} />
               <FriendsList {...this.state} />
             </div>
             <div className='messages-box'>
-              <UsersName {...this.state} />
-              <UsersInfo {...this.state} />
+              <UserShortProf {...this.state} />
+              <UserProf {...this.state} />
             </div>
           </div>
       )
@@ -125,10 +128,11 @@ class App extends React.Component {
           <div className='app'>
             <div className='users-box'>
               <UsersTab openUserTab={openUserTab} />
+              <SearchBox openUserTab={openUserTab} />
               <FriendsList {...this.state} />
             </div>
             <div className='messages-box'>
-              <UsersName {...this.state} />
+              <UserShortProf {...this.state} />
               <MessagesList {...this.state} />
             </div>
           </div>
@@ -144,10 +148,11 @@ class App extends React.Component {
           <div className='app'>
             <div className='users-box'>
               <UsersTab openUserTab={openUserTab} />
+              <SearchBox openUserTab={openUserTab} />
               <FriendsList {...this.state} />
             </div>
             <div className='messages-box'>
-              <UsersName {...this.state} />
+              <UserShortProf {...this.state} />
               <MessagesList {...this.state} />
               <ReplyBox openUserID={openUserID} />
             </div>

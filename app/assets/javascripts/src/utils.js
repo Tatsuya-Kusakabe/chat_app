@@ -12,6 +12,8 @@ export const ActionTypes = keyMirror({
   UPDATE_OPEN_CONTENT: null,
   GET_FRIENDS: null,
   GET_SUGGESTIONS: null,
+  SEARCH_FRIENDS: null,
+  SEARCH_SUGGESTIONS: null,
   SEND_MESSAGE: null,
   UPDATE_OPEN_USER_ID: null,
   UPDATE_FRIENDSHIP: null,

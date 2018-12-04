@@ -136,7 +136,7 @@ IndexStore.dispatchToken = Dispatcher.register(payload => {
       //
       break
     //
-    // When called from 'changeOpenContent(content)' in 'components/4_usersName.js'
+    // When called from 'changeOpenContent(content)' in 'components/5_userShortProf.js'
     //
     case ActionTypes.UPDATE_OPEN_CONTENT:
       //
@@ -150,13 +150,18 @@ IndexStore.dispatchToken = Dispatcher.register(payload => {
       break
     //
     // When called from 'constructor(props)' in 'components/1_usersTab.js'
+    //               or 'updateValue(e)'     in 'components/44_searchBox.js'
     //
     case ActionTypes.GET_FRIENDS:
     case ActionTypes.GET_SUGGESTIONS:
+    //
+    case ActionTypes.SEARCH_FRIENDS:
+    case ActionTypes.SEARCH_SUGGESTIONS:
       //
       // Getting a JSON string from "GET '/api/messages'"
       //
       tmpMsg = action.json
+      console.log(tmpMsg)
       //
       // Defining 'msg', by removing 'current_user' from 'tmpMsg'
       //
@@ -203,8 +208,8 @@ IndexStore.dispatchToken = Dispatcher.register(payload => {
       IndexStore.emitChange()
       break
     //
-    // When called from 'handleKeyDown(e)'             in 'components/7_replyBox.js'
-    //          or from 'changeFriendship(friendship)' in 'components/5_usersInfo.js'
+    // When called from 'handleKeyDown(e)'             in 'components/8_replyBox.js'
+    //          or from 'changeFriendship(friendship)' in 'components/6_userProf.js'
     //
     case ActionTypes.SEND_MESSAGE:
       //
@@ -237,7 +242,7 @@ IndexStore.dispatchToken = Dispatcher.register(payload => {
       IndexStore.emitChange()
       break
     //
-    // When called from 'changeFriendship(friendship)' in 'components/5_usersInfo.js'
+    // When called from 'changeFriendship(friendship)' in 'components/6_userProf.js'
     //
     case ActionTypes.UPDATE_FRIENDSHIP:
       //

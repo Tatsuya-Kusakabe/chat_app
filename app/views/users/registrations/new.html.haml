@@ -7,14 +7,16 @@
 - provide(:url,  registration_path(resource_name))
 - provide(:html, :post)
 -#
--# Displaying a page title
--#
-%h2 Sign up
--#
--# Rendering a partial 'form_for'
--#
-= render "users/registrations/form"
--#
--# Rendering a series of 'links'
--#
-= render "users/shared/links"
+.devise_contents
+  -#
+  -# Displaying a page title
+  -#
+  %h2.devise_title Sign up
+  -#
+  -# Rendering a partial 'form_for'
+  -#
+  = render "users/registrations/form"
+  -#
+  -# Rendering a series of 'links'
+  -#
+  = render "users/shared/links"

@@ -2,42 +2,44 @@
 -# PUT method for '/users/password'
 -# Information will be contained in params[:password]
 -#
--# Displaying a page title
--#
-%h2 Change your password
--#
--# Creating 'form_for' (descriptions available on '.../registrations/form')
--#
-= form_for(@user, url: password_path(resource_name), html: { method: :put }) do |f|
+.devise_contents
   -#
-  = devise_error_messages!
+  -# Displaying a page title
   -#
-  -# 'reset_password_token' and 'email' should be
-  -# sent explicitly to 'users/password#update'
+  %h2.devise_title Change your password
   -#
-  = f.hidden_field :reset_password_token, value: params[:reset_password_token]
-  = f.hidden_field :email,                value: params[:email]
+  -# Creating 'form_for' (descriptions available on '.../registrations/form')
   -#
-  .field
+  = form_for(@user, url: password_path(resource_name), html: { method: :put }) do |f|
     -#
-    = f.label :password, "New password"
-    %br/
+    = devise_error_messages!
     -#
-    - if @minimum_password_length
-      %em (#{@minimum_password_length} characters minimum)
+    -# 'reset_password_token' and 'email' should be
+    -# sent explicitly to 'users/password#update'
+    -#
+    = f.hidden_field :reset_password_token, value: params[:reset_password_token]
+    = f.hidden_field :email,                value: params[:email]
+    -#
+    .field
+      -#
+      = f.label :password, "New password"
       %br/
+      -#
+      - if @minimum_password_length
+        %em (#{@minimum_password_length} characters minimum)
+        %br/
+      -#
+      = f.password_field :password, autofocus: true, autocomplete: "new-password"
     -#
-    = f.password_field :password, autofocus: true, autocomplete: "new-password"
+    .field
+      -#
+      = f.label :password_confirmation, "Confirm new password"
+      %br/
+      -#
+      = f.password_field :password_confirmation, autocomplete: "off"
+    -#
+    .actions
+      -#
+      = f.submit "Change my password"
   -#
-  .field
-    -#
-    = f.label :password_confirmation, "Confirm new password"
-    %br/
-    -#
-    = f.password_field :password_confirmation, autocomplete: "off"
-  -#
-  .actions
-    -#
-    = f.submit "Change my password"
--#
-= render "users/shared/links"
+  = render "users/shared/links"

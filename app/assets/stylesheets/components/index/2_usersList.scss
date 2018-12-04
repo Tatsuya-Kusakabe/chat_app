@@ -1,8 +1,8 @@
 //
 // Importing various 'mixin'
 //
-@import '../mixin/picture';
-@import '../mixin/color';
+@import 'mixin/picture';
+@import 'mixin/color';
 //
 .friends-list, .suggestions-list {
   //
@@ -11,9 +11,10 @@
     // Positioning based on 'body'
     //
     position:     absolute;
-    top:          120px;
-    bottom:       0;
-    left:         0;
+    //
+    top:    170px;
+    bottom: 0;
+    left:   0;
     //
     background:   color('content');
     border-right: border('normal');

@@ -9,4 +9,12 @@ class Api::SuggestionsController < Api::MessagesController
     #
   end
   #
+  def show(friend_bln = false)
+    #
+    # Inheriting 'show(friends_bln = false)' from 'Api::MessagesController'
+    #
+    super
+    #
+  end
+  #
 end

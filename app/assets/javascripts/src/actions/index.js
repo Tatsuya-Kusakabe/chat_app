@@ -103,7 +103,7 @@ export default {
     //
   },
   //
-  // Connecting from 'changeOpenContent(cntState)' in 'components/4_usersName.js'
+  // Connecting from 'changeOpenContent(cntState)' in 'components/5_userShortProf.js'
   //              to 'UPDATE_OPEN_CONTENT'         in 'stores/users.js'
   //
   // ** Nothing to 'get' from, or 'post' to the database
@@ -121,16 +121,30 @@ export default {
   //              to 'GET_FRIENDS'        in 'stores/index.js'
   //              or 'GET_SUGGESTIONS'    in 'stores/index.js'
   //
-  getMessages(openUserTab) {
+  getMessages(userTab) {
     //
-    path = (openUserTab === 'Friends') ? 'api/friends' : 'api/suggestions'
-    action = (openUserTab === 'Friends') ? ActionTypes.GET_FRIENDS : ActionTypes.GET_SUGGESTIONS
+    path = (userTab === 'Friends') ? 'api/friends' : 'api/suggestions'
+    action = (userTab === 'Friends') ? ActionTypes.GET_FRIENDS : ActionTypes.GET_SUGGESTIONS
     //
     this.getDataFromStore(path, action)
     //
   },
   //
-  // Connecting from 'handleKeyDown(e)' in 'components/7_replyBox.js'
+  // Connecting from 'updateValue(e)'     in 'components/4_searchBox.js'
+  //              to 'SEARCH_FRIENDS'     in 'stores/index.js'
+  //              or 'SEARCH_SUGGESTIONS' in 'stores/index.js'
+  //
+  searchUsers(userTab, name) {
+    //
+    console.log('actions called!')
+    path = (userTab === 'Friends') ? `api/friends/${name}` : `api/suggestions/${name}`
+    action = (userTab === 'Friends') ? ActionTypes.SEARCH_FRIENDS : ActionTypes.SEARCH_SUGGESTIONS
+    //
+    this.getDataFromStore(path, action)
+    //
+  },
+  //
+  // Connecting from 'handleKeyDown(e)' in 'components/8_replyBox.js'
   //              to 'SEND_MESSAGE'     in 'stores/index.js'
   //
   sendMessage(userID, message) {
@@ -166,7 +180,7 @@ export default {
     //
   },
   //
-  // Connecting from 'changeFriendship(friendship)' in 'components/5_usersInfo.js'
+  // Connecting from 'changeFriendship(friendship)' in 'components/6_userProf.js'
   //              to 'UPDATE_FRIENDSHIP'            in 'stores/users.js'
   //
   changeFriendship(friendship, userID) {

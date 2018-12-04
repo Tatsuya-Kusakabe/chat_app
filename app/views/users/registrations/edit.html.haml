@@ -7,19 +7,21 @@
 - provide(:url,  registration_path(resource_name))
 - provide(:html, :put)
 -#
--# Displaying a page title
--#
-%h2 Edit #{resource_name.to_s.humanize}
--#
--# Rendering a partial 'form_for'
--#
-= render "users/registrations/form"
--#
--# ??
--#
-%h3 Cancel my account
-%p Unhappy? #{button_to "Cancel my account", registration_path(resource_name), data: { confirm: "Are you sure?" }, method: :delete}
--#
--# ??
--#
-= link_to "Back", :back
+.devise_contents
+  -#
+  -# Displaying a page title
+  -#
+  %h2.devise_title Edit #{resource_name.to_s.humanize}
+  -#
+  -# Rendering a partial 'form_for'
+  -#
+  = render "users/registrations/form"
+  -#
+  -# ??
+  -#
+  %h3 Cancel my account
+  %p Unhappy? #{button_to "Cancel my account", registration_path(resource_name), data: { confirm: "Are you sure?" }, method: :delete}
+  -#
+  -# ??
+  -#
+  = link_to "Back", :back

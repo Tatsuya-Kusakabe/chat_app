@@ -24,7 +24,6 @@ class MessagesList extends React.Component {
   // Rendering results
   //
   render() {
-    console.log(this.props)
     //
     // When 'openUserID' is defined as 'none' (namely having no friends), displaying 'No...'
     // ** 'return' ends 'switch (true)', so 'break' is not necessary

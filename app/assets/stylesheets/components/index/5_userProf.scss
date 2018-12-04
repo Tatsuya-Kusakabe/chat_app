@@ -1,9 +1,9 @@
 //
 // Importing various 'mixin'
 //
-@import '../mixin/picture';
-@import '../mixin/color';
-@import '../mixin/flexbox';
+@import 'mixin/picture';
+@import 'mixin/color';
+@import 'mixin/flexbox';
 //
 .user-prof__item {
   //
@@ -12,7 +12,10 @@
   // Positioning based on 'body'
   //
   position:   absolute;
-  top:        140px;
+  //
+  &[class*='friends']     { top: 140px; }
+  &[class*='suggestions'] { top:  90px; }
+  //
   bottom:     0;
   left:       300px;
   right:      0;
@@ -25,8 +28,8 @@
     //
     @include picture($size: 200px);
     //
-    &[class*='friends']     { border: 3px solid color('friends')     }
-    &[class*='suggestions'] { border: 3px solid color('suggestions') }
+    &[class*='friends']     { border: 3px solid color('friends');     }
+    &[class*='suggestions'] { border: 3px solid color('suggestions'); }
     //
     margin-bottom: 20px;
     //

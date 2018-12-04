@@ -71,18 +71,19 @@ class UsersInfo extends React.Component {
       // Defining 'item_classes' to distinguish 'openUserTab'
       // ** https://www.npmjs.com/package/classnames
       //
-      const itemClasses = [{
+      const baseClasses = [{
         'friends': this.props.openUserTab === 'Friends',
         'suggestions': this.props.openUserTab === 'Suggestions',
       }]
       //
-      const picClasses = classNames('user-prof__item__picture', itemClasses)
-      const frsClasses = classNames('user-prof__item__friendship', itemClasses)
+      const itemClasses = classNames('clear user-prof__item', baseClasses)
+      const picClasses = classNames('user-prof__item__picture', baseClasses)
+      const frsClasses = classNames('user-prof__item__friendship', baseClasses)
       //
       // Returning each 'user-prof' item
       //
       return (
-        <div className="clear user-prof__item">
+        <div className={ itemClasses }>
           <div className={ picClasses }>
             <img src={ userInfo.profile_picture } />
           </div>

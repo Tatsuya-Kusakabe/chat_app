@@ -1,8 +1,8 @@
 //
 // Importing various 'mixin'
 //
-@import '../mixin/color';
-@import '../mixin/flexbox';
+@import 'mixin/color';
+@import 'mixin/flexbox';
 //
 .messages-list {
   //
@@ -17,8 +17,6 @@
     right:      0;
     //
     padding:    15px 30px;
-    //
-    border-bottom: border('normal');
     //
     overflow-y: scroll;
     //
@@ -42,7 +40,7 @@
       //
       float:         right;
       margin-bottom: 10px;
-      overflow: hidden;
+      overflow:      hidden;
       //
       background:    #218CB9;
       color:         #fff;
@@ -51,9 +49,10 @@
     //
     &__from-partner {
       //
-      float:      left;
+      float:         left;
+      margin-bottom: 5px;
       //
-      background: rgba(0, 0, 0, 0.08);
+      background:    rgba(0, 0, 0, 0.08);
       //
     }
     //

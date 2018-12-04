@@ -2,25 +2,27 @@
 -# POST method for '/users/password'
 -# Information will be contained in params[:password]
 -#
--# Displaying a page title
--#
-%h2 Forgot your password?
--#
--# Creating 'form_for' (descriptions available on '.../registrations/form')
--#
-= form_for(@user, url: password_path(resource_name), html: { method: :post }) do |f|
+.devise_contents
   -#
-  = devise_error_messages!
+  -# Displaying a page title
   -#
-  .field
-    -#
-    = f.label :email
-    %br/
-    -#
-    = f.email_field :email, autofocus: true, autocomplete: "email"
+  %h2.devise_title Forgot your password?
   -#
-  .actions
+  -# Creating 'form_for' (descriptions available on '.../registrations/form')
+  -#
+  = form_for(@user, url: password_path(resource_name), html: { method: :post }) do |f|
     -#
-    = f.submit "Send me reset password instructions"
--#
-= render "users/shared/links"
+    = devise_error_messages!
+    -#
+    .field
+      -#
+      = f.label :email
+      %br/
+      -#
+      = f.email_field :email, autofocus: true, autocomplete: "email"
+    -#
+    .actions
+      -#
+      = f.submit "Send me reset password instructions"
+  -#
+  = render "users/shared/links"
