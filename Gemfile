@@ -39,7 +39,8 @@ group :development do
   #
   gem 'web-console', '~> 2.0'
   #
-  # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
+  # Spring speeds up development by keeping your application running in the background.
+  # ** https://github.com/rails/spring
   #
   gem 'spring'
   #
@@ -48,7 +49,11 @@ end
 group :production do
   #
   # Using 'postgress' instead of 'sqlite3' for prduction
+  # ** https://github.com/rails/rails/issues/31673
   #
-  gem 'pg'
+  # ** 'brew install postgresql' should be run before 'bundle install'
+  # ** https://qiita.com/masanarih0ri/items/5ad2f7e11c8c94170d6b
+  #
+  gem 'pg', '0.21.0'
   #
 end
