@@ -21,7 +21,7 @@
     "//": " Executing 'npm install' and 'heroku run gulp build' at the same time ",
     "//": " ** https://qiita.com/yuku_t/items/8fd7551dc0418bf59aae ",
     "//": "",
-    "postinstall": "node_modules/.bin/gulp build",
+    "//": "node_modules/.bin/gulp build",
     "//": ""
   },
   "//": "",
