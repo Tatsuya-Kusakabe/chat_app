@@ -7,10 +7,15 @@
 #
 source 'https://rubygems.org'
 #
+# 'heroku buildpacks:add ...' should be executed before 'git push heroku'
+# ** flux_tutorial⁩/vendor/⁨bundle/⁨ruby/⁨2.5.0/⁨gems/⁨browserify-rails-4.3.0⁩/README.md
+# ** https://qiita.com/yuya_takeyama/items/fdb18999a22b5ad2663b
+#
+gem "browserify-rails"
+#
 gem 'rails', '4.2.8'
 gem 'haml-rails'
 gem 'erb2haml'
-gem "browserify-rails"
 gem 'sprockets-es6'
 gem 'react-rails'
 gem 'sass-rails', '~> 5.0'
@@ -52,9 +57,14 @@ group :production do
   # ** https://github.com/rails/rails/issues/31673
   #
   # ** 'brew install postgresql' should be run before 'bundle install'
-  # ** 'BUNDLE_WITHOUT: "production"' should be removed from '.bundle/config' 
+  # ** 'BUNDLE_WITHOUT: "production"' should be removed from '.bundle/config'
   # ** https://qiita.com/masanarih0ri/items/5ad2f7e11c8c94170d6b
   #
   gem 'pg', '0.21.0'
+  #
+  # 'rails_12factor' is necessary for activating 'Rails' on 'Heroku'
+  # ** https://qiita.com/yuku_t/items/8fd7551dc0418bf59aae
+  #
+  gem 'rails_12factor'
   #
 end
