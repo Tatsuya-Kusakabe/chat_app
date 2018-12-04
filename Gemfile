@@ -5,6 +5,10 @@
 # 'gem' should be installed in 'vendor/bundle'
 # ** https://www.sejuku.net/blog/8178
 #
+# 'Ruby' version should be declared inside 'Gemfile'
+#
+ruby '2.4.5'
+#
 source 'https://rubygems.org'
 #
 # 'heroku buildpacks:add ...' should be executed before 'git push heroku'
