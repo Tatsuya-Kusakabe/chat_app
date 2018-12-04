@@ -52,6 +52,7 @@ group :production do
   # ** https://github.com/rails/rails/issues/31673
   #
   # ** 'brew install postgresql' should be run before 'bundle install'
+  # ** 'BUNDLE_WITHOUT: "production"' should be removed from '.bundle/config' 
   # ** https://qiita.com/masanarih0ri/items/5ad2f7e11c8c94170d6b
   #
   gem 'pg', '0.21.0'
