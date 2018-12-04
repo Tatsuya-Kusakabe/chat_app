@@ -1,4 +1,10 @@
 #
+# 'gem' should not be installed globally
+# ** https://leico.github.io/TechnicalNote/Jekyll/worth-bundle-install
+#
+# 'gem' should be installed in 'vendor/bundle'
+# ** https://www.sejuku.net/blog/8178
+#
 source 'https://rubygems.org'
 #
 gem 'rails', '4.2.8'
