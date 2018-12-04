@@ -5,6 +5,9 @@
 //
 .reply-box {
   //
+  $box-height:  40px;
+  $icon-height: 40px;
+  //
   position: absolute; // Positioning based on 'body'
   //
   bottom:   0;
@@ -17,12 +20,15 @@
   //
   background: color('content-strong');
   //
-  &__input {
+  &__text {
     //
     display: block;
+    float: left;
     //
-    height:  40px;
-    width:   100%;
+    height:  $box-height;
+    left:    300px;
+    width:   calc(100% - 45px);
+    //
     padding: 9px 14px; // Excluding 'border'
     //
     border:  border('normal');
@@ -32,6 +38,34 @@
     //
     &:focus + .reply-box__tip {
       display: block;
+    }
+    //
+  }
+  //
+  &__picture {
+    //
+    display: block;
+    float: right;
+    //
+    height:  $icon-height;
+    width:   $icon-height;
+    right:   0;
+    //
+    position: relative;
+    //
+    cursor: pointer;
+    //
+    input { display: none; }
+    //
+    img {
+      //
+      height: $icon-height;
+      //
+      position:  absolute;
+      top:       50%;
+      left:      50%;
+      transform: translate(-50%, -50%);
+      //
     }
     //
   }

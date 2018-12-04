@@ -5,7 +5,7 @@
 //
 import request from 'superagent'
 import Dispatcher from '../dispatcher'
-import {ActionTypes, APIRoot, CSRFToken} from '../utils'
+import {ActionTypes, APIRoot, PicRoot, CSRFToken} from '../utils'
 //
 let verb, path, action, dbInfo, storeInfo, timestamp
 //
@@ -53,7 +53,7 @@ export default {
   //
   // Defining 'setDataToStore'
   //
-  setDataToStore(path, action, dbInfo, storeInfo) {
+  setDataToStore(path, action, dbInfo, storeInfo, verb = 'post') {
     //
     return new Promise((resolve, reject) => {
       //
@@ -136,28 +136,10 @@ export default {
   //
   searchUsers(userTab, name) {
     //
-    console.log('actions called!')
     path = (userTab === 'Friends') ? `api/friends/${name}` : `api/suggestions/${name}`
     action = (userTab === 'Friends') ? ActionTypes.SEARCH_FRIENDS : ActionTypes.SEARCH_SUGGESTIONS
     //
     this.getDataFromStore(path, action)
-    //
-  },
-  //
-  // Connecting from 'handleKeyDown(e)' in 'components/8_replyBox.js'
-  //              to 'SEND_MESSAGE'     in 'stores/index.js'
-  //
-  sendMessage(userID, message) {
-    //
-    timestamp = new Date().getTime()
-    //
-    verb = 'post'
-    path = `${APIRoot}/messages`
-    action = ActionTypes.SEND_MESSAGE
-    dbInfo = { sent_to: userID, contents: message, timestamp: timestamp }
-    storeInfo = {}
-    //
-    this.setDataToStore(path, action, dbInfo, storeInfo)
     //
   },
   //
@@ -170,7 +152,6 @@ export default {
     //
     // Except 'contents', 'changeOpenUserID' and 'sendMessage' is almost the same
     //
-    verb = 'post'
     path = `${APIRoot}/messages`
     action = ActionTypes.UPDATE_OPEN_USER_ID
     dbInfo = { clicked_on: userID, timestamp: timestamp }
@@ -187,14 +168,70 @@ export default {
     //
     timestamp = new Date().getTime()
     //
-    verb = 'put'
     path = `${APIRoot}/users/${userID}`
     action = ActionTypes.UPDATE_FRIENDSHIP
     dbInfo = { frs_state: friendship, id: userID, timestamp: timestamp }
+    storeInfo = {}
+    //
+    verb = 'put'
+    //
+    this.setDataToStore(path, action, dbInfo, storeInfo, verb)
+    //
+  },
+  //
+  // Connecting from 'sendMessage(e)' in 'components/8_replyBox.js'
+  //              to 'SEND_MESSAGE'   in 'stores/index.js'
+  //
+  sendMessage(userID, message) {
+    //
+    timestamp = new Date().getTime()
+    //
+    path = `${APIRoot}/messages`
+    action = ActionTypes.SEND_MESSAGE
+    dbInfo = { sent_to: userID, contents: message, timestamp: timestamp }
     storeInfo = {}
     //
     this.setDataToStore(path, action, dbInfo, storeInfo)
     //
   },
   //
+  // Connecting from 'sendPicture(e)' in 'components/8_replyBox.js'
+  //              to 'SEND_PICTURE'   in 'stores/index.js'
+  //
+  sendPicture(currentUserID, openUserID, picture) {
+    //
+    return new Promise((resolve, reject) => {
+      //
+      timestamp = new Date().getTime()
+      const picName = `${currentUserID}_${timestamp}_${picture['name']}`
+      const picPath = `/${PicRoot}/${picName}`
+      //
+      request.post(`${APIRoot}/messages`).set('X-CSRF-Token', CSRFToken())
+      .attach('picture', picture)
+      .field('contents', 'A picture was sent!').field('pic_path', picPath)
+      .field('sent_to', openUserID).field('timestamp', timestamp)
+      .end((error, res) => {
+        //
+        // When successfully accessed (status code: 200)
+        //
+        if (!error && res.status === 200) {
+          //
+          // Converting a JavaScript Object Notation (JSON) string into an object
+          // ** Writing "console.log(json)" and "console.log(res.text)" visualizes difference
+          //
+          const json = (res.text) ? JSON.parse(res.text) : ''
+          //
+          // Calling 'action' in 'stores' (** Changing data on 'stores' locally)
+          //
+          Dispatcher.handleViewAction({ type: ActionTypes.SEND_PICTURE, json: json })
+        //
+        } else {
+          reject(res)
+        }
+        //
+      })
+      //
+    })
+    //
+  },
 }

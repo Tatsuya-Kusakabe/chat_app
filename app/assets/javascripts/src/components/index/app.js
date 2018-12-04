@@ -76,7 +76,7 @@ class App extends React.Component {
     // Defining an object for facilitation
     // ** https://qiita.com/uto-usui/items/a9d17447fe81c17c41fa
     //
-    const {openUserTab, openUserID} = this.state
+    const {openUserTab, currentUserID, openUserID} = this.state
     //
     // If 'Suggestions' tab is open
     //
@@ -147,14 +147,14 @@ class App extends React.Component {
       return (
           <div className='app'>
             <div className='users-box'>
-              <UsersTab openUserTab={openUserTab} />
-              <SearchBox openUserTab={openUserTab} />
-              <FriendsList {...this.state} />
+              <UsersTab openUserTab={openUserTab}/>
+              <SearchBox openUserTab={openUserTab}/>
+              <FriendsList {...this.state}/>
             </div>
             <div className='messages-box'>
-              <UserShortProf {...this.state} />
-              <MessagesList {...this.state} />
-              <ReplyBox openUserID={openUserID} />
+              <UserShortProf {...this.state}/>
+              <MessagesList {...this.state}/>
+              <ReplyBox openUserID={openUserID} currentUserID={currentUserID}/>
             </div>
           </div>
       )

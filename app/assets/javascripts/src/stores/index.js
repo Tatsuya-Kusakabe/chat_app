@@ -161,7 +161,6 @@ IndexStore.dispatchToken = Dispatcher.register(payload => {
       // Getting a JSON string from "GET '/api/messages'"
       //
       tmpMsg = action.json
-      console.log(tmpMsg)
       //
       // Defining 'msg', by removing 'current_user' from 'tmpMsg'
       //
@@ -208,12 +207,14 @@ IndexStore.dispatchToken = Dispatcher.register(payload => {
       IndexStore.emitChange()
       break
     //
-    // When called from 'handleKeyDown(e)'             in 'components/8_replyBox.js'
+    // When called from 'sendMessage(e)'               in 'components/8_replyBox.js'
+    //          or from 'sendPicture(e)'               in 'components/8_replyBox.js'
     //          or from 'changeFriendship(friendship)' in 'components/6_userProf.js'
     //
     case ActionTypes.SEND_MESSAGE:
+    case ActionTypes.SEND_PICTURE:
       //
-      // ** 'emitChange()' is skipped because this action is
+      // ** 'emitChange()' is skipped because these actions are
       //    always followed by 'GET_FRIENDS' or 'GET_SUGGESTIONS'
       //
       break

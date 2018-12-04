@@ -11,7 +11,11 @@
   //
   flex-direction: $align;
   //
-  // Defining how each 'box' are positioned 'vertically'
+  // Defining how the overall 'container' is positioned 'vertically'
+  //
+  justify-content: center;
+  //
+  // Defining how each 'box' is positioned 'vertically'
   //
   align-items: center;
   //

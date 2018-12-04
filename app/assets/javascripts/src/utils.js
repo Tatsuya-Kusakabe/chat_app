@@ -14,15 +14,17 @@ export const ActionTypes = keyMirror({
   GET_SUGGESTIONS: null,
   SEARCH_FRIENDS: null,
   SEARCH_SUGGESTIONS: null,
-  SEND_MESSAGE: null,
   UPDATE_OPEN_USER_ID: null,
   UPDATE_FRIENDSHIP: null,
+  SEND_MESSAGE: null,
+  SEND_PICTURE: null,
 })
 //
 // Defining 'API endpoints', which names POST routing
 //
 const Root = window.location.origin || `${window.location.protocol}//${window.location.hostname}`
 export const APIRoot = `${Root}/api`
+export const PicRoot = 'assets/images'
 //
 // Defining 'CSRF token' for security
 //

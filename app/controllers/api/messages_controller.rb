@@ -27,8 +27,15 @@ class Api::MessagesController < ApplicationController
         sent_from: @current_user.id,
         sent_to:   params[:sent_to],
         contents:  params[:contents],
+        pic_path:  params[:pic_path],
         timestamp: params[:timestamp]
       )
+      #
+      # Saving 'picture' if sent
+      #
+      if params[:picture]
+        File.binwrite("public#{params[:pic_path]}", params[:picture].read)
+      end
       #
       # ** '.save!' returns error messages if failing to save
       #
@@ -137,8 +144,6 @@ class Api::MessagesController < ApplicationController
           # Checking if 'partner' name includes 'params[:id]'
           #
           name_bln = (partner.name.include?(params[:id])) || (partner.name.include?(params[:id].capitalize))
-          logger.debug('name_include?')
-          logger.debug(name_bln)
           #
           # If 'partner' name does not include 'params[:id]', skipping the iteration
           #

@@ -1,5 +1,5 @@
 //
-// components/5_userInfo.js
+// components/6_userProf.js
 //
 // Importing components
 //

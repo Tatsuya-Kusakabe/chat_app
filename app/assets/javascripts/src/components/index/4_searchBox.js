@@ -1,5 +1,5 @@
 //
-// components/7_replyBox.js
+// components/4_searchBox.js
 //
 // Importing components
 //

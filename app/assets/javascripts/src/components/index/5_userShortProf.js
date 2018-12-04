@@ -1,5 +1,5 @@
 //
-// components/4_userShortProf.js
+// components/5_userShortProf.js
 //
 // Importing components
 //
@@ -41,7 +41,7 @@ class UsersName extends React.Component {
     //
     if ((_.isString(this.props.openUserID)) || (this.props.openUserTab === 'Suggestions')) {
       //
-      return (<div className='users-info__list users-info__list__empty'></div>)
+      return (<div className='user-short-prof__list user-short-prof__list__empty'></div>)
       //
     }
     //

@@ -1,5 +1,5 @@
 //
-// components/6_messagesList.js
+// components/7_messagesList.js
 //
 // Importing components
 //
@@ -81,19 +81,34 @@ class MessagesList extends React.Component {
         //
         const contentClasses = classNames({
           'messages-list__content': true,
+          'messages-list__picture': message.picture_bln === true,
           'messages-list__content__from-current': message.sent_from === this.props.currentUserID,
           'messages-list__content__from-partner': message.sent_from !== this.props.currentUserID,
         })
         //
         // Returing each 'message.contents'
         //
-        return (
-            <li key={ message.timestamp + '-' + message.sent_from } className={ itemClasses }>
-              <div className={ contentClasses }>
-                { message.contents }
-              </div>
-            </li>
-        )
+        if (message.pic_path) {
+          //
+          return (
+              <li key={ message.timestamp + '-' + message.sent_from } className={ itemClasses }>
+                <div className={ contentClasses }>
+                  <img src={ message.pic_path }/>
+                </div>
+              </li>
+          )
+          //
+        } else {
+          //
+          return (
+              <li key={ message.timestamp + '-' + message.sent_from } className={ itemClasses }>
+                <div className={ contentClasses }>
+                  { message.contents }
+                </div>
+              </li>
+          )
+          //
+        }
         //
       })
       //
