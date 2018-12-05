@@ -7,7 +7,7 @@
 #
 # 'Ruby' version should be declared inside 'Gemfile'
 #
-ruby '2.4.5'
+ruby '2.5.0'
 #
 source 'https://rubygems.org'
 #
@@ -64,7 +64,10 @@ group :production do
   # ** 'BUNDLE_WITHOUT: "production"' should be removed from '.bundle/config'
   # ** https://qiita.com/masanarih0ri/items/5ad2f7e11c8c94170d6b
   #
-  gem 'pg', '0.21.0'
+  # ** Downgrading to 'pg 0.20' to remove error messages
+  # ** https://github.com/rails/rails/issues/29521
+  #
+  gem 'pg', '0.20'
   #
   # 'rails_12factor' is necessary for activating 'Rails' on 'Heroku'
   # ** https://qiita.com/yuku_t/items/8fd7551dc0418bf59aae

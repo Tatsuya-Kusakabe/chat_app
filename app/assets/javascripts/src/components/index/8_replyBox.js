@@ -4,7 +4,6 @@
 // Importing components
 //
 import React from 'react'
-import FileInput from 'react-file-input'
 import PropTypes from 'prop-types'
 import IndexAction from '../../actions/index'
 //
@@ -42,7 +41,7 @@ class ReplyBox extends React.Component {
     //
     this.setState({ picture: e.target.files[0] })
     IndexAction.sendPicture(this.props.currentUserID, this.props.openUserID, e.target.files[0])
-    IndexAction.getMessages("Friends")
+    IndexAction.getMessages('Friends')
     this.setState({ picture: '' })
     //
   }
