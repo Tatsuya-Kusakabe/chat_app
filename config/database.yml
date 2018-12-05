@@ -1,3 +1,4 @@
+#
 # SQLite version 3.x
 #   gem install sqlite3
 #
@@ -8,21 +9,25 @@ default: &default
   adapter: sqlite3
   pool: 5
   timeout: 5000
-
+#
 development:
   <<: *default
   database: db/development.sqlite3
-
+#
 # Warning: The database defined as "test" will be erased and
 # re-generated from your development database when you run "rake".
 # Do not set this db to the same as development or production.
+#
 test:
   <<: *default
   database: db/test.sqlite3
-
-# default: database: db/production.sqlite3
+#
+# Changing 'database' name
+# ** https://qiita.com/beta_chelsea/items/34ccd2b7ad48163c55f8
+#
 production:
   <<: *default
+  database: flux_tutorial_production
   adapter: postgresql
   encoding: unicode
   pool: 5

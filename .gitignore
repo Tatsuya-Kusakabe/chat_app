@@ -9,6 +9,7 @@
 # ** https://stackoverflow.com/questions/12573596/
 #
 # Ignore bundler config.
+/vendor/bundle
 /.bundle
 /node_modules
 npm-debug.log
