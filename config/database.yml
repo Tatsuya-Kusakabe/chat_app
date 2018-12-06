@@ -22,21 +22,30 @@ test:
   <<: *default
   database: db/test.sqlite3
 #
-# Changing 'database' name
+# 1. Creating 'flux-tutorial' on 'heroku'
+# ** https://devcenter.heroku.com/articles/heroku-postgresql
+#
+# 2. Creating 'messages', 'relationships', ..., on 'heroku' (possibly unnecessary??)
+# ** https://www.postgresql.jp/document/9.4/html/tutorial-table.html
+#
+# 3. Transferring data from 'sqlite3 db/development.sqlite3' to 'heroku pg:psql'
+# ** https://qiita.com/kumakichiwel/items/5ad175111fcd841c6606
+#
+# 4. Changing 'database' name to 'flux-tutorial'
 # ** https://qiita.com/beta_chelsea/items/34ccd2b7ad48163c55f8
 #
-# Changing 'host' according to 'unix_socket_directories'
+# 5. Changing 'host' according to 'unix_socket_directories'
 # ** https://qiita.com/volanja/items/e4c351ae5e5d1b977077
 #
-# OSX user should have 'x' permissions on '/var/run/postgresql', and 'wrx' permissions on '.s.PGSQL.5432'
+# 6. Adding 'x' permissions on '/var/run/postgresql', and 'wrx' permissions on '.s.PGSQL.5432'
 # ** https://stackoverflow.com/questions/8465508/can-not-connect-to-local-postgresql
 #
-# How to change permissions
+# ** How to change permissions
 # ** https://qiita.com/shisama/items/5f4c4fa768642aad9e06
 #
 production:
   <<: *default
-  database: flux_tutorial_production
+  database: flux-tutorial
   adapter: postgresql
   encoding: unicode
   pool: 5
