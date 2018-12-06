@@ -15,4 +15,20 @@ Q2. 'SQLite3::BusyException: database is locked:' が表示される時
 
 Q3. 'heroku run rake db:migrate' が上手くいかない時
 
-  a) /config/database.yml のコメントを参照
+  a) Heroku 上にデータストアを作る
+  *) https://devcenter.heroku.com/articles/heroku-postgresql
+
+  b) データストア上に、ローカルで作成したのと同じテーブルを作る（不要かも？？）
+  *) https://www.postgresql.jp/document/9.4/html/tutorial-table.html
+
+  c) 'sqlite3 db/development.sqlite3' から 'heroku pg:psql' へデータを移す
+  *) https://qiita.com/kumakichiwel/items/5ad175111fcd841c6606
+
+  d) 'config/database.yml' の設定を変える
+  *) https://qiita.com/beta_chelsea/items/34ccd2b7ad48163c55f8
+
+  e) '/usr/local/var/postgres/postgresql.conf' の 'unix_socket_directories' を変更する
+  *) https://qiita.com/volanja/items/e4c351ae5e5d1b977077
+
+  f) '/var/run/postgresql' に 'x'権限を、'./.s.PGSQL.5432' に 'wrx'権限を与える
+  *) https://stackoverflow.com/questions/8465508/can-not-connect-to-local-postgresql
