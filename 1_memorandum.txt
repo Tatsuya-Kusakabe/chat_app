@@ -35,3 +35,4 @@ Q3. 'heroku run rake db:migrate' が上手くいかない時
 
 Q4. heroku deploy
 https://qiita.com/tomomomo1217/items/fa8dfa094cc4c0e4e350
+package.json を書き換える　https://qiita.com/yuku_t/items/8fd7551dc0418bf59aae

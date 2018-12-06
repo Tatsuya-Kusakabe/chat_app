@@ -3,13 +3,11 @@
   "version": "1.0.0",
   "description": "== README",
   "main": "index.js",
-  "directories": { "test": "test" },
-  "//": "",
-  "//": " ?? ",
-  "//": " ** https://qiita.com/yuku_t/items/8fd7551dc0418bf59aae ",
+  "directories": {
+    "test": "test"
+  },
   "//": "",
   "cacheDirectories": "node_modules",
-  "//": "",
   "scripts": {
     "//": "",
     "build": "browserify app/assets/javascripts/src/boot.js -t babelify/browserify-incremental --extension=\".js.jsx\" -o public/assets/javascripts/boot.js",
@@ -17,14 +15,8 @@
     "watch:hot": "npm run lint && watchify app/assets/javascripts/src/boot.js -t babelify --extension=\".js.jsx\" -d -p livereactload -o public/assets/javascripts/boot.js -v",
     "lint": "eslint ./app/assets/javascripts/src",
     "lint:fix": "npm run lint -- --fix",
-    "//": "",
-    "//": " Executing 'npm install' and 'heroku run gulp build' at the same time ",
-    "//": " ** https://qiita.com/yuku_t/items/8fd7551dc0418bf59aae ",
-    "//": "",
-    "//": "node_modules/.bin/gulp build",
-    "//": ""
+    "postinstall": "node_modules/.bin/gulp build"
   },
-  "//": "",
   "devDependencies": {
     "babel-eslint": "^5.0.0-beta6",
     "classnames": "^2.2.5",
@@ -36,7 +28,6 @@
     "livereactload": "^2.1.0",
     "react-proxy": "^2.0.1"
   },
-  "//": "",
   "dependencies": {
     "acorn": "^3.1.0",
     "babel-core": "^6.3.21",
