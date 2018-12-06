@@ -32,3 +32,6 @@ Q3. 'heroku run rake db:migrate' が上手くいかない時
 
   f) '/var/run/postgresql' に 'x'権限を、'./.s.PGSQL.5432' に 'wrx'権限を与える
   *) https://stackoverflow.com/questions/8465508/can-not-connect-to-local-postgresql
+
+Q4. heroku deploy
+https://qiita.com/tomomomo1217/items/fa8dfa094cc4c0e4e350
