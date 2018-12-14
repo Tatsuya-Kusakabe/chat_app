@@ -15,7 +15,7 @@ Rails.application.routes.draw do
     resources :friends,     { only: [:index, :show] }
     resources :suggestions, { only: [:index, :show] }
     resources :messages,    { only: [:create] }
-    resources :users,       { only: [:update] }
+    resources :users,       { only: [:index, :update] }
   end
   #
   # Creating routes for '/users' with 'devise'

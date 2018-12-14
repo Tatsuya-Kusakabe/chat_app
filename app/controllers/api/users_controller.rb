@@ -6,6 +6,7 @@
 #    Creating actions for index, create, and rendering in 'json' format
 #
 class Api::UsersController < ApplicationController
+
   #
   def update
     #

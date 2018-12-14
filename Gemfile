@@ -53,6 +53,8 @@ group :development do
   #
   gem 'spring'
   #
+  gem 'rubocop', '~> 0.39.0'
+  #
 end
 #
 group :production do

@@ -1,3 +1,25 @@
+181214_村井レビュー
+
+・バックエンドは基本的に、データベースの中身を json で返すだけ。
+　get_messages に全て詰め込むな！
+・それぞれのデータベースに合わせて、controller と Actions と Stores を作ろう
+・変数の範囲は狭くする。引数と関数内の const だけで完結させる
+・DRY は本質的に同じものに対して適用すること。
+　たまたま同じコードだから DRY にしました、だと逆に分かりにくいことも
+・mutation は厳禁。Object.assign({ hoge: fuga }) ではなく、
+  [...object, { hoge: fuga }] を使おう
+・シグネチャー（関数名、引数、戻り値）は、初見でも分かりやすく定義するべき
+・emitChange() を飛ばすと、処理が追いにくくなるので避けるべき。
+　飛ばさないとうごかなくなるのは、action 側と密なので避けるべき
+・処理を共通化したいなら関数化せよ
+・rubocop を入れる
+・js action はリファクタしすぎ？？
+・store が変わらないのに action を変えてはいけない（tmpMsg）
+・components にナンバリングはしないほうがいい。汎用性が低くなる
+・ぷるりくえすとをだす。細かく（理想は一業の変更でもだす。robocop の導入とか）
+・リーダブルコード、楽しいルビー
+・RESTful な API_v2 を作成、js 側も v2 を呼ぶように徐々に変更
+
 Q1. localhost:3000 がアップデートされない時
 
   a) npm run watch を走らせる
@@ -35,4 +57,5 @@ Q3. 'heroku run rake db:migrate' が上手くいかない時
 
 Q4. heroku deploy
 https://qiita.com/tomomomo1217/items/fa8dfa094cc4c0e4e350
+buildpacks を指定する　https://qiita.com/yuku_t/items/8fd7551dc0418bf59aae
 package.json を書き換える　https://qiita.com/yuku_t/items/8fd7551dc0418bf59aae
