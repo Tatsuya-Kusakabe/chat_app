@@ -23,7 +23,7 @@ Rails.application.routes.draw do
   namespace :api_v2, { format: 'json' } do
     resources :friends,     { only: [:index] }
     resources :suggestions, { only: [:index] }
-    resources :messages,    { only: [:index, :show] }
+    resources :messages,    { only: [:index, :create, :show] }
   end
 
   # Creating routes for '/users' with 'devise'
