@@ -1,36 +1,29 @@
 
 class ApiV2::MessagesController < ApplicationController
 
+  # Totally renewed from 'api/messages#index'
+
   def index
 
     # Mapping each 'friend' into a list of messages related to 'friend'
 
     messages = friends_id.map { |friend|
 
-      # Selecting 'messages' sent from 'friend' to '@current_user'
+      # Selecting 'messages' sent between 'friend' and '@current_user'
 
-      messages_sent_from_friend = Message.where(
-        "(sent_from == ? and sent_to == ?)",
-        friend, @current_user.id
+      messages_with_friend = Message.where(
+        "(sent_from = ? and sent_to = ?) or (sent_from = ? and sent_to = ?)",
+        @current_user.id, friend, friend, @current_user.id
       )
 
-      # Selecting 'messages' sent from '@current_user' to 'friend'
-
-      messages_sent_to_friend = Message.where(
-        "(sent_from == ? and sent_to == ?)",
-        @current_user.id, friend
-      )
-
-      # Binding above two and sorting them according to 'timestamp'
+      # Sorting 'messages' according to 'timestamp'
       # ** https://stackoverflow.com/questions/882070/
 
-      messages_with_friend \
-        = (messages_sent_from_friend + messages_sent_to_friend) \
-        .sort_by { |obj| obj.timestamp }
+      messages_sorted = messages_with_friend.sort_by { |obj| obj.timestamp }
 
-      # Returning 'messages_with_friend' with the key 'friend'
+      # Returning 'messages_sorted' with the key 'friend'
 
-      { friend => messages_with_friend }
+      { friend => messages_sorted }
 
     }
 
@@ -39,6 +32,8 @@ class ApiV2::MessagesController < ApplicationController
     render(json: messages)
 
   end
+
+  # Extracted from 'api/messages#create'
 
   def create
 
@@ -63,6 +58,8 @@ class ApiV2::MessagesController < ApplicationController
     messages.update_attributes(create_params)
 
   end
+
+  # Totally renewed from 'api/messages#show'
 
   def show
 
