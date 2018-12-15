@@ -18,7 +18,7 @@ class ApiV2::RelationshipsController < ApplicationController
     new_relationship.update_attributes(create_params)
 
     # ** If skipping 'render', rails will automatically
-    #    look for '.../update.html.haml'
+    #    look for '.../create.html.haml'
 
     render(json: "")
 
