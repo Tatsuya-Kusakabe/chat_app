@@ -56,6 +56,7 @@ class ApiV2::MessagesController < ApplicationController
     # Saving 'messages'
 
     messages.update_attributes(create_params)
+    render(json: "")
 
   end
 
@@ -63,30 +64,21 @@ class ApiV2::MessagesController < ApplicationController
 
   def show
 
-    # Selecting 'messages' sent from 'friend' to '@current_user'
+    # Selecting 'messages' sent between 'friend' and '@current_user'
 
-    messages_sent_from_friend = Message.where(
-      "(sent_from == ? and sent_to == ?)",
-      params[:id], @current_user.id
+    messages_with_friend = Message.where(
+      "(sent_from = ? and sent_to = ?) or (sent_from = ? and sent_to = ?)",
+      @current_user.id, params[:id], params[:id], @current_user.id
     )
 
-    # Selecting 'messages' sent from '@current_user' to 'friend'
-
-    messages_sent_to_friend = Message.where(
-      "(sent_from == ? and sent_to == ?)",
-      @current_user.id, params[:id]
-    )
-
-    # Binding above two and sorting them according to 'timestamp'
+    # Sorting 'messages' according to 'timestamp'
     # ** https://stackoverflow.com/questions/882070/
 
-    messages_with_friend \
-      = (messages_sent_from_friend + messages_sent_to_friend) \
-      .sort_by { |obj| obj.timestamp }
+    messages_sorted = messages_with_friend.sort_by { |obj| obj.timestamp }
 
     # Returning 'messages_with_friend'
 
-    render(json: messages_with_friend)
+    render(json: messages_sorted)
 
   end
 
