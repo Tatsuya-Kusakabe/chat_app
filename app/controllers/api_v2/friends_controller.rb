@@ -1,7 +1,8 @@
 
 class ApiV2::FriendsController < ApplicationController
 
-  # Syntax ... https://teratail.com/questions/97764
+  # Newly created
+  # ** Syntax ... https://teratail.com/questions/97764
 
   def index
     friends = User.where("id IN (?)", friends_id)
