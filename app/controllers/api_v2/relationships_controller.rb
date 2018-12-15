@@ -38,6 +38,33 @@ class ApiV2::RelationshipsController < ApplicationController
 
   end
 
+  # Extracted from 'api/messages#create'
+
+  def update
+
+    # Finding 'user' on scope
+
+    user = User.find_by(id: params[:id])
+
+    # Finding relationships concerning 'user'
+
+    user_active  = user.active_relationship.find_by(recipient_id:  @current_user)
+    user_passive = user.passive_relationship.find_by(applicant_id: @current_user)
+
+    # Updating 'timestamp'
+
+    if !!user_active
+      user_active.timestamp_recipient  = params[:timestamp]
+      user_active.save!
+    elsif !!user_passive
+      user_passive.timestamp_applicant = params[:timestamp]
+      user_passive.save!
+    end
+
+    render(json: "")
+
+  end
+
   # Extracted from 'api/users#update'
 
   def destroy
