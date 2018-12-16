@@ -5,12 +5,27 @@ class ApiV2::RelationshipsController < ApplicationController
 
   def index
 
-    relationships = Relationship.where(
-      "(applicant_id = ? and recipient_id IN (?)) or
-       (recipient_id = ? and applicant_id IN (?))",
-      @current_user, friends_id, @current_user, friends_id
-    )
+    # Mapping each 'friend' into a list of relationships related to 'friend'
+    relationships = friends_id.map { |friend|
 
+      # Extracting 'relationship' between 'friend' and '@current_user'
+      relationships_with_friend = Relationship.where(
+        "(applicant_id = ? and recipient_id IN (?)) or
+         (recipient_id = ? and applicant_id IN (?))",
+        @current_user, friend, @current_user, friend
+
+      # Limiting columns for quicker data loading
+      ).select(
+        'id, applicant_id, recipient_id,
+         timestamp_applicant, timestamp_recipient'
+      )
+
+      # Returning 'relationships_with_friend' with the key 'friend'
+      { friend => relationships_with_friend[0] }
+
+    }
+
+    # Returning 'relationships'
     render(json: relationships)
 
   end
