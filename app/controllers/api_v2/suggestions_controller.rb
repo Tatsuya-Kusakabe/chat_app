@@ -16,7 +16,7 @@ class ApiV2::SuggestionsController < ApplicationController
 
     # Returning 'suggestions'
     render(json: suggestions)
-    
+
   end
 
 end
