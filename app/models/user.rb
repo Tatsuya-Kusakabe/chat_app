@@ -55,6 +55,36 @@ class User < ActiveRecord::Base
   # Adding validations
   validates :name, presence: true
 
+  # Extracting an array of 'friend_ids' (moved from 'application_controller.rb')
+  def friend_ids
+
+    # Extracting 'relationship' related to '@current_user'
+    active_relationships = Relationship.where(applicant_id: self.id)
+    passive_relationships = Relationship.where(recipient_id: self.id)
+
+    # Making a list of 'friends_id' immutably
+    # https://stackoverflow.com/questions/9072689
+    active_friend_ids = active_relationships.map(&:recipient_id)
+    passive_friend_ids = passive_relationships.map(&:applicant_id)
+
+    # Returning 'friends_id'
+    return active_friend_ids + passive_friend_ids
+
+  end
+
+  # Extracting an array of 'friend' objects
+  # ** https://teratail.com/questions/97764
+  # ** ~~~ Pagination should be availavle ~~~
+  def friends
+    return User.where(id: self.friend_ids)
+  end
+
+  # Extracting an array of 'suggestion' objects
+  # ** ~~~ Pagination should be availavle ~~~
+  def suggestions
+    return User.where.not(id: self.friend_ids)
+  end
+
   # ** 'devise :validatable' automatically performs confirmation
   # ** http://yoshitsugufujii.github.io/blog/2015/06/08/devise-skip-password-check/
   # validates :email,              { presence: true, allow_blank: true, uniqueness: true }
