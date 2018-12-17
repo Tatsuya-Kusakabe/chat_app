@@ -7,22 +7,12 @@
 # When 'git push', gems are installed in 'vendor/bundle' by default
 # ** https://stackoverflow.com/questions/12573596/
 
-# Ignore bundler config.
-/vendor/bundle
-/.bundle
-/node_modules
-npm-debug.log
-
-# Ignore the default SQLite database.
-/db/*.sqlite3
-/db/*.sqlite3-journal
-
-# Ignore all logfiles and tempfiles.
-/log/*
-!/log/.keep
-/tmp
+# Multiple '.gitignore' are available
+# ** https://qiita.com/anqooqie/items/110957797b3d5280c44f
 
 # Ignore other unnecessary files.
-.DS_Store
-/yarn.lock
-!.gitkeep
+javascripts/*
+*.js
+*.json
+*.css
+*.gz
