@@ -1,0 +1,89 @@
+
+# http://vdeep.net/rubyonrails-rubocop#Rubocop
+
+Rails:
+
+  # Normal convention + Rails convention
+  Enabled: true
+
+AllCops:
+
+  # Designating 'Ruby version'
+  TargetRubyVersion: 2.5.0
+
+  # Files excluded
+  Exclude:
+    - app/controllers/api/*
+    - app/helpers/**/*
+    - bin/*
+    - config/**/*
+    - db/**/*
+    - lib/**/*
+    - node_modules/**/*
+    - test/**/*
+    - vendor/bundle/**/*
+    - Gemfile
+    - Rakefile
+
+# (Modified) ** 80 is too short...
+Metrics/LineLength:
+  Max: 100
+
+# (Modified) ** 10 is too short...
+Metrics/MethodLength:
+  Max: 15
+
+# (Modified) ** 15 is too strict...
+Metrics/AbcSize:
+  Max: 25
+
+# (Disabled) ** No idea of alternatives...
+Rails/SkipsModelValidations:
+  Enabled: false
+
+# (Disabled) ** No idea of alternatives...
+Style/GuardClause:
+  Enabled: false
+
+# (Disabled) ** https://www.task-notes.com/entry/20160831/1472572735
+Style/FrozenStringLiteralComment:
+  Enabled: false
+
+# (Disabled) ** Compact styles (e.g. Api::UserController) is easier to read
+Style/ClassAndModuleChildren:
+  Enabled: false
+
+# (Disabled) ** In some cases, 'returning' explicitly helps
+Style/RedundantReturn:
+  Enabled: false
+
+# (Disabled) ** When having a long condition or logic in a 'single-line body',
+#               'if' or 'unless' modifiers make it more complicated
+Style/IfUnlessModifier:
+  Enabled: false
+
+# (Disabled) Conventions concerning indentations
+Layout/CommentIndentation:
+  Enabled: false
+
+Layout/IndentationWidth:
+  Enabled: false
+
+Layout/IndentationConsistency:
+  Enabled: false
+
+# (Disabled) Conventions concerning blank lines
+Layout/LeadingBlankLines:
+  Enabled: false
+
+Layout/EmptyLinesAroundClassBody:
+  Enabled: false
+
+Layout/EmptyLinesAroundMethodBody:
+  Enabled: false
+
+Layout/EmptyLinesAroundBlockBody:
+  Enabled: false
+
+Layout/EmptyLinesAroundArguments:
+  Enabled: false

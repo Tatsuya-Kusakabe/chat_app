@@ -1,4 +1,5 @@
 
+# Responsible for getting a list of friends (index)
 class ApiV2::FriendsController < ApplicationController
 
   # Newly created
@@ -7,7 +8,7 @@ class ApiV2::FriendsController < ApplicationController
     # Extracting users using 'friends_id'
     # ** https://teratail.com/questions/97764
     friends = User.where(
-      "id IN (?)", friends_id
+      'id IN (?)', friends_id
 
     # Limiting columns for quicker data loading
     ).select(
