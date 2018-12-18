@@ -103,6 +103,30 @@ class User < ActiveRecord::Base
 
   end
 
+  # Extracting an array of 'relatioship' objects
+  def relationships
+
+    # Extracting relationships (while avoiding 'N + 1 problem')
+    # ** This should be avoided -> hoge = fuga.map { |foo| (Queries) }
+    return relationships = Relationship.where(
+      '(applicant_id = ? and recipient_id IN (?)) or
+       (recipient_id = ? and applicant_id IN (?))',
+      self.id, self.friend_ids, self.id, self.friend_ids
+    )
+
+  end
+
+  # Extracting 'relationship' with 'friend'
+  def relationship_with(friend_id)
+
+    return relationship = Relationship.find_by(
+      '(applicant_id = ? and recipient_id = ?) or
+       (recipient_id = ? and applicant_id = ?)',
+      self.id, friend_id, self.id, friend_id
+    )
+  
+  end
+
   # ** 'devise :validatable' automatically performs confirmation
   # ** http://yoshitsugufujii.github.io/blog/2015/06/08/devise-skip-password-check/
   # validates :email,              { presence: true, allow_blank: true, uniqueness: true }
