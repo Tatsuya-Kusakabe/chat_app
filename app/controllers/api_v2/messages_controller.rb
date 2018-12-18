@@ -1,68 +1,64 @@
 
-# Responsible for getting a list of messages             (index),
-#                 getting a list of messages with a user (show), and
-#                 posting a new message                  (create)
+# Responsible for getting a list of messages with a certain user (index), and
+#                 posting a new message to a certain user        (create)
 class ApiV2::MessagesController < ApplicationController
 
   # Totally renewed from 'api/messages#index'
   def index
 
-    # Mapping each 'friend' into a list of messages related to 'friend'
-    messages = friends_id.map do |friend|
+    # Will be passed from a client side
+    params[:user_id] = 7
 
-      # Selecting 'messages' sent between 'friend' and '@current_user'
-      messages_with_friend = Message.where(
-        '(sent_from = ? and sent_to = ?) or (sent_from = ? and sent_to = ?)',
-        @current_user.id, friend, friend, @current_user.id
-      )
-
-      # Sorting 'messages' according to 'timestamp'
-      # ** https://stackoverflow.com/questions/882070/
-      messages_sorted = messages_with_friend.sort_by(&:timestamp)
-
-      # Returning 'messages_sorted' with the key 'friend'
-      { friend => messages_sorted }
-
-    end
-
-    # Returning 'messages'
+    messages = @current_user.messages_with(params[:user_id])
     render(json: messages)
 
   end
 
   # Totally renewed from 'api/messages#show'
-  def show
+  # ** Should have been defined in 'index'
+  # def show
 
     # Selecting 'messages' sent between 'friend' and '@current_user'
-    messages_with_friend = Message.where(
-      '(sent_from = ? and sent_to = ?) or (sent_from = ? and sent_to = ?)',
-      @current_user.id, params[:id], params[:id], @current_user.id
-    )
+    # messages_with_friend = Message.where(
+    #   '(sent_from = ? and sent_to = ?) or (sent_from = ? and sent_to = ?)',
+    #   @current_user.id, params[:id], params[:id], @current_user.id
+    # )
 
     # Sorting 'messages' according to 'timestamp'
     # ** https://stackoverflow.com/questions/882070/
-    messages_sorted = messages_with_friend.sort_by(&:timestamp)
+    # messages_sorted = messages_with_friend.sort_by(&:timestamp)
 
     # Returning 'messages_with_friend'
-    render(json: messages_sorted)
+    # render(json: messages_sorted)
 
-  end
+  # end
 
   # Extracted from 'api/messages#create'
   def create
+
+    # Creating 'timestamp' (https://stackoverflow.com/questions/13148888)
+    timestamp = Time.zone.now.strftime('%s%3N')
 
     # Creating 'messages'
     messages = Message.new(
       sent_from: @current_user.id,
       sent_to: params[:sent_to],
       contents: params[:contents],
-      pic_path: params[:pic_path],
-      timestamp: params[:timestamp]
+      pic_path: nil,
+      timestamp: timestamp
     )
 
-    # Saving 'picture' if sent
+    # If a picture was sent
     if params[:picture]
-      File.binwrite("public#{params[:pic_path]}", params[:picture].read)
+
+      # Defining 'picture_path' and saving it to the database
+      picture_path = "#{picture_root_path}/#{@current_user.id}" \
+                  << "_#{timestamp}_#{params[:picture][:name]}"
+      messages.pic_path = picture_path
+
+      # Saving a picture to 'public/assets/images'
+      File.binwrite("public#{picture_path}", params[:picture].read)
+
     end
 
     # Saving 'messages'

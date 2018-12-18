@@ -67,8 +67,8 @@ class ApplicationController < ActionController::Base
   end
 
   # Defining a path to save 'profile_picture'
-  def profile_picture_path
-    return 'assets/images'
+  def picture_root_path
+    return '/assets/images'
   end
 
 end

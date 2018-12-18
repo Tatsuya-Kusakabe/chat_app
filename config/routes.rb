@@ -12,19 +12,19 @@ Rails.application.routes.draw do
   # Creating routes for '/api/messages' and '/api/suggestions' (index, create)
 
   namespace :api, { format: 'json' } do
-    resources :friends,     { only: [:index, :show] }
-    resources :suggestions, { only: [:index, :show] }
-    resources :messages,    { only: [:create] }
-    resources :users,       { only: [:index, :update] }
+    resources :friends,     only: %i[index show]
+    resources :suggestions, only: %i[index show]
+    resources :messages,    only: :create
+    resources :users,       only: %i[index update]
   end
 
   # Creating routes for '/api_v2/friends' and so on...
 
   namespace :api_v2, { format: 'json' } do
-    resources :friends,       { only: [:index] }
-    resources :suggestions,   { only: [:index] }
-    resources :messages,      { only: [:index, :create, :show] }
-    resources :relationships, { only: [:index, :create, :show, :update, :destroy] }
+    resources :friends,       only: :index
+    resources :suggestions,   only: :index
+    resources :messages,      only: %i[index create]
+    resources :relationships, only: %i[index create show update destroy]
   end
 
   # Creating routes for '/users' with 'devise'
