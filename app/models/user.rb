@@ -85,21 +85,49 @@ class User < ActiveRecord::Base
     return User.where.not(id: self.friend_ids)
   end
 
-  # Extracting an array of 'messages' with 'friend'
-  def messages_with(friend_id)
+  # Extracting an array of 'messages'
+  def messages(with_ids: nil, top_newest_counts: nil)
+
+    # Custom error messages (just in case handling too much data)
+    max_ids = 50
+    max_counts = 50
+
+    if ((top_newest_counts == nil || top_newest_counts > max_counts) \
+      && with_ids.length > max_ids)
+
+      raise "Too much data to handle in one time. \
+             Please limit the number of messages below #{ max_ids } \
+             or friends below #{ max_counts }."
+
+    end
 
     # Extracting
     messages = Message.where(
-      '(sent_from = ? and sent_to = ?) or (sent_from = ? and sent_to = ?)',
-      self.id, friend_id, friend_id, self.id
-    )
+      '(sent_from = ? and sent_to IN (?)) or
+       (sent_to = ? and sent_from IN (?))',
+      self.id, with_ids, self.id, with_ids
 
-    # Sorting according to 'timestamp'
-    # ** https://stackoverflow.com/questions/882070/
-    messages_sorted = messages.sort_by(&:timestamp)
+    # ** Sorting with SQL (.order) is quicker than Rails (.sort_by)
+    ).order(:timestamp)
 
-    # Returning 'messages_sorted' with the key 'friend'
-    return messages_sorted
+    # Mapping 'messages' with the key 'sent_from' or 'sent_to'
+    messages_mapped = with_ids.map do |with_id|
+
+      # Extracting 'messages' matching with the key
+      messages_with_id = messages.select do |message|
+        message.sent_from == with_id || message.sent_to == with_id
+      end
+
+      # If 'top_newest_counts' is defined, picking up as it wants
+      { with_id => top_newest_counts \
+        ? messages_with_id.last(top_newest_counts) \
+        : messages_with_id
+      }
+
+    end
+
+    # Returning 'messages_mapped'
+    return messages_mapped
 
   end
 
@@ -124,7 +152,7 @@ class User < ActiveRecord::Base
        (recipient_id = ? and applicant_id = ?)',
       self.id, friend_id, self.id, friend_id
     )
-  
+
   end
 
   # ** 'devise :validatable' automatically performs confirmation

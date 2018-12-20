@@ -6,10 +6,20 @@ class ApiV2::MessagesController < ApplicationController
   # Totally renewed from 'api/messages#index'
   def index
 
-    # Will be passed from a client side
-    params[:user_id] = 7
+    # params[:self_id], params[:partner_ids] and params[:limit]
+    # being passed as query parameters
+    user = User.find(params[:self_id])
 
-    messages = @current_user.messages_with(params[:user_id])
+    # Setting 'id_params' defalut as 'user.friend_ids'
+    id_params = params[:partner_ids].blank? \
+      ? user.friend_ids : params[:partner_ids].map(&:to_i)
+
+    # Setting 'count_params' defalut as 'nil'
+    count_params = params[:limit].blank? \
+      ? nil : params[:limit].to_i
+
+    # Returning 'messages'
+    messages = user.messages(with_ids: id_params, top_newest_counts: count_params)
     render(json: messages)
 
   end
