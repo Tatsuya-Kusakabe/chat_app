@@ -1,4 +1,5 @@
 
+# Responsible for getting a list of suggestions (index)
 class ApiV2::SuggestionsController < ApplicationController
 
   # Newly created
@@ -7,7 +8,7 @@ class ApiV2::SuggestionsController < ApplicationController
     # Extracting suggestions using 'friends_id'
     # ** https://teratail.com/questions/97764
     suggestions = User.where(
-      "id NOT IN (?)", friends_id
+      'id NOT IN (?)', friends_id
 
     # Limiting columns for quicker data loading
     ).select(

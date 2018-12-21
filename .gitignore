@@ -4,10 +4,9 @@
 # or operating system, you probably want to add a global ignore instead:
 #   git config --global core.excludesfile '~/.gitignore_global'
 
-#
 # When 'git push', gems are installed in 'vendor/bundle' by default
 # ** https://stackoverflow.com/questions/12573596/
-#
+
 # Ignore bundler config.
 /vendor/bundle
 /.bundle
@@ -26,5 +25,4 @@ npm-debug.log
 # Ignore other unnecessary files.
 .DS_Store
 /yarn.lock
-public/assets/javascripts/*
 !.gitkeep

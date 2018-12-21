@@ -11,6 +11,7 @@
 # ** https://qiita.com/anqooqie/items/110957797b3d5280c44f
 
 # Ignore other unnecessary files.
+javascripts/*
 *.js
 *.json
 *.css
