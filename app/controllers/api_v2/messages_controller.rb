@@ -6,10 +6,20 @@ class ApiV2::MessagesController < ApplicationController
   # Totally renewed from 'api/messages#index'
   def index
 
-    # Will be passed from a client side
-    params[:user_id] = 7
+    # params[:self_id], params[:partner_ids] and params[:limit]
+    # being passed as query parameters
+    user = User.find(params[:self_id])
 
-    messages = @current_user.messages_with(params[:user_id])
+    # Setting 'id_params' defalut as 'user.friend_ids'
+    id_params = params[:partner_ids].blank? \
+      ? user.friend_ids : params[:partner_ids].map(&:to_i)
+
+    # Setting 'count_params' defalut as '50'
+    count_params = params[:limit].blank? \
+      ? 50 : params[:limit].to_i
+
+    # Returning 'messages'
+    messages = user.messages(with_ids: id_params, top_newest_counts: count_params)
     render(json: messages)
 
   end
@@ -40,7 +50,7 @@ class ApiV2::MessagesController < ApplicationController
     timestamp = Time.zone.now.strftime('%s%3N')
 
     # Creating 'messages'
-    messages = Message.new(
+    new_message = Message.new(
       sent_from: @current_user.id,
       sent_to: params[:sent_to],
       contents: params[:contents],
@@ -63,11 +73,15 @@ class ApiV2::MessagesController < ApplicationController
 
     # ** 'save!' or update(strong_parameters) unnecessary
     # ** http://d.hatena.ne.jp/masterpiyo/20111212/1323677704
-    messages.save
+    if new_message.save
 
-    # ** If skipping 'render', rails will automatically
-    #    look for '.../create.html.haml'
-    render(json: '')
+      # ** If skipping 'render', rails will automatically
+      #    look for '.../create.html.haml'
+      render(json: '')
+
+    else
+      raise 'Failed to save a message'
+    end
 
   end
 

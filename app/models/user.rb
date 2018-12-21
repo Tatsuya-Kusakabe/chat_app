@@ -85,46 +85,77 @@ class User < ActiveRecord::Base
     return User.where.not(id: self.friend_ids)
   end
 
-  # Extracting an array of 'messages' with 'friend'
-  def messages_with(friend_id)
+  # Extracting an array of 'messages'
+  def messages(with_ids: nil, top_newest_counts: nil)
 
-    # Extracting
+    # Custom error messages (just in case handling too much data)
+    case
+    when with_ids.length > max = 50;   raise "Limit the number of friends below #{max}"
+    when top_newest_counts > max = 50; raise "Limit the number of messages below #{max}"
+    end
+
+    # Extracting 'messages' (while avoiding 'N + 1 problem')
     messages = Message.where(
-      '(sent_from = ? and sent_to = ?) or (sent_from = ? and sent_to = ?)',
-      self.id, friend_id, friend_id, self.id
-    )
+      '(sent_from = ? and sent_to IN (?)) or
+       (sent_to = ? and sent_from IN (?))',
+      self.id, with_ids, self.id, with_ids
 
-    # Sorting according to 'timestamp'
-    # ** https://stackoverflow.com/questions/882070/
-    messages_sorted = messages.sort_by(&:timestamp)
+    # ** Sorting with SQL (.order) is quicker than Rails (.sort_by)
+    ).order(:timestamp)
 
-    # Returning 'messages_sorted' with the key 'friend'
-    return messages_sorted
+    # Mapping 'messages' with the key 'sent_from' or 'sent_to'
+    messages_mapped = with_ids.map do |with_id|
+
+      # Extracting 'messages' matching with the key
+      messages_with_id = messages.select do |message|
+        message.sent_from == with_id || message.sent_to == with_id
+      end
+
+      # If 'top_newest_counts' is defined, picking up as it wants
+      { with_id => top_newest_counts \
+        ? messages_with_id.last(top_newest_counts) \
+        : messages_with_id
+      }
+
+    end
+
+    # Returning 'messages_mapped'
+    return messages_mapped
 
   end
 
   # Extracting an array of 'relatioship' objects
-  def relationships
+  def relationships(with_ids: nil)
+
+    # Custom error messages (just in case handling too much data)
+    case
+    when with_ids.length > max = 100; raise "Limit the number of friends below #{max}"
+    end
 
     # Extracting relationships (while avoiding 'N + 1 problem')
     # ** This should be avoided -> hoge = fuga.map { |foo| (Queries) }
-    return relationships = Relationship.where(
+    relationships = Relationship.where(
       '(applicant_id = ? and recipient_id IN (?)) or
        (recipient_id = ? and applicant_id IN (?))',
-      self.id, self.friend_ids, self.id, self.friend_ids
+      self.id, with_ids, self.id, with_ids
     )
 
-  end
+    # Mapping 'relationships' with the key 'applicant_id' or 'recipient_id'
+    relationships_mapped = with_ids.map do |with_id|
 
-  # Extracting 'relationship' with 'friend'
-  def relationship_with(friend_id)
+      # Extracting 'messages' matching with the key
+      relationship_with_id = relationships.select do |relationship|
+        relationship.applicant_id == with_id \
+        || relationship.recipient_id == with_id
+      end
 
-    return relationship = Relationship.find_by(
-      '(applicant_id = ? and recipient_id = ?) or
-       (recipient_id = ? and applicant_id = ?)',
-      self.id, friend_id, self.id, friend_id
-    )
-  
+      { with_id => relationship_with_id[0] }
+
+    end
+
+    # Returning 'relationships_mapped'
+    return relationships_mapped
+
   end
 
   # ** 'devise :validatable' automatically performs confirmation
