@@ -40,6 +40,30 @@ class ApiV2::MessagesController < ApplicationController
 
   end
 
+  def create
+
+    # Creating 'messages'
+
+    messages = Message.new(
+      sent_from: @current_user.id,
+      sent_to:   params[:sent_to],
+      contents:  params[:contents],
+      pic_path:  params[:pic_path],
+      timestamp: params[:timestamp]
+    )
+
+    # Saving 'picture' if sent
+
+    if params[:picture]
+      File.binwrite("public#{params[:pic_path]}", params[:picture].read)
+    end
+
+    # Saving 'messages'
+
+    messages.update_attributes(create_params)
+
+  end
+
   def show
 
     # Selecting 'messages' sent from 'friend' to '@current_user'
@@ -68,5 +92,11 @@ class ApiV2::MessagesController < ApplicationController
     render(json: messages_with_friend)
 
   end
+
+  private
+
+    def create_params
+      params.permit(:sent_from, :sent_to, :contents, :pic_path, :timestamp)
+    end
 
 end
