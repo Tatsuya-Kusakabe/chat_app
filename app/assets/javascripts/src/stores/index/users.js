@@ -11,9 +11,8 @@ class UserBaseStore extends BaseStore {
   getFriends() {
 
     const initFriends = [{
-      id: 1, name: 'John Doek', profile_picture: '/assets/images/default.png',
-      profile_comment: 'A spy from "GitHub"', status: 'offline',
-      read: null, email: 'john_doek@example.com'
+      id: null, name: '', profile_picture: '', profile_comment: '',
+      status: null, read: null, email: ''
     }]
 
     // If 'key' is not associated yet, associating 'key' with 'init_obj'
@@ -33,9 +32,8 @@ class UserBaseStore extends BaseStore {
   getSuggestions() {
 
     const initSuggestions = [{
-      id: 1, name: 'John Doek', profile_picture: '/assets/images/default.png',
-      profile_comment: 'A spy from "GitHub"', status: 'offline',
-      read: null, email: 'john_doek@example.com'
+      id: null, name: '', profile_picture: '', profile_comment: '',
+      status: null, read: null, email: ''
     }]
 
     if (!this.get('suggestions')) this.setSuggestions(initSuggestions)
@@ -66,7 +64,7 @@ class UserBaseStore extends BaseStore {
   }
 
   getOpenUserID() {
-    if (!this.get('open_user_id')) this.setOpenUserID(2)
+    if (!this.get('open_user_id')) this.setOpenUserID(null)
     return this.get('open_user_id')
   }
 
@@ -75,7 +73,7 @@ class UserBaseStore extends BaseStore {
   }
 
   getCurrentUserID() {
-    if (!this.get('current_user_id')) this.setCurrentUserID(1)
+    if (!this.get('current_user_id')) this.setCurrentUserID(null)
     return this.get('current_user_id')
   }
 

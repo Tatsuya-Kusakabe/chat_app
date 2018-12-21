@@ -10,8 +10,8 @@ class MessageBaseStore extends BaseStore {
 
   getMessages() {
 
-    const initMessages = [{ "2": [{
-      id: 1, sent_from: 2, sent_to: 1, contents: 'Hey!', timestamp: null
+    const initMessages = [{ "0": [{
+      id: null, sent_from: null, sent_to: null, contents: '', timestamp: null
     }] }]
 
     // If 'key' is not associated yet, associating 'key' with 'init_obj'
@@ -31,7 +31,7 @@ class MessageBaseStore extends BaseStore {
   getOpenMessages() {
 
     const initOpenMessages = [{
-      id: 1, sent_from: 2, sent_to: 1, contents: 'Hey!', timestamp: null
+      id: null, sent_from: null, sent_to: null, contents: '', timestamp: null
     }]
 
     if (!this.get('open_messages')) this.setOpenMessages(initOpenMessages)

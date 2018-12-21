@@ -10,8 +10,8 @@ class RelationshipBaseStore extends BaseStore {
 
   getRelationships() {
 
-    const initRelationships = [{ "2": {
-      id: 1, applicant_id: 2, recipient_id: 1,
+    const initRelationships = [{ "0": {
+      id: null, applicant_id: null, recipient_id: null,
       timestamp_applicant: null, timestamp_recipient: null
     } }]
 
@@ -32,7 +32,7 @@ class RelationshipBaseStore extends BaseStore {
   getOpenRelationship() {
 
     const initOpenRelationship = {
-      id: 1, applicant_id: 2, recipient_id: 1,
+      id: null, applicant_id: null, recipient_id: null,
       timestamp_applicant: null, timestamp_recipient: null
     }
 
