@@ -1,6 +1,5 @@
-//
+
 // https://www.to-r.net/media/react-tutorial10/
-//
 import React from 'react'
 import _ from 'lodash'
 import IndexStore from '../../stores/index'
@@ -12,43 +11,92 @@ import UserShortProf from './5_userShortProf'
 import UserProf from './6_userProf'
 import MessagesList from './7_messagesList'
 import ReplyBox from './8_replyBox'
-//
+
 // Creating a new class 'App'
-//
 class App extends React.Component {
-  //
+
   constructor(props) {
-    //
+
     // Inheriting props (unmodifiable attributes) from 'React.component'
-    //
     super(props)
     this.state = this.initialState
-    //
+
   }
-  //
+
   // Equalizing 'this.initialState' and 'this.getStateFromStore(initial_bln)'
   // ** If you write "get hoge() {return fuga}", 'this.hoge' does 'fuga'
-  //
   get initialState() {
     return this.getStateFromStore()
   }
-  //
+
   getStateFromStore() {
-    //
+
     let openUserTab = IndexStore.getOpenUserTab()
-    //
+
+    // Defining 'messages', 'suggestions', 'currentUserID', 'openUserID' and 'openUserTab'
     return {
-      //
-      // Defining 'messages', 'suggestions', 'currentUserID', 'openUserID' and 'openUserTab'
-      //
       openUserTab: openUserTab,
       openContent: IndexStore.getOpenContent(),
       messages: IndexStore.getMessages(openUserTab),
       currentUserID: IndexStore.getCurrentUserID(),
       openUserID: IndexStore.getOpenUserID(),
-      //
     }
-    //
+
+  }
+
+  // Only called one time
+  componentDidMount() {
+
+    function currentUserID() {
+      return UserAction.getCurrentUserID()
+    }
+
+    // 'friends' is affected by 'currentUserID'
+    async function friends() {
+      await currentUserID()
+      const currentUserID = UserStore.getCurrentUserID()
+      return UserAction.friends(currentUserID)
+    }
+
+    // 'suggestions' is affected by 'currentUserID'
+    async function suggestions() {
+      await currentUserID()
+      const currentUserID = UserStore.getCurrentUserID()
+      return UserAction.suggestions(currentUserID)
+    }
+
+    // 'lastMessages' is affected by 'currentUserID'
+    async function lastMessages() {
+      await currentUserID()
+      const currentUserID = UserStore.getCurrentUserID()
+      return MessageAction.lastMessages(currentUserID)
+    }
+
+    // 'relationships' is affected by 'currentUserID'
+    async function relationships() {
+      await currentUserID()
+      const currentUserID = UserStore.getCurrentUserID()
+      return RelationshipAction.relationships(currentUserID)
+    }
+
+    // 'openUserID' is affected by 'currentUserID' and 'timestamp'
+    async function openUserID() {
+      await currentUserID()
+      const currentUserID = UserStore.getCurrentUserID()
+      await relationships()
+      const relationships = RelationshipStore.getRelationships()
+      return UserAction.openUserID(currentUserID, relationships)
+    }
+
+    // 'openMessages' is affected by 'currentUserID' and 'openUserID'
+    async function openMessages() {
+      await currentUserID()
+      const currentUserID = UserStore.getCurrentUserID()
+      await openUserID()
+      const openUserID = UserStore.getOpenUserID()
+      return MessageAction.openMessages(currentUserID, openUserID)
+    }
+
   }
   //
   // Updating a state from 'this.getStateFromStore()' to 'this.getStateFromStore()'
