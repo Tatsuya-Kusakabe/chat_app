@@ -2,7 +2,6 @@
 # Responsible for getting a list of friends (index)
 class ApiV2::FriendsController < ApplicationController
 
-  # Newly created
   def index
 
     friends = @current_user.friends
@@ -12,7 +11,7 @@ class ApiV2::FriendsController < ApplicationController
 
     # Returning 'friends'
     render(json: friends)
-
+    
   end
 
 end
