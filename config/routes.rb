@@ -24,7 +24,7 @@ Rails.application.routes.draw do
     resources :friends,       only: :index
     resources :suggestions,   only: :index
     resources :messages,      only: %i[index create]
-    resources :relationships, only: %i[index create show update destroy]
+    resources :relationships, only: %i[index create update destroy]
   end
 
   # Creating routes for '/users' with 'devise'

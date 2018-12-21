@@ -89,19 +89,12 @@ class User < ActiveRecord::Base
   def messages(with_ids: nil, top_newest_counts: nil)
 
     # Custom error messages (just in case handling too much data)
-    max_ids = 50
-    max_counts = 50
-
-    if ((top_newest_counts == nil || top_newest_counts > max_counts) \
-      && with_ids.length > max_ids)
-
-      raise "Too much data to handle in one time. \
-             Please limit the number of messages below #{ max_ids } \
-             or friends below #{ max_counts }."
-
+    case
+    when with_ids.length > max = 50;   raise "Limit the number of friends below #{max}"
+    when top_newest_counts > max = 50; raise "Limit the number of messages below #{max}"
     end
 
-    # Extracting
+    # Extracting 'messages' (while avoiding 'N + 1 problem')
     messages = Message.where(
       '(sent_from = ? and sent_to IN (?)) or
        (sent_to = ? and sent_from IN (?))',
@@ -132,26 +125,36 @@ class User < ActiveRecord::Base
   end
 
   # Extracting an array of 'relatioship' objects
-  def relationships
+  def relationships(with_ids: nil)
+
+    # Custom error messages (just in case handling too much data)
+    case
+    when with_ids.length > max = 100; raise "Limit the number of friends below #{max}"
+    end
 
     # Extracting relationships (while avoiding 'N + 1 problem')
     # ** This should be avoided -> hoge = fuga.map { |foo| (Queries) }
-    return relationships = Relationship.where(
+    relationships = Relationship.where(
       '(applicant_id = ? and recipient_id IN (?)) or
        (recipient_id = ? and applicant_id IN (?))',
-      self.id, self.friend_ids, self.id, self.friend_ids
+      self.id, with_ids, self.id, with_ids
     )
 
-  end
+    # Mapping 'relationships' with the key 'applicant_id' or 'recipient_id'
+    relationships_mapped = with_ids.map do |with_id|
 
-  # Extracting 'relationship' with 'friend'
-  def relationship_with(friend_id)
+      # Extracting 'messages' matching with the key
+      relationship_with_id = relationships.select do |relationship|
+        relationship.applicant_id == with_id \
+        || relationship.recipient_id == with_id
+      end
 
-    return relationship = Relationship.find_by(
-      '(applicant_id = ? and recipient_id = ?) or
-       (recipient_id = ? and applicant_id = ?)',
-      self.id, friend_id, self.id, friend_id
-    )
+      { with_id => relationship_with_id[0] }
+
+    end
+
+    # Returning 'relationships_mapped'
+    return relationships_mapped
 
   end
 

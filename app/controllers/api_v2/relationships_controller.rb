@@ -8,21 +8,17 @@ class ApiV2::RelationshipsController < ApplicationController
   # Newly created
   def index
 
-    relationships = @current_user.relationships
+    # params[:self_id], params[:partner_ids]
+    # being passed as query parameters
+    user = User.find(params[:self_id])
 
-    # Mapping 'relationship' with the key 'partner'
-    relationships_mapped = relationships.map do |obj|
+    # Setting 'id_params' defalut as 'user.friend_ids'
+    id_params = params[:partner_ids].blank? \
+      ? user.friend_ids : params[:partner_ids].map(&:to_i)
 
-      obj.applicant_id != @current_user.id \
-        ? key = obj.applicant_id \
-        : key = obj.recipient_id
-
-      { key => obj }
-
-    end
-
-    # Returning 'relationships_mapped'
-    render(json: relationships_mapped)
+    # Returning 'relationships'
+    relationships = user.relationships(with_ids: id_params)
+    render(json: relationships)
 
   end
 
@@ -59,8 +55,11 @@ class ApiV2::RelationshipsController < ApplicationController
       timestamp_recipient: nil
     )
 
-    new_relationship.save
-    render(json: '')
+    if new_relationship.save
+      render(json: '')
+    else
+      raise 'Failed to save a relationship'
+    end
 
   end
 
@@ -68,22 +67,15 @@ class ApiV2::RelationshipsController < ApplicationController
   def update
 
     # Finding 'user' on scope
-    user = User.find(params[:id])
+    user = User.find(params[:partner_id])
 
     # Finding relationships concerning 'user'
-    user_active = user.active_relationship.find_by(recipient_id: @current_user)
-    user_passive = user.passive_relationship.find_by(applicant_id: @current_user)
+    user_active = user.active_relationship.find_by(recipient_id: params[:self_id])
+    user_passive = user.passive_relationship.find_by(applicant_id: params[:self_id])
 
     # Updating 'timestamp'
-    user_active.update!I(timestamp_recipient: params[:timestamp])
-    user_passive.update!I(timestamp_applicant: params[:timestamp])
-    # if user_active
-    #   user_active.timestamp_recipient = params[:timestamp]
-    #   user_active.save!
-    # elsif user_passive
-    #   user_passive.timestamp_applicant = params[:timestamp]
-    #   user_passive.save!
-    # end
+    user_active.update!(timestamp_recipient: params[:timestamp])
+    user_passive.update!(timestamp_applicant: params[:timestamp])
 
     render(json: '')
 
@@ -92,15 +84,15 @@ class ApiV2::RelationshipsController < ApplicationController
   # Extracted from 'api/users#update'
   def destroy
 
-    friend_id = params[:id].to_i
+    user = User.find(params[:self_id])
 
     # Destroying 'relationship' on scope
-    relationship_to_destroy = @current_user.relationship_with(friend_id)
+    relationship_to_destroy = user.relationships(with_ids: params[:partner_ids])
     relationship_to_destroy.destroy
 
     # Destroying messages sent within this 'relationship'
     # ** Too complicated to validate within 'model'
-    messages_to_destroy = @current_user.messages_with(friend_id)
+    messages_to_destroy = user.messages(with_ids: params[:partner_ids)
     messages_to_destroy.destroy_all
 
     render(json: '')
