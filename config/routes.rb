@@ -21,7 +21,9 @@ Rails.application.routes.draw do
   # Creating routes for '/api_v2/friends' and so on...
 
   namespace :api_v2, { format: 'json' } do
-    resources :friends, { only: [:index] }
+    resources :friends,     { only: [:index] }
+    resources :suggestions, { only: [:index] }
+    resources :messages,    { only: [:index] }
   end
 
   # Creating routes for '/users' with 'devise'
