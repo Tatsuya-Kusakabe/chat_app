@@ -1,6 +1,20 @@
 
 class ApiV2::RelationshipsController < ApplicationController
 
+  # Newly created
+
+  def index
+
+    relationships = Relationship.where(
+      "(applicant_id = ? and recipient_id IN (?)) or
+       (recipient_id = ? and applicant_id IN (?))",
+      @current_user, friends_id, @current_user, friends_id
+    )
+
+    render(json: relationships)
+
+  end
+
   # Extracted from 'api/users#update'
 
   def create
