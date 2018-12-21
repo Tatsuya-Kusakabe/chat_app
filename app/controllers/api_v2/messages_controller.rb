@@ -40,4 +40,33 @@ class ApiV2::MessagesController < ApplicationController
 
   end
 
+  def show
+
+    # Selecting 'messages' sent from 'friend' to '@current_user'
+
+    messages_sent_from_friend = Message.where(
+      "(sent_from == ? and sent_to == ?)",
+      params[:id], @current_user.id
+    )
+
+    # Selecting 'messages' sent from '@current_user' to 'friend'
+
+    messages_sent_to_friend = Message.where(
+      "(sent_from == ? and sent_to == ?)",
+      @current_user.id, params[:id]
+    )
+
+    # Binding above two and sorting them according to 'timestamp'
+    # ** https://stackoverflow.com/questions/882070/
+
+    messages_with_friend \
+      = (messages_sent_from_friend + messages_sent_to_friend) \
+      .sort_by { |obj| obj.timestamp }
+
+    # Returning 'messages_with_friend'
+
+    render(json: messages_with_friend)
+
+  end
+
 end
