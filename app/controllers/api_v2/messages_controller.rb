@@ -61,16 +61,14 @@ class ApiV2::MessagesController < ApplicationController
 
     end
 
-    # Saving 'messages'
-    messages.update(create_params)
+    # ** 'save!' or update(strong_parameters) unnecessary
+    # ** http://d.hatena.ne.jp/masterpiyo/20111212/1323677704
+    messages.save
+
+    # ** If skipping 'render', rails will automatically
+    #    look for '.../create.html.haml'
     render(json: '')
 
   end
-
-  private
-
-    def create_params
-      params.permit(:sent_from, :sent_to, :contents, :pic_path, :timestamp)
-    end
 
 end
