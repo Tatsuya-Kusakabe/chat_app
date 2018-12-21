@@ -85,6 +85,24 @@ class User < ActiveRecord::Base
     return User.where.not(id: self.friend_ids)
   end
 
+  # Extracting an array of 'messages' with 'friend'
+  def messages_with(friend_id)
+
+    # Extracting
+    messages = Message.where(
+      '(sent_from = ? and sent_to = ?) or (sent_from = ? and sent_to = ?)',
+      self.id, friend_id, friend_id, self.id
+    )
+
+    # Sorting according to 'timestamp'
+    # ** https://stackoverflow.com/questions/882070/
+    messages_sorted = messages.sort_by(&:timestamp)
+
+    # Returning 'messages_sorted' with the key 'friend'
+    return messages_sorted
+
+  end
+
   # ** 'devise :validatable' automatically performs confirmation
   # ** http://yoshitsugufujii.github.io/blog/2015/06/08/devise-skip-password-check/
   # validates :email,              { presence: true, allow_blank: true, uniqueness: true }
