@@ -71,21 +71,4 @@ class ApplicationController < ActionController::Base
     return 'assets/images'
   end
 
-  # Extracting a list of 'friends_id'
-  def friends_id
-
-    # Extracting 'relationship' related to '@current_user'
-    active_relationships  = Relationship.where(applicant_id: @current_user.id)
-    passive_relationships = Relationship.where(recipient_id: @current_user.id)
-
-    # Making a list of 'friends_id' immutably
-    # https://stackoverflow.com/questions/9072689
-    active_friends_id = active_relationships.map(&:recipient_id)
-    passive_friends_id = passive_relationships.map(&:applicant_id)
-
-    # Returning 'friends_id'
-    return active_friends_id + passive_friends_id
-
-  end
-
 end
