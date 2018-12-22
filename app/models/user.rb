@@ -79,10 +79,10 @@ class User < ActiveRecord::Base
     return User.where(id: self.friend_ids)
   end
 
-  # Extracting an array of 'suggestion' objects
+  # Extracting an array of 'suggestion' objects (excluding 'self' also)
   # ** ~~~ Pagination should be availavle ~~~
   def suggestions
-    return User.where.not(id: self.friend_ids)
+    return User.where.not(id: [*self.friend_ids, self.id])
   end
 
   # Extracting an array of 'messages'

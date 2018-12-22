@@ -92,7 +92,7 @@ class ApiV2::RelationshipsController < ApplicationController
 
     # Destroying messages sent within this 'relationship'
     # ** Too complicated to validate within 'model'
-    messages_to_destroy = user.messages(with_ids: params[:partner_ids)
+    messages_to_destroy = user.messages(with_ids: params[:partner_ids])
     messages_to_destroy.destroy_all
 
     render(json: '')
