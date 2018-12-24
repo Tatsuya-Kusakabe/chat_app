@@ -4,7 +4,7 @@ import request from 'superagent'
 import Dispatcher from '../../dispatcher'
 import { ActionTypes, APIRoot, PicRoot, CSRFToken } from '../../utils'
 
-// Exporting 'UserAction' using 'async/await'
+// Exporting 'MessageAction' using 'async/await'
 // ** https://www.valentinog.com/blog/how-async-await-in-react/
 export default {
 

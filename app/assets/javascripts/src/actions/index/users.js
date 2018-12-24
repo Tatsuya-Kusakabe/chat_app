@@ -48,24 +48,17 @@ export default {
     } catch(error) { console.log(error); }
   },
 
-  getOpenUserID(userID, relationships) {
-    const relationships_sorted = relationships.sort((a, b) => {
-      // Picking up 'timestamp' to compare (depending on which is applicant)
-      const timestamp_a = (a.applicant_id !== userID)
-        ? a.applicant_id : a.recipient_id;
-      const timestamp_b = (b.applicant_id !== userID)
-        ? b.applicant_id : b.recipient_id;
-      // Sorting according to 'timestamp'
-      if(timestamp_a > timestamp_b) return -1;
-      if(timestamp_a < timestamp_b) return 1;
-      return 0;
+  changeOpenUserTab(userTab) {
+    Dispatcher.handleViewAction({
+      type: ActionTypes.CHANGE_OPEN_USER_TAB,
+      userTab: userTab,
     })
-    // Picking up 'openUserID'
-    const openUserID = parseInt(Object.keys(relationships_sorted[0])[0])
-    // Changing data on 'stores'
+  },
+
+  changeOpenUserID(userID) {
     Dispatcher.handleViewAction({
       type: ActionTypes.CHANGE_OPEN_USER_ID,
-      json: openUserID,
+      userID: userID,
     })
   },
 
