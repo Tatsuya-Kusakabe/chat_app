@@ -5,6 +5,8 @@
 #                 destroying a relationship                   (destroy)
 class ApiV2::RelationshipsController < ApplicationController
 
+  protect_from_forgery except: :update
+
   # Newly created
   def index
 
@@ -66,16 +68,21 @@ class ApiV2::RelationshipsController < ApplicationController
   # Extracted from 'api/messages#create'
   def update
 
+    timestamp = Time.zone.now.strftime('%s%3N')
+
     # Finding 'user' on scope
-    user = User.find(params[:partner_id])
+    user = User.find(params[:self_id])
 
     # Finding relationships concerning 'user'
-    user_active = user.active_relationship.find_by(recipient_id: params[:self_id])
-    user_passive = user.passive_relationship.find_by(applicant_id: params[:self_id])
+    user_active = user.active_relationship.find_by(recipient_id: params[:partner_id])
+    user_passive = user.passive_relationship.find_by(applicant_id: params[:partner_id])
 
     # Updating 'timestamp'
-    user_active.update!(timestamp_recipient: params[:timestamp])
-    user_passive.update!(timestamp_applicant: params[:timestamp])
+    if user_active
+      user_active.update!(timestamp_applicant: timestamp)
+    elsif user_passive
+      user_passive.update!(timestamp_recipient: timestamp)
+    end
 
     render(json: '')
 
