@@ -13,11 +13,20 @@ class SuggestionsList extends React.Component {
   }
 
   render() {
-    const { openUserID, suggestions } = this.props
+    const { currentUserID, openUserID, suggestions } = this.props
 
-    // When 'this.props' is imperfect, displaying 'No suggestions'
-    // TODO: concatenate 'if' condition if possible
-    if (!suggestions.length) {
+    // When 'this.props' is imperfect (during initial render), or
+    // when 'current_user' has no suggestions, displaying 'No friends'
+    const skipRenderFirst = !currentUserID || !suggestions.length
+
+    // When 'openUserID' does exist but does not match 'friends' list
+    // (during rerender), displaying 'No friends'
+    // ** When 'openUserID' is null, should not skip Rendering
+    // ** Initialization of 'openUserID' needed afterwards
+    const skipRenderAfterUpdate
+      = openUserID && !(_.find(suggestions, { 'id': openUserID }))
+
+    if (skipRenderFirst || skipRenderAfterUpdate) {
       return (
           <div className='suggestions-list__list suggestions-list__list__empty'>
             No suggestions
@@ -38,6 +47,14 @@ class SuggestionsList extends React.Component {
       if (a.user.name > b.user.name) return 1;
       return 0;
     })
+
+    // Initializing 'openUserID'
+    // Delayed intentionally because dispatch from 'app.js' not completed yet
+    // ** ('dispatch' mechanism) https://github.com/rafrex/flux-async-dispatcher
+    if (!openUserID) {
+      const initOpenUserID = suggestionsSorted[0].user.id
+      setTimeout(() => this.changeOpenUserID(initOpenUserID), 1)
+    }
 
     // Rendering 'friendsSorted'
     const suggestionsList = suggestionsSorted.map((suggestion, index) => {

@@ -3,12 +3,27 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
 import UserAction from '../../actions/index/users'
+import UserStore from '../../stores/index/users'
 
 class UsersTab extends React.Component {
 
-  // When a tab (friends or suggestions) is clicked, updating 'openUserTab'
-  async changeOpenUserTab(openUserTab) {
-    await UserAction.changeOpenUserTab(openUserTab)
+  // When a tab (friends or suggestions) is clicked
+  changeOpenUserTab(openUserTab) {
+    // Updating 'openUserTab'
+    UserAction.changeOpenUserTab(openUserTab)
+
+    // Initializing 'userSearchText' (because a set of users changes)
+    UserAction.updateSearchText(null)
+
+    // Initializing 'openUserID' (because a set of users changes)
+    UserAction.changeOpenUserID(null)
+
+    // Initializing 'friends' or 'suggestions' list
+    // (Because these list might be changed after search)
+    const currentUserID = UserStore.getCurrentUserID()
+    openUserTab === 'Friends'
+      ? UserAction.getFriends(currentUserID)
+      : UserAction.getSuggestions(currentUserID)
   }
 
   render() {

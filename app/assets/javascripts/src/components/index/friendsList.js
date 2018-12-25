@@ -4,6 +4,7 @@ import PropTypes from 'prop-types'
 import classNames from 'classnames'
 import _ from 'lodash'
 import UserAction from '../../actions/index/users'
+import MessageAction from '../../actions/index/messages'
 import RelationshipAction from '../../actions/index/relationships'
 import UserStore from '../../stores/index/users'
 import Utils from '../../utils'
@@ -15,15 +16,27 @@ class FriendsList extends React.Component {
     await UserAction.changeOpenUserID(openUserID)
     const tmpCurrentUserID = this.props.currentUserID
     const tmpOpenUserID = UserStore.getOpenUserID()
+    MessageAction.getOpenMessages(tmpCurrentUserID, tmpOpenUserID)
     RelationshipAction.updateTimestamp(tmpCurrentUserID, tmpOpenUserID)
   }
 
   render() {
     const { currentUserID, openUserID, friends, lastMessages, relationships } = this.props
 
-    // When 'this.props' is imperfect, displaying 'No friends'
-    // TODO: concatenate 'if' condition if possible
-    if (!(currentUserID && friends.length && lastMessages.length && relationships.length)) {
+    // When 'this.props' is imperfect (during initial render), or
+    // when 'current_user' has no friends, displaying 'No friends'
+    const skipRenderFirst
+      = !currentUserID || !friends.length
+      || !lastMessages.length || !relationships.length
+
+    // When 'openUserID' does exist but does not match 'friends' list
+    // (during rerender), displaying 'No friends'
+    // ** When 'openUserID' is null, should not skip Rendering
+    // ** Initialization of 'openUserID' needed afterwards
+    const skipRenderAfterUpdate
+      = openUserID && !(_.find(friends, { 'id': openUserID }))
+
+    if (skipRenderFirst || skipRenderAfterUpdate) {
       return (
           <div className='friends-list__list friends-list__list__empty'>
             No friends
@@ -48,10 +61,24 @@ class FriendsList extends React.Component {
 
     // Sorting 'friendsRaw' according to 'timestamp'
     const friendsSorted = friendsRaw.sort((a, b) => {
-      if (a.timestamp.friend > b.timestamp.friend) return -1;
-      if (a.timestamp.friend < b.timestamp.friend) return 1;
+      // ** Just after applying friendship, 'timestamp.friend' is null
+      const timestamp_a = (a.timestamp.friend !== null)
+        ? a.timestamp.friend : a.timestamp.current_user
+      const timestamp_b = (b.timestamp.friend !== null)
+        ? b.timestamp.friend : b.timestamp.current_user
+
+      if (timestamp_a > timestamp_b) return -1;
+      if (timestamp_a < timestamp_b) return 1;
       return 0;
     })
+
+    // Initializing 'openUserID'
+    // Delayed intentionally because dispatch from 'app.js' not completed yet
+    // ** ('dispatch' mechanism) https://github.com/rafrex/flux-async-dispatcher
+    if (!openUserID) {
+      const initOpenUserID = friendsSorted[0].user.id
+      setTimeout(() => this.changeOpenUserID(initOpenUserID), 1)
+    }
 
     // Rendering 'friendsSorted'
     const friendsList = friendsSorted.map((friend, index) => {
@@ -83,7 +110,6 @@ class FriendsList extends React.Component {
       })
 
       // When an account is clicked, calling 'changeOpenUserID(id)'
-      // TODO: click on the top user initially
       return (
           <li
             onClick={ () => this.changeOpenUserID(friend.user.id) }

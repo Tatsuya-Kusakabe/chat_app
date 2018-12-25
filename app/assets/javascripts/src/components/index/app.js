@@ -11,11 +11,11 @@ import RelationshipStore from '../../stores/index/relationships'
 import UsersTab from './usersTab'
 import FriendsList from './friendsList'
 import SuggestionsList from './suggestionsList'
-// import SearchBox from './4_searchBox'
-// import UserShortProf from './5_userShortProf'
-// import UserProf from './6_userProf'
-// import MessagesList from './7_messagesList'
-// import ReplyBox from './8_replyBox'
+import SearchBox from './searchBox'
+import UserShortProf from './userShortProf'
+import UserProf from './userProf'
+import MessagesList from './messagesList'
+import ReplyBox from './replyBox'
 
 // Creating a new class 'App'
 class App extends React.Component {
@@ -48,6 +48,7 @@ class App extends React.Component {
       openUserID: UserStore.getOpenUserID(),
       friends: UserStore.getFriends(),
       suggestions: UserStore.getSuggestions(),
+      searchText: UserStore.getSearchText(),
       openMessages: MessageStore.getOpenMessages(),
       lastMessages: MessageStore.getLastMessages(),
       relationships: RelationshipStore.getRelationships(),
@@ -76,7 +77,6 @@ class App extends React.Component {
   // Passing the parent class' 'state' to the child class 'props'
   // ** https://qiita.com/KeitaMoromizato/items/0da6c8e4264b1f206451
   render() {
-    console.log(this.state)
 
     // Defining an object for facilitation
     // ** https://qiita.com/uto-usui/items/a9d17447fe81c17c41fa
@@ -88,13 +88,13 @@ class App extends React.Component {
           <div className='app'>
             <div className='users-box'>
               <UsersTab { ...this.state }/>
-              {/*<SearchBox openUserTab={openUserTab} />*/}
+              <SearchBox { ...this.state }/>
               <SuggestionsList { ...this.state }/>
             </div>
-            {/*<div className='messages-box'>
+            <div className='messages-box'>
               <UserShortProf { ...this.state }/>
               <UserProf { ...this.state }/>
-            </div>*/}
+            </div>
           </div>
       )
 
@@ -104,29 +104,29 @@ class App extends React.Component {
           <div className='app'>
             <div className='users-box'>
               <UsersTab { ...this.state }/>
-              {/*<SearchBox openUserTab={openUserTab} />*/}
+              <SearchBox { ...this.state }/>
               <FriendsList { ...this.state }/>
             </div>
-            {/*<div className='messages-box'>
+            <div className='messages-box'>
               <UserShortProf { ...this.state }/>
               <UserProf { ...this.state }/>
-            </div>*/}
+            </div>
           </div>
       )
 
     // Else if 'openUserID' is defined as 'none', rendering 'FriendsList' and 'MessagesList'
-    } else if (_.isString(openUserID)) {
+    } else if (!openUserID) {
       return (
           <div className='app'>
             <div className='users-box'>
               <UsersTab { ...this.state }/>
-              {/*<SearchBox openUserTab={openUserTab} />*/}
+              <SearchBox { ...this.state }/>
               <FriendsList { ...this.state }/>
             </div>
-            {/*<div className='messages-box'>
+            <div className='messages-box'>
               <UserShortProf { ...this.state }/>
               <MessagesList { ...this.state }/>
-            </div>*/}
+            </div>
           </div>
       )
 
@@ -136,14 +136,14 @@ class App extends React.Component {
           <div className='app'>
             <div className='users-box'>
               <UsersTab { ...this.state }/>
-              {/*<SearchBox openUserTab={openUserTab}/>*/}
+              <SearchBox { ...this.state }/>
               <FriendsList { ...this.state }/>
             </div>
-            {/*<div className='messages-box'>
+            <div className='messages-box'>
               <UserShortProf { ...this.state }/>
               <MessagesList { ...this.state }/>
               <ReplyBox { ...this.state }/>
-            </div>*/}
+            </div>
           </div>
       )
 
