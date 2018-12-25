@@ -67,6 +67,15 @@ class UserBaseStore extends BaseStore {
     this.set('current_user_id', currentUserID)
   }
 
+  getSearchText() {
+    if (!this.get('search_text')) this.setSearchText(null)
+    return this.get('search_text')
+  }
+
+  setSearchText(searchText) {
+    this.set('search_text', searchText)
+  }
+
   addChangeListener(callback) {
     this.on('change', callback)
   }
@@ -107,6 +116,16 @@ UserStore.dispatchToken = Dispatcher.register(payload => {
 
     case ActionTypes.CHANGE_OPEN_USER_TAB:
       UserStore.setOpenUserTab(action.userTab)
+      UserStore.emitChange()
+      break
+
+    case ActionTypes.CHANGE_OPEN_CONTENT:
+      UserStore.setOpenContent(action.content)
+      UserStore.emitChange()
+      break
+
+    case ActionTypes.UPDATE_SEARCH_TEXT:
+      UserStore.setSearchText(action.searchText)
       UserStore.emitChange()
       break
   }

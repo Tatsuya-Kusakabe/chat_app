@@ -9,22 +9,17 @@ export const ActionTypes = keyMirror({
   GET_SUGGESTIONS: null,
   CHANGE_OPEN_USER_TAB: null,
   CHANGE_OPEN_USER_ID: null,
+  CHANGE_OPEN_CONTENT: null,
+  UPDATE_SEARCH_TEXT: null,
   GET_LAST_MESSAGES: null,
   GET_OPEN_MESSAGES: null,
   GET_RELATIONSHIPS: null,
   UPDATE_TIMESTAMP: null,
-  UPDATE_OPEN_CONTENT: null,
-  SEARCH_FRIENDS: null,
-  SEARCH_SUGGESTIONS: null,
-  UPDATE_FRIENDSHIP: null,
-  SEND_MESSAGE: null,
-  SEND_PICTURE: null,
 })
 
 // Defining 'API endpoints', which names POST routing
 const Root = window.location.origin || `${window.location.protocol}//${window.location.hostname}`
 export const APIRoot = `${Root}/api_v2`
-export const PicRoot = 'assets/images'
 
 // Defining 'CSRF token' for security
 export function CSRFToken() {

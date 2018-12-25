@@ -1,5 +1,4 @@
 
-// Importing components
 import request from 'superagent'
 import Dispatcher from '../../dispatcher'
 import { ActionTypes, APIRoot, PicRoot, CSRFToken } from '../../utils'
@@ -34,6 +33,29 @@ export default {
         type: ActionTypes.GET_OPEN_MESSAGES,
         json: JSON.parse(response.text),
       })
+    } catch(error) { console.log(error); }
+  },
+
+  async sendMessage(currentUserID, openUserID, message) {
+    try {
+      const response = await request
+        .post(`${APIRoot}/messages`)
+        .set('X-CSRF-Token', CSRFToken())
+        .send({ self_id: currentUserID, partner_id: openUserID, contents: message });
+      if (!response.ok) { throw Error(response.statusText); }
+    } catch(error) { console.log(error); }
+  },
+
+  async sendPicture(currentUserID, openUserID, picture) {
+    try {
+      const response = await request
+        .post(`${APIRoot}/messages`)
+        .set('X-CSRF-Token', CSRFToken())
+        .attach('picture', picture)
+        .field('contents', 'A picture was sent!')
+        .field('self_id', currentUserID)
+        .field('partner_id', openUserID);
+      if (!response.ok) { throw Error(response.statusText); }
     } catch(error) { console.log(error); }
   },
 
