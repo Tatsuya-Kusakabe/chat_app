@@ -86,12 +86,12 @@ class User < ActiveRecord::Base
   end
 
   # Extracting an array of 'messages'
-  def messages(with_ids: nil, top_newest_counts: nil)
+  def messages(with_ids:)
 
     # Custom error messages (just in case handling too much data)
     case
-    when with_ids.length > max = 50;   raise "Limit the number of friends below #{max}"
-    when top_newest_counts > max = 50; raise "Limit the number of messages below #{max}"
+    when with_ids.length > max = 50;
+      raise "Limit the number of friends below #{max}"
     end
 
     # Extracting 'messages' (while avoiding 'N + 1 problem')
@@ -102,6 +102,23 @@ class User < ActiveRecord::Base
 
     # ** Sorting with SQL (.order) is quicker than Rails (.sort_by)
     ).order(:timestamp)
+
+    return messages
+
+  end
+
+  def messages_mapped(with_ids:, top_newest_counts:)
+
+    # Custom error messages (just in case handling too much data)
+    case
+    when !top_newest_counts && with_ids.length > max = 50;
+      raise "Limit the number of friends below #{max}"
+    when top_newest_counts  && top_newest_counts * with_ids.length > 50 * 50;
+      raise "Limit the number of messages or friends"
+    end
+
+    # Inheriting from function 'messages'
+    messages = messages(with_ids: with_ids)
 
     # Mapping 'messages' with the key 'sent_from' or 'sent_to'
     messages_mapped = with_ids.map do |with_id|
@@ -125,11 +142,12 @@ class User < ActiveRecord::Base
   end
 
   # Extracting an array of 'relatioship' objects
-  def relationships(with_ids: nil)
+  def relationships(with_ids:)
 
     # Custom error messages (just in case handling too much data)
     case
-    when with_ids.length > max = 100; raise "Limit the number of friends below #{max}"
+    when with_ids.length > max = 100;
+      raise "Limit the number of friends below #{max}"
     end
 
     # Extracting relationships (while avoiding 'N + 1 problem')
@@ -139,6 +157,21 @@ class User < ActiveRecord::Base
        (recipient_id = ? and applicant_id IN (?))',
       self.id, with_ids, self.id, with_ids
     )
+
+    return relationships
+
+  end
+
+  def relationships_mapped(with_ids:)
+
+    # Custom error messages (just in case handling too much data)
+    case
+    when with_ids.length > max = 100;
+      raise "Limit the number of friends below #{max}"
+    end
+
+    # Inheriting from function 'relationships'
+    relationships = relationships(with_ids: with_ids)
 
     # Mapping 'relationships' with the key 'applicant_id' or 'recipient_id'
     relationships_mapped = with_ids.map do |with_id|

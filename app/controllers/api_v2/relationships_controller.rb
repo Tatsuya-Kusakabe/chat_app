@@ -19,31 +19,10 @@ class ApiV2::RelationshipsController < ApplicationController
       ? user.friend_ids : params[:partner_ids].map(&:to_i)
 
     # Returning 'relationships'
-    relationships = user.relationships(with_ids: id_params)
+    relationships = user.relationships_mapped(with_ids: id_params)
     render(json: relationships)
 
   end
-
-  # Newly created
-  # ** params[:id] used wrong
-  # def show
-
-    # Extracting 'relationship' between 'friend' and '@current_user'
-    # relationship_with_friend = Relationship.where(
-    #   '(applicant_id = ? and recipient_id = ?) or
-    #    (recipient_id = ? and applicant_id = ?)',
-    #   @current_user.id, params[:id], @current_user.id, params[:id]
-
-    # Limiting columns for quicker data loading
-    # ).select(
-    #   'id, applicant_id, recipient_id,
-    #    timestamp_applicant, timestamp_recipient'
-    # )
-
-    # Returning 'relationship_with_friend'
-    # render(json: relationship_with_friend[0])
-
-  # end
 
   # Extracted from 'api/users#update'
   def create
@@ -51,8 +30,8 @@ class ApiV2::RelationshipsController < ApplicationController
     timestamp = Time.zone.now.strftime('%s%3N')
 
     new_relationship = Relationship.new(
-      applicant_id: @current_user.id,
-      recipient_id: params[:user_id],
+      applicant_id: params[:self_id],
+      recipient_id: params[:partner_id],
       timestamp_applicant: timestamp,
       timestamp_recipient: nil
     )
@@ -93,13 +72,13 @@ class ApiV2::RelationshipsController < ApplicationController
 
     user = User.find(params[:self_id])
 
-    # Destroying 'relationship' on scope
-    relationship_to_destroy = user.relationships(with_ids: params[:partner_ids])
-    relationship_to_destroy.destroy
+    # Destroying 'relationships' on scope
+    relationships_to_destroy = user.relationships(with_ids: [params[:partner_id]])
+    relationships_to_destroy.destroy_all
 
     # Destroying messages sent within this 'relationship'
     # ** Too complicated to validate within 'model'
-    messages_to_destroy = user.messages(with_ids: params[:partner_ids])
+    messages_to_destroy = user.messages(with_ids: [params[:partner_id]])
     messages_to_destroy.destroy_all
 
     render(json: '')
