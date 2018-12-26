@@ -89,9 +89,11 @@ class User < ActiveRecord::Base
   def messages(with_ids:)
 
     # Custom error messages (just in case handling too much data)
+    max_ids = 50;
+
     case
-    when with_ids.length > max = 50;
-      raise "Limit the number of friends below #{max}"
+    when with_ids.length > max_ids;
+      raise "Limit the number of friends below #{max_ids}"
     end
 
     # Extracting 'messages' (while avoiding 'N + 1 problem')
@@ -110,10 +112,10 @@ class User < ActiveRecord::Base
   def messages_mapped(with_ids:, top_newest_counts:)
 
     # Custom error messages (just in case handling too much data)
+    max_ids_counts = 50 * 50;
+
     case
-    when !top_newest_counts && with_ids.length > max = 50;
-      raise "Limit the number of friends below #{max}"
-    when top_newest_counts  && top_newest_counts * with_ids.length > 50 * 50;
+    when top_newest_counts && top_newest_counts * with_ids.length > max_ids_counts;
       raise "Limit the number of messages or friends"
     end
 
@@ -145,9 +147,11 @@ class User < ActiveRecord::Base
   def relationships(with_ids:)
 
     # Custom error messages (just in case handling too much data)
+    max_ids = 100;
+
     case
-    when with_ids.length > max = 100;
-      raise "Limit the number of friends below #{max}"
+    when with_ids.length > max_ids;
+      raise "Limit the number of friends below #{max_ids}"
     end
 
     # Extracting relationships (while avoiding 'N + 1 problem')
@@ -163,12 +167,6 @@ class User < ActiveRecord::Base
   end
 
   def relationships_mapped(with_ids:)
-
-    # Custom error messages (just in case handling too much data)
-    case
-    when with_ids.length > max = 100;
-      raise "Limit the number of friends below #{max}"
-    end
 
     # Inheriting from function 'relationships'
     relationships = relationships(with_ids: with_ids)

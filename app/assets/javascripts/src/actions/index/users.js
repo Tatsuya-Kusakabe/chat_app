@@ -7,12 +7,13 @@ import { ActionTypes, APIRoot, PicRoot, CSRFToken } from '../../utils'
 // ** https://www.valentinog.com/blog/how-async-await-in-react/
 export default {
 
-  async getFriends(userID, searchText) {
+  async getFriends(currentUserID, searchText) {
     try {
-      // Defining query parameters
-      const query = `self_id=${userID}&search_text=${searchText}`
-      // Getting data from a server, then proceeding next
-      const response = await request.get(`${APIRoot}/friends?${query}`);
+      // Getting data from a server (with query params), then proceeding next
+      // ** https://visionmedia.github.io/superagent/#query-strings
+      const response = await request
+        .get(`${APIRoot}/friends`)
+        .query({ search_text: searchText });
       // Catching errors besides network errors
       if (!response.ok) { throw Error(response.statusText); }
       // Changing data on 'stores' after converting a JSON string to an object
@@ -24,10 +25,11 @@ export default {
     } catch(error) { console.log(error); }
   },
 
-  async getSuggestions(userID, searchText) {
+  async getSuggestions(currentUserID, searchText) {
     try {
-      const query = `self_id=${userID}&search_text=${searchText}`
-      const response = await request.get(`${APIRoot}/suggestions?${query}`);
+      const response = await request
+        .get(`${APIRoot}/suggestions`)
+        .query({ search_text: searchText });
       if (!response.ok) { throw Error(response.statusText); }
       Dispatcher.handleViewAction({
         type: ActionTypes.GET_SUGGESTIONS,
@@ -38,7 +40,8 @@ export default {
 
   async getCurrentUserID() {
     try {
-      const response = await request.get(`${APIRoot}/current_user`);
+      const response = await request
+        .get(`${APIRoot}/current_user`);
       if (!response.ok) { throw Error(response.statusText); }
       Dispatcher.handleViewAction({
         type: ActionTypes.GET_CURRENT_USER_ID,

@@ -6,17 +6,19 @@ class ApiV2::MessagesController < ApplicationController
   # Totally renewed from 'api/messages#index'
   def index
 
-    # params[:self_id], params[:partner_ids] and params[:limit]
-    # being passed as query parameters
-    user = User.find(params[:self_id])
+    # Without 'params[:user_id]', searching '@current_user's suggestions
+    user = params[:user_id].present? \
+      ? User.find(params[:user_id])
+      : @current_user
 
     # Setting 'id_params' defalut as 'user.friend_ids'
-    id_params = params[:partner_ids].blank? \
-      ? user.friend_ids : params[:partner_ids].map(&:to_i)
+    id_params = params[:partner_ids].present? \
+      ? params[:partner_ids].map(&:to_i)
+      : user.friend_ids
 
     # Setting 'count_params' defalut as '50'
-    count_params = params[:limit].blank? \
-      ? 50 : params[:limit].to_i
+    count_params = params[:limit].present? \
+      ? params[:limit].to_i : 50
 
     # Returning 'messages'
     messages = user.messages_mapped(
@@ -30,16 +32,19 @@ class ApiV2::MessagesController < ApplicationController
   # Extracted from 'api/messages#create'
   def create
 
+    # Without 'params[:user_id]', setting '@current_user.id' as 'user_id'
+    user_id = params[:user_id].present? ? (params[:user_id]) : @current_user.id
+
     # Creating 'timestamp' (https://stackoverflow.com/questions/13148888)
     timestamp = Time.zone.now.strftime('%s%3N')
 
     # Creating 'messages'
     new_message = Message.new(
-      sent_from: params[:self_id],
-      sent_to: params[:partner_id],
-      contents: params[:contents],
       pic_path: nil,
-      timestamp: timestamp
+      timestamp: timestamp,
+      sent_from: user_id,
+      sent_to:  params[:partner_id],
+      contents: params[:contents]
     )
 
     # If a picture was sent
@@ -47,7 +52,7 @@ class ApiV2::MessagesController < ApplicationController
 
       # Defining 'picture_path' and saving it to the database
       # ** https://qiita.com/k6i/items/d2c72394a490293277cc
-      picture_path = "#{picture_root_path}/#{@current_user.id}" \
+      picture_path = "#{picture_root_path}/#{user_id}" \
                   << "_#{timestamp}_#{params[:picture].original_filename}"
       new_message.pic_path = picture_path
 

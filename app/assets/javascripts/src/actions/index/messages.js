@@ -9,10 +9,11 @@ export default {
 
   async getLastMessages(currentUserID) {
     try {
-      // Defining query parameters
-      const query = `self_id=${currentUserID}&limit=1`
-      // Getting data from a server, then proceeding next
-      const response = await request.get(`${APIRoot}/messages?${query}`);
+      // Getting data from a server (with query params), then proceeding next
+      // ** https://visionmedia.github.io/superagent/#query-strings
+      const response = await request
+        .get(`${APIRoot}/messages`)
+        .query({ limit: 1 });
       // Catching errors besides network errors
       if (!response.ok) { throw Error(response.statusText); }
       // Changing data on 'stores' after converting a JSON string to an object
@@ -26,8 +27,9 @@ export default {
 
   async getOpenMessages(currentUserID, openUserID) {
     try {
-      const query = `self_id=${currentUserID}&partner_ids[]=${openUserID}`
-      const response = await request.get(`${APIRoot}/messages?${query}`);
+      const response = await request
+        .get(`${APIRoot}/messages`)
+        .query(`partner_ids[]=${openUserID}`);
       if (!response.ok) { throw Error(response.statusText); }
       Dispatcher.handleViewAction({
         type: ActionTypes.GET_OPEN_MESSAGES,
@@ -41,7 +43,7 @@ export default {
       const response = await request
         .post(`${APIRoot}/messages`)
         .set('X-CSRF-Token', CSRFToken())
-        .send({ self_id: currentUserID, partner_id: openUserID, contents: message });
+        .send({ partner_id: openUserID, contents: message });
       if (!response.ok) { throw Error(response.statusText); }
     } catch(error) { console.log(error); }
   },
@@ -52,9 +54,8 @@ export default {
         .post(`${APIRoot}/messages`)
         .set('X-CSRF-Token', CSRFToken())
         .attach('picture', picture)
-        .field('contents', 'A picture was sent!')
-        .field('self_id', currentUserID)
-        .field('partner_id', openUserID);
+        .field('partner_id', openUserID)
+        .field('contents', 'A picture was sent!');
       if (!response.ok) { throw Error(response.statusText); }
     } catch(error) { console.log(error); }
   },

@@ -9,10 +9,10 @@ export default {
 
   async getRelationships(currentUserID) {
     try {
-      // Defining query parameters
-      const query = `self_id=${currentUserID}`
-      // Getting data from a server, then proceeding next
-      const response = await request.get(`${APIRoot}/relationships?${query}`);
+      // Getting data from a server (with query params), then proceeding next
+      // ** https://visionmedia.github.io/superagent/#query-strings
+      const response = await request
+        .get(`${APIRoot}/relationships`)
       // Catching errors besides network errors
       if (!response.ok) { throw Error(response.statusText); }
       // Changing data on 'stores' after converting a JSON string to an object
@@ -29,7 +29,7 @@ export default {
       const response = await request
         .put(`${APIRoot}/relationships/:id`)
         .set('X-CSRF-Token', CSRFToken())
-        .send({ self_id: currentUserID, partner_id: openUserID });
+        .send({ partner_id: openUserID });
       if (!response.ok) { throw Error(response.statusText); }
     } catch(error) { console.log(error); }
   },
@@ -39,7 +39,7 @@ export default {
       const response = await request
         .post(`${APIRoot}/relationships`)
         .set('X-CSRF-Token', CSRFToken())
-        .send({ self_id: currentUserID, partner_id: openUserID });
+        .send({ partner_id: openUserID });
       if (!response.ok) { throw Error(response.statusText); }
     } catch(error) { console.log(error); }
   },
@@ -49,7 +49,7 @@ export default {
       const response = await request
         .delete(`${APIRoot}/relationships/:id`)
         .set('X-CSRF-Token', CSRFToken())
-        .send({ self_id: currentUserID, partner_id: openUserID });
+        .send({ partner_id: openUserID });
       if (!response.ok) { throw Error(response.statusText); }
     } catch(error) { console.log(error); }
   },
