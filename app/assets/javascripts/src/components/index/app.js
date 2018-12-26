@@ -31,13 +31,12 @@ class App extends React.Component {
   // ** https://www.valentinog.com/blog/how-async-await-in-react/
   async componentDidMount() {
     // 'currentUserID' is necessary for 'Action' below
-    await UserAction.getCurrentUserID()
-    const currentUserID = UserStore.getCurrentUserID()
+    const currentUserID = await UserAction.fetchCurrentUserID()
     // Running after 'currentUserID' is set
-    UserAction.getFriends(currentUserID)
-    UserAction.getSuggestions(currentUserID)
-    MessageAction.getLastMessages(currentUserID)
-    RelationshipAction.getRelationships(currentUserID)
+    UserAction.fetchFriends()
+    UserAction.fetchSuggestions()
+    MessageAction.fetchLastMessages()
+    RelationshipAction.fetchRelationships()
   }
 
   getStateFromStore() {
@@ -62,16 +61,20 @@ class App extends React.Component {
     this.setState(this.getStateFromStore())
   }
 
+  onChangeBind() {
+    return this.onStoreChange.bind(this)
+  }
+
   // ??
   componentWillMount() {
-    UserStore.onChange(this.onStoreChange.bind(this))
-    MessageStore.onChange(this.onStoreChange.bind(this))
-    RelationshipStore.onChange(this.onStoreChange.bind(this))
+    UserStore.onChange(this.onChangeBind())
+    MessageStore.onChange(this.onChangeBind())
+    RelationshipStore.onChange(this.onChangeBind())
   }
   componentWillUnmount() {
-    UserStore.offChange(this.onStoreChange.bind(this))
-    MessageStore.offChange(this.onStoreChange.bind(this))
-    RelationshipStore.offChange(this.onStoreChange.bind(this))
+    UserStore.offChange(this.onChangeBind())
+    MessageStore.offChange(this.onChangeBind())
+    RelationshipStore.offChange(this.onChangeBind())
   }
 
   // Passing the parent class' 'state' to the child class 'props'

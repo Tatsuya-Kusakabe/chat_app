@@ -7,7 +7,7 @@ import { ActionTypes, APIRoot, PicRoot, CSRFToken } from '../../utils'
 // ** https://www.valentinog.com/blog/how-async-await-in-react/
 export default {
 
-  async getLastMessages(currentUserID) {
+  async fetchLastMessages() {
     try {
       // Getting data from a server (with query params), then proceeding next
       // ** https://visionmedia.github.io/superagent/#query-strings
@@ -16,25 +16,31 @@ export default {
         .query({ limit: 1 });
       // Catching errors besides network errors
       if (!response.ok) { throw Error(response.statusText); }
+      // Defining 'json' (because it is used duplicately)
+      const json = JSON.parse(response.text)
       // Changing data on 'stores' after converting a JSON string to an object
       Dispatcher.handleViewAction({
         type: ActionTypes.GET_LAST_MESSAGES,
-        json: JSON.parse(response.text),
+        json: json,
       })
+      // Returning 'json'
+      return json;
     // If catching network errors, throwing it
     } catch(error) { console.log(error); }
   },
 
-  async getOpenMessages(currentUserID, openUserID) {
+  async fetchOpenMessages(openUserID) {
     try {
       const response = await request
         .get(`${APIRoot}/messages`)
         .query(`partner_ids[]=${openUserID}`);
       if (!response.ok) { throw Error(response.statusText); }
+      const json = JSON.parse(response.text)
       Dispatcher.handleViewAction({
         type: ActionTypes.GET_OPEN_MESSAGES,
-        json: JSON.parse(response.text),
+        json: json,
       })
+      return json;
     } catch(error) { console.log(error); }
   },
 

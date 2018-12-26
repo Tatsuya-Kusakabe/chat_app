@@ -7,7 +7,7 @@ import { ActionTypes, APIRoot, PicRoot, CSRFToken } from '../../utils'
 // ** https://www.valentinog.com/blog/how-async-await-in-react/
 export default {
 
-  async getRelationships(currentUserID) {
+  async fetchRelationships() {
     try {
       // Getting data from a server (with query params), then proceeding next
       // ** https://visionmedia.github.io/superagent/#query-strings
@@ -15,11 +15,15 @@ export default {
         .get(`${APIRoot}/relationships`)
       // Catching errors besides network errors
       if (!response.ok) { throw Error(response.statusText); }
+      // Defining 'json' (because it is used duplicately)
+      const json = JSON.parse(response.text)
       // Changing data on 'stores' after converting a JSON string to an object
       Dispatcher.handleViewAction({
         type: ActionTypes.GET_RELATIONSHIPS,
-        json: JSON.parse(response.text),
+        json: json,
       })
+      // Returning 'json'
+      return json;
     // If catching network errors, throwing it
     } catch(error) { console.log(error); }
   },

@@ -5,8 +5,6 @@
 #                 destroying a relationship                   (destroy)
 class ApiV2::RelationshipsController < ApplicationController
 
-  protect_from_forgery except: :update
-
   # Newly created
   def index
 
