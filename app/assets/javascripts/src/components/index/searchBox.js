@@ -7,7 +7,7 @@ import UserStore from '../../stores/index/users'
 class SearchBox extends React.Component {
 
   async updateValue(e) {
-    const { currentUserID, openUserTab } = this.props
+    const { openUserTab } = this.props
 
     // Updating a state from '{ value: '', }' to '{ value: e.target.value, }'
     UserAction.updateSearchText(e.target.value)
@@ -15,8 +15,8 @@ class SearchBox extends React.Component {
     // Calling 'getFriends' or 'getSuggestions' with 'e.target.value'
     // ** 'this.state.value' is not updated until rendered
     openUserTab === 'Friends'
-      ? await UserAction.getFriends(currentUserID, e.target.value)
-      : await UserAction.getSuggestions(currentUserID, e.target.value)
+      ? await UserAction.fetchFriends(e.target.value)
+      : await UserAction.fetchSuggestions(e.target.value)
 
     // Initializing 'openUserID' (because a set of users changes)
     UserAction.changeOpenUserID(null)
@@ -29,7 +29,7 @@ class SearchBox extends React.Component {
             value={ UserStore.getSearchText() }
             onChange={ (e) => this.updateValue(e) }
             className='search-box__input'
-            placeholder='Type names to search for..'
+            placeholder='Type name to search for..'
           />
         </div>
     )
@@ -39,7 +39,6 @@ class SearchBox extends React.Component {
 // Defining 'propTypes'
 // ** https://morizyun.github.io/javascript/react-js-proptypes-validator.html
 SearchBox.propTypes = {
-  currentUserID: PropTypes.number,
   openUserTab: PropTypes.string,
 }
 

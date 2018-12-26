@@ -10,8 +10,7 @@ import _ from 'lodash'
 class UserProf extends React.Component {
 
   async changeFriendship(friendship) {
-    const tmpCurrentUserID = this.props.currentUserID
-    const tmpOpenUserID = this.props.openUserID
+    const { openUserID } = this.props
 
     // Changing 'openUserTab'
     const newFriendship = (friendship === 'Suggestions') ? 'Friends' : 'Suggestions'
@@ -19,21 +18,21 @@ class UserProf extends React.Component {
 
     // Changing 'relationship' and sending a welcome message
     if (newFriendship === 'Friends') {
-      await RelationshipAction.createFriendship(tmpCurrentUserID, tmpOpenUserID)
-      MessageAction.sendMessage(tmpCurrentUserID, tmpOpenUserID, 'You made friends!')
+      await RelationshipAction.createFriendship(openUserID)
+      MessageAction.sendMessage(openUserID, 'You made friends!')
     } else {
-      await RelationshipAction.destroyFriendship(tmpCurrentUserID, tmpOpenUserID)
+      await RelationshipAction.destroyFriendship(openUserID)
     }
 
     // Getting information as in 'componentDidMount()'
-    UserAction.getFriends(tmpCurrentUserID)
-    UserAction.getSuggestions(tmpCurrentUserID)
-    MessageAction.getLastMessages(tmpCurrentUserID)
-    RelationshipAction.getRelationships(tmpCurrentUserID)
+    UserAction.fetchFriends()
+    UserAction.fetchSuggestions()
+    MessageAction.fetchLastMessages()
+    RelationshipAction.fetchRelationships()
 
     // Changing 'openUserID' and 'openMessages'
-    UserAction.changeOpenUserID(tmpOpenUserID)
-    MessageAction.getOpenMessages(tmpCurrentUserID, tmpOpenUserID)
+    UserAction.changeOpenUserID(openUserID)
+    MessageAction.fetchOpenMessages(openUserID)
   }
 
   render() {
@@ -52,7 +51,7 @@ class UserProf extends React.Component {
     if (skipRenderFirst || skipRenderAfterUpdate) {
       return (
           <div className='user-prof__list user-prof__list__empty'>
-            No { this.props.openUserTab }
+            No { openUserTab }
           </div>
       )
     }
@@ -77,13 +76,13 @@ class UserProf extends React.Component {
     return (
         <div className={ itemClasses }>
           <div className={ pictureClasses }>
-            <img src={ userInfo.profile_picture } />
+            <img src={ userInfo.profilePicture } />
           </div>
           <h4 className='user-prof__item__name'>
             { userInfo.name }
           </h4>
           <h6 className='user-prof__item__message'>
-            { userInfo.profile_comment }
+            { userInfo.profileComment }
           </h6>
           {/*
           // When a message clicked, returning 'changeFriendship(openUserTab)'

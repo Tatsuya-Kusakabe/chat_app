@@ -12,7 +12,7 @@ class UserShortProf extends React.Component {
   }
 
   render() {
-    const { openUserTab, openUserID, openContent, friends, suggestions } = this.props
+    const { openUserID, openUserTab, openContent, friends, suggestions } = this.props
 
     // When 'openUserID' is null (namely having no friends), or
     // 'suggestions' tab is open, displaying nothing
@@ -23,7 +23,7 @@ class UserShortProf extends React.Component {
     const skipRenderAfterUpdate = !(_.find(friends, { 'id': openUserID }))
 
     if (skipRenderFirst || skipRenderAfterUpdate) {
-      return <div className='user-short-prof__list user-short-prof__list__empty'></div>;
+      return <div className='user-short-prof__list user-short-prof__list__empty'></div>
     }
 
     // Defining 'userInfo' and 'contentName' to be displayed as an icon
@@ -36,7 +36,7 @@ class UserShortProf extends React.Component {
     return (
         <div className='clear user-short-prof__item'>
           <div className='user-short-prof__item__picture'>
-            <img src={ userInfo.profile_picture } />
+            <img src={ userInfo.profilePicture } />
           </div>
           <h4 className='user-short-prof__item__name'>
             { userInfo.name }

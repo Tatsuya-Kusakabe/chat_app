@@ -34,6 +34,9 @@ gem 'bcrypt'
 # https://github.com/visionmedia/superagent/issues/629
 gem 'qs'
 
+# https://github.com/Tatsuya-Kusakabe/chat_app/pull/33
+gem 'humps'
+
 group :development, :test do
 
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console

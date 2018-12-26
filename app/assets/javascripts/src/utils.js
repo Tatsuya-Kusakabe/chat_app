@@ -26,12 +26,10 @@ export function CSRFToken() {
   return document.querySelector('meta[name="csrf-token"]').getAttribute('content')
 }
 
-// Defining 'Utils' for calculating dates
 const Utils = {
-
   // Modifing from default, integrating itself and 'getShortDate()'
   getNiceDate(timestamp) {
-
+    //
     // Calculating the posted date from 'timestamp'
     const def_days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
     const def_months = ['Jan.', 'Feb.', 'Mar.', 'Apr.', 'May', 'Jun.', 'Jul.', 'Aug.',

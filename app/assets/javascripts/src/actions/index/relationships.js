@@ -1,7 +1,8 @@
 
 import request from 'superagent'
+import { camelizeKeys } from 'humps'
 import Dispatcher from '../../dispatcher'
-import { ActionTypes, APIRoot, PicRoot, CSRFToken } from '../../utils'
+import { ActionTypes, APIRoot, CSRFToken } from '../../utils'
 
 // Exporting 'RelationshipAction' using 'async/await'
 // ** https://www.valentinog.com/blog/how-async-await-in-react/
@@ -14,47 +15,47 @@ export default {
       const response = await request
         .get(`${APIRoot}/relationships`)
       // Catching errors besides network errors
-      if (!response.ok) { throw Error(response.statusText); }
+      if (!response.ok) { throw Error(response.statusText) }
       // Defining 'json' (because it is used duplicately)
-      const json = JSON.parse(response.text)
+      const json = camelizeKeys(JSON.parse(response.text))
       // Changing data on 'stores' after converting a JSON string to an object
       Dispatcher.handleViewAction({
         type: ActionTypes.GET_RELATIONSHIPS,
         json: json,
       })
       // Returning 'json'
-      return json;
+      return json
     // If catching network errors, throwing it
-    } catch(error) { console.log(error); }
+    } catch (error) { console.log(error) }
   },
 
-  async updateTimestamp(currentUserID, openUserID) {
+  async updateTimestamp(openUserID) {
     try {
       const response = await request
         .put(`${APIRoot}/relationships/:id`)
         .set('X-CSRF-Token', CSRFToken())
-        .send({ partner_id: openUserID });
-      if (!response.ok) { throw Error(response.statusText); }
-    } catch(error) { console.log(error); }
+        .send({ partner_id: openUserID })
+      if (!response.ok) { throw Error(response.statusText) }
+    } catch (error) { console.log(error) }
   },
 
-  async createFriendship(currentUserID, openUserID) {
+  async createFriendship(openUserID) {
     try {
       const response = await request
         .post(`${APIRoot}/relationships`)
         .set('X-CSRF-Token', CSRFToken())
-        .send({ partner_id: openUserID });
-      if (!response.ok) { throw Error(response.statusText); }
-    } catch(error) { console.log(error); }
+        .send({ partner_id: openUserID })
+      if (!response.ok) { throw Error(response.statusText) }
+    } catch (error) { console.log(error) }
   },
 
-  async destroyFriendship(currentUserID, openUserID) {
+  async destroyFriendship(openUserID) {
     try {
       const response = await request
         .delete(`${APIRoot}/relationships/:id`)
         .set('X-CSRF-Token', CSRFToken())
-        .send({ partner_id: openUserID });
-      if (!response.ok) { throw Error(response.statusText); }
-    } catch(error) { console.log(error); }
+        .send({ partner_id: openUserID })
+      if (!response.ok) { throw Error(response.statusText) }
+    } catch (error) { console.log(error) }
   },
 }

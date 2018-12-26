@@ -1,7 +1,6 @@
 
 // https://www.to-r.net/media/react-tutorial10/
 import React from 'react'
-import _ from 'lodash'
 import UserAction from '../../actions/index/users'
 import MessageAction from '../../actions/index/messages'
 import RelationshipAction from '../../actions/index/relationships'
@@ -31,7 +30,7 @@ class App extends React.Component {
   // ** https://www.valentinog.com/blog/how-async-await-in-react/
   async componentDidMount() {
     // 'currentUserID' is necessary for 'Action' below
-    const currentUserID = await UserAction.fetchCurrentUserID()
+    await UserAction.fetchCurrentUserID()
     // Running after 'currentUserID' is set
     UserAction.fetchFriends()
     UserAction.fetchSuggestions()
@@ -80,23 +79,40 @@ class App extends React.Component {
   // Passing the parent class' 'state' to the child class 'props'
   // ** https://qiita.com/KeitaMoromizato/items/0da6c8e4264b1f206451
   render() {
-
     // Defining an object for facilitation
     // ** https://qiita.com/uto-usui/items/a9d17447fe81c17c41fa
-    const { openUserTab, openContent, currentUserID, openUserID } = this.state
+    const {
+      openUserTab, openContent, currentUserID, openUserID,
+      friends, suggestions, openMessages, lastMessages, relationships,
+    } = this.state
 
     // If 'Suggestions' tab is open, rendering 'SuggestionsList' and 'UserProf'
     if (openUserTab === 'Suggestions') {
       return (
           <div className='app'>
             <div className='users-box'>
-              <UsersTab { ...this.state }/>
-              <SearchBox { ...this.state }/>
-              <SuggestionsList { ...this.state }/>
+              <UsersTab openUserTab = { openUserTab }/>
+              <SearchBox openUserTab = { openUserTab }/>
+              <SuggestionsList
+                currentUserID = { currentUserID }
+                openUserID = { openUserID }
+                suggestions = { suggestions }
+              />
             </div>
             <div className='messages-box'>
-              <UserShortProf { ...this.state }/>
-              <UserProf { ...this.state }/>
+              <UserShortProf
+                openUserID = { openUserID }
+                openUserTab = { openUserTab }
+                openContent = { openContent }
+                friends = { friends }
+                suggestions = { suggestions }
+              />
+              <UserProf
+                openUserID = { openUserID }
+                openUserTab = { openUserTab }
+                friends = { friends }
+                suggestions = { suggestions }
+              />
             </div>
           </div>
       )
@@ -106,13 +122,30 @@ class App extends React.Component {
       return (
           <div className='app'>
             <div className='users-box'>
-              <UsersTab { ...this.state }/>
-              <SearchBox { ...this.state }/>
-              <FriendsList { ...this.state }/>
+              <UsersTab openUserTab = { openUserTab }/>
+              <SearchBox openUserTab = { openUserTab }/>
+              <FriendsList
+                currentUserID = { currentUserID }
+                openUserID = { openUserID }
+                friends = { friends }
+                lastMessages = { lastMessages }
+                relationships = { relationships }
+              />
             </div>
             <div className='messages-box'>
-              <UserShortProf { ...this.state }/>
-              <UserProf { ...this.state }/>
+              <UserShortProf
+                openUserID = { openUserID }
+                openUserTab = { openUserTab }
+                openContent = { openContent }
+                friends = { friends }
+                suggestions = { suggestions }
+              />
+              <UserProf
+                openUserID = { openUserID }
+                openUserTab = { openUserTab }
+                friends = { friends }
+                suggestions = { suggestions }
+              />
             </div>
           </div>
       )
@@ -122,13 +155,30 @@ class App extends React.Component {
       return (
           <div className='app'>
             <div className='users-box'>
-              <UsersTab { ...this.state }/>
-              <SearchBox { ...this.state }/>
-              <FriendsList { ...this.state }/>
+              <UsersTab openUserTab = { openUserTab }/>
+              <SearchBox openUserTab = { openUserTab }/>
+              <FriendsList
+                currentUserID = { currentUserID }
+                openUserID = { openUserID }
+                friends = { friends }
+                lastMessages = { lastMessages }
+                relationships = { relationships }
+              />
             </div>
             <div className='messages-box'>
-              <UserShortProf { ...this.state }/>
-              <MessagesList { ...this.state }/>
+              <UserShortProf
+                openUserID = { openUserID }
+                openUserTab = { openUserTab }
+                openContent = { openContent }
+                friends = { friends }
+                suggestions = { suggestions }
+              />
+              <MessagesList
+                currentUserID = { currentUserID }
+                openUserID = { openUserID }
+                openMessages = { openMessages }
+                relationships = { relationships }
+              />
             </div>
           </div>
       )
@@ -138,21 +188,36 @@ class App extends React.Component {
       return (
           <div className='app'>
             <div className='users-box'>
-              <UsersTab { ...this.state }/>
-              <SearchBox { ...this.state }/>
-              <FriendsList { ...this.state }/>
+              <UsersTab openUserTab = { openUserTab }/>
+              <SearchBox openUserTab = { openUserTab }/>
+              <FriendsList
+                currentUserID = { currentUserID }
+                openUserID = { openUserID }
+                friends = { friends }
+                lastMessages = { lastMessages }
+                relationships = { relationships }
+              />
             </div>
             <div className='messages-box'>
-              <UserShortProf { ...this.state }/>
-              <MessagesList { ...this.state }/>
-              <ReplyBox { ...this.state }/>
+              <UserShortProf
+                openUserID = { openUserID }
+                openUserTab = { openUserTab }
+                openContent = { openContent }
+                friends = { friends }
+                suggestions = { suggestions }
+              />
+              <MessagesList
+                currentUserID = { currentUserID }
+                openUserID = { openUserID }
+                openMessages = { openMessages }
+                relationships = { relationships }
+              />
+              <ReplyBox openUserID = { openUserID }/>
             </div>
           </div>
       )
-
     }
   }
-
 }
 
 export default App
