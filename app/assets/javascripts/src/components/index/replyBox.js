@@ -17,25 +17,21 @@ class ReplyBox extends React.Component {
 
   // Calling 'sendPicture()' and 'getOpenMessages()'
   // ** https://qiita.com/To_BB/items/27c864a46f35545122c2
-  async sendPicture(e) {
+  sendPicture(e) {
     // ** Somehow not warned as 'Duplicate definition'
     const { openUserID } = this.props
     this.setState({ picture: e.target.files[0] })
-
-    await MessageAction.sendPicture(openUserID, e.target.files[0])
-    MessageAction.fetchOpenMessages(openUserID)
+    MessageAction.sendPicture(openUserID, e.target.files[0])
     this.setState({ picture: '' })
   }
 
   // When pressing Enter (code 13),
   // calling 'sendMessage()' and 'getMessages()', and initializing 'state'
-  async sendMessage(e) {
+  sendMessage(e) {
     if (e.keyCode === 13) {
       // ** Somehow not warned as 'Duplicate definition'
       const { openUserID } = this.props
-
-      await MessageAction.sendMessage(openUserID, e.target.value)
-      MessageAction.fetchOpenMessages(openUserID)
+      MessageAction.sendMessage(openUserID, e.target.value)
       this.setState({ text: '' })
     }
   }

@@ -52,6 +52,13 @@ export default {
         .set('X-CSRF-Token', CSRFToken())
         .send({ partner_id: openUserID, contents: message })
       if (!response.ok) { throw Error(response.statusText) }
+      const json = camelizeKeys(message)
+      Dispatcher.handleViewAction({
+        type: ActionTypes.SEND_MESSAGE,
+        partnerId: openUserID,
+        contents: message,
+      })
+      return json
     } catch (error) { console.log(error) }
   },
 
@@ -64,6 +71,16 @@ export default {
         .field('partner_id', openUserID)
         .field('contents', 'A picture was sent!')
       if (!response.ok) { throw Error(response.statusText) }
+      const json = camelizeKeys(picture)
+      console.log(picture)
+      Dispatcher.handleViewAction({
+        type: ActionTypes.SEND_PICTURE,
+        partnerId: openUserID,
+        contents: picture.read,
+        picRoot: '/assets/images',
+        picName: picture.name
+      })
+      return json
     } catch (error) { console.log(error) }
   },
 

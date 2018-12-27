@@ -116,7 +116,7 @@ class FriendsList extends React.Component {
   }
 
   render() {
-    const { currentUserID, openUserID } = this.props
+    const { openUserID } = this.props
 
     if (this.skipRender()) {
       return (

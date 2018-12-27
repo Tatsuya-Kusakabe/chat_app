@@ -1,3 +1,8 @@
+
+181227_spread_operator
+"//": "", と書くとエラーになるから注意！
+（https://github.com/JeffreyWay/laravel-mix/issues/76）
+
 181214_村井レビュー
 
 ・バックエンドは基本的に、データベースの中身を json で返すだけ。

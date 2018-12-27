@@ -2,6 +2,7 @@
 // Importing components
 import Dispatcher from '../../dispatcher'
 import BaseStore from '../../base/store'
+import UserStore from './users'
 import { ActionTypes } from '../../utils'
 // import _ from 'lodash'
 
@@ -56,6 +57,27 @@ MessageStore.dispatchToken = Dispatcher.register(payload => {
 
     case ActionTypes.GET_OPEN_MESSAGES:
       MessageStore.setOpenMessages(action.json)
+      MessageStore.emitChange()
+      break
+
+    case ActionTypes.SEND_MESSAGE:
+    case ActionTypes.SEND_PICTURE:
+      const { type, partnerId, contents, picRoot, picName } = action
+      const timestamp = +new Date().getTime()
+      console.log(action)
+      const picPath = (action.type === ActionTypes.SEND_MESSAGE)
+        ? null : `${picRoot}/${partnerId}_${timestamp}_${picName}`
+
+      const originalMessages = MessageStore.getOpenMessages()
+      const newMessages = { ...originalMessages[0],
+        sentFrom: UserStore.getCurrentUserID(),
+        sentTo: partnerId,
+        contents: contents,
+        picPath: picPath,
+        timestamp: timestamp,
+      }
+      const updatedMessages = [ ...originalMessages, newMessages ]
+      MessageStore.setOpenMessages(updatedMessages)
       MessageStore.emitChange()
       break
   }

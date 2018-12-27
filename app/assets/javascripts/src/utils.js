@@ -13,6 +13,8 @@ export const ActionTypes = keyMirror({
   UPDATE_SEARCH_TEXT: null,
   GET_LAST_MESSAGES: null,
   GET_OPEN_MESSAGES: null,
+  SEND_MESSAGE: null,
+  SEND_PICTURE: null,
   GET_RELATIONSHIPS: null,
   UPDATE_TIMESTAMP: null,
 })
