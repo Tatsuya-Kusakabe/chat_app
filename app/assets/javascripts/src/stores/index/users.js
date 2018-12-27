@@ -1,28 +1,21 @@
 
-// stores/index/users.js
+// Importing components
+import Dispatcher from '../../dispatcher'
+import BaseStore from '../../base/store'
+import { ActionTypes } from '../../utils'
+// import _ from 'lodash'
 
-import Dispatcher from '../dispatcher'
-import BaseStore from '../base/store'
-import { ActionTypes } from '../utils'
-import _ from 'lodash'
-
+// Defining getters and setters
 class UserBaseStore extends BaseStore {
 
   getFriends() {
-
-    const initFriends = [{
-      id: null, name: '', profile_picture: '', profile_comment: '',
-      status: null, read: null, email: ''
-    }]
-
     // If 'key' is not associated yet, associating 'key' with 'init_obj'
     // ** Without 'If', calling 'this.set(hoge, fuga)' endlessly
     // ** http://www.sumimasen.com/tech/47146106.html
-    if (!this.get('friends')) this.setFriends(initFriends)
+    if (!this.get('friends')) this.setFriends([])
 
     // Returning an object associated with 'key'
     return this.get('friends')
-
   }
 
   setFriends(friends) {
@@ -30,15 +23,8 @@ class UserBaseStore extends BaseStore {
   }
 
   getSuggestions() {
-
-    const initSuggestions = [{
-      id: null, name: '', profile_picture: '', profile_comment: '',
-      status: null, read: null, email: ''
-    }]
-
-    if (!this.get('suggestions')) this.setSuggestions(initSuggestions)
+    if (!this.get('suggestions')) this.setSuggestions([])
     return this.get('suggestions')
-
   }
 
   setSuggestions(suggestions) {
@@ -46,7 +32,7 @@ class UserBaseStore extends BaseStore {
   }
 
   getOpenUserTab() {
-    if (!this.get('open_user_tab')) this.setOpenUserTab("Friends")
+    if (!this.get('open_user_tab')) this.setOpenUserTab('Friends')
     return this.get('open_user_tab')
   }
 
@@ -55,7 +41,7 @@ class UserBaseStore extends BaseStore {
   }
 
   getOpenContent() {
-    if (!this.get('open_content')) this.setOpenContent("Messages")
+    if (!this.get('open_content')) this.setOpenContent('Messages')
     return this.get('open_content')
   }
 
@@ -81,6 +67,15 @@ class UserBaseStore extends BaseStore {
     this.set('current_user_id', currentUserID)
   }
 
+  getSearchText() {
+    if (!this.get('search_text')) this.setSearchText(null)
+    return this.get('search_text')
+  }
+
+  setSearchText(searchText) {
+    this.set('search_text', searchText)
+  }
+
   addChangeListener(callback) {
     this.on('change', callback)
   }
@@ -93,3 +88,49 @@ class UserBaseStore extends BaseStore {
 
 // Creating a new instance 'UserStore' from 'UserBaseStore'
 const UserStore = new UserBaseStore()
+
+// Defining a new 'dispatchToken' associated with 'UserStore'
+UserStore.dispatchToken = Dispatcher.register(payload => {
+  const action = payload.action
+
+  switch (action.type) {
+    case ActionTypes.GET_CURRENT_USER_ID:
+      UserStore.setCurrentUserID(action.json.id)
+      UserStore.emitChange()
+      break
+
+    case ActionTypes.GET_FRIENDS:
+      UserStore.setFriends(action.json)
+      UserStore.emitChange()
+      break
+
+    case ActionTypes.GET_SUGGESTIONS:
+      UserStore.setSuggestions(action.json)
+      UserStore.emitChange()
+      break
+
+    case ActionTypes.CHANGE_OPEN_USER_ID:
+      UserStore.setOpenUserID(action.userID)
+      UserStore.emitChange()
+      break
+
+    case ActionTypes.CHANGE_OPEN_USER_TAB:
+      UserStore.setOpenUserTab(action.userTab)
+      UserStore.emitChange()
+      break
+
+    case ActionTypes.CHANGE_OPEN_CONTENT:
+      UserStore.setOpenContent(action.content)
+      UserStore.emitChange()
+      break
+
+    case ActionTypes.UPDATE_SEARCH_TEXT:
+      UserStore.setSearchText(action.searchText)
+      UserStore.emitChange()
+      break
+  }
+
+  return true
+})
+
+export default UserStore

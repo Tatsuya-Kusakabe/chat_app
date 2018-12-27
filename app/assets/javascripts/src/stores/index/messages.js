@@ -1,42 +1,30 @@
 
-// stores/index/messages.js
+// Importing components
+import Dispatcher from '../../dispatcher'
+import BaseStore from '../../base/store'
+import { ActionTypes } from '../../utils'
+// import _ from 'lodash'
 
-import Dispatcher from '../dispatcher'
-import BaseStore from '../base/store'
-import { ActionTypes } from '../utils'
-import _ from 'lodash'
-
+// Defining getters and setters
 class MessageBaseStore extends BaseStore {
 
-  getMessages() {
-
-    const initMessages = [{ "0": [{
-      id: null, sent_from: null, sent_to: null, contents: '', timestamp: null
-    }] }]
-
+  getLastMessages() {
     // If 'key' is not associated yet, associating 'key' with 'init_obj'
     // ** Without 'If', calling 'this.set(hoge, fuga)' endlessly
     // ** http://www.sumimasen.com/tech/47146106.html
-    if (!this.get('messages')) this.setMessages(initMessages)
+    if (!this.get('last_messages')) this.setLastMessages([])
 
     // Returning an object associated with 'key'
-    return this.get('messages')
-
+    return this.get('last_messages')
   }
 
-  setMessages(messages) {
-    this.set('messages', messages)
+  setLastMessages(lastMessages) {
+    this.set('last_messages', lastMessages)
   }
 
   getOpenMessages() {
-
-    const initOpenMessages = [{
-      id: null, sent_from: null, sent_to: null, contents: '', timestamp: null
-    }]
-
-    if (!this.get('open_messages')) this.setOpenMessages(initOpenMessages)
+    if (!this.get('open_messages')) this.setOpenMessages([])
     return this.get('open_messages')
-
   }
 
   setOpenMessages(openMessages) {
@@ -55,3 +43,24 @@ class MessageBaseStore extends BaseStore {
 
 // Creating a new instance 'MessageStore' from 'MessageBaseStore'
 const MessageStore = new MessageBaseStore()
+
+// Defining a new 'dispatchToken' associated with 'MessageStore'
+MessageStore.dispatchToken = Dispatcher.register(payload => {
+  const action = payload.action
+
+  switch (action.type) {
+    case ActionTypes.GET_LAST_MESSAGES:
+      MessageStore.setLastMessages(action.json)
+      MessageStore.emitChange()
+      break
+
+    case ActionTypes.GET_OPEN_MESSAGES:
+      MessageStore.setOpenMessages(action.json)
+      MessageStore.emitChange()
+      break
+  }
+
+  return true
+})
+
+export default MessageStore

@@ -1,5 +1,4 @@
 
-// Importing components
 import request from 'superagent'
 import Dispatcher from '../../dispatcher'
 import { ActionTypes, APIRoot, PicRoot, CSRFToken } from '../../utils'
@@ -8,10 +7,10 @@ import { ActionTypes, APIRoot, PicRoot, CSRFToken } from '../../utils'
 // ** https://www.valentinog.com/blog/how-async-await-in-react/
 export default {
 
-  async getFriends(userID) {
+  async getFriends(userID, searchText) {
     try {
       // Defining query parameters
-      const query = `self_id=${userID}`
+      const query = `self_id=${userID}&search_text=${searchText}`
       // Getting data from a server, then proceeding next
       const response = await request.get(`${APIRoot}/friends?${query}`);
       // Catching errors besides network errors
@@ -25,9 +24,9 @@ export default {
     } catch(error) { console.log(error); }
   },
 
-  async getSuggestions(userID) {
+  async getSuggestions(userID, searchText) {
     try {
-      const query = `self_id=${userID}`
+      const query = `self_id=${userID}&search_text=${searchText}`
       const response = await request.get(`${APIRoot}/suggestions?${query}`);
       if (!response.ok) { throw Error(response.statusText); }
       Dispatcher.handleViewAction({
@@ -48,24 +47,31 @@ export default {
     } catch(error) { console.log(error); }
   },
 
-  getOpenUserID(userID, relationships) {
-    const relationships_sorted = relationships.sort((a, b) => {
-      // Picking up 'timestamp' to compare (depending on which is applicant)
-      const timestamp_a = (a.applicant_id !== userID)
-        ? a.applicant_id : a.recipient_id;
-      const timestamp_b = (b.applicant_id !== userID)
-        ? b.applicant_id : b.recipient_id;
-      // Sorting according to 'timestamp'
-      if(timestamp_a > timestamp_b) return -1;
-      if(timestamp_a < timestamp_b) return 1;
-      return 0;
+  changeOpenUserTab(userTab) {
+    Dispatcher.handleViewAction({
+      type: ActionTypes.CHANGE_OPEN_USER_TAB,
+      userTab: userTab,
     })
-    // Picking up 'openUserID'
-    const openUserID = parseInt(Object.keys(relationships_sorted[0])[0])
-    // Changing data on 'stores'
+  },
+
+  changeOpenUserID(userID) {
     Dispatcher.handleViewAction({
       type: ActionTypes.CHANGE_OPEN_USER_ID,
-      json: openUserID,
+      userID: userID,
+    })
+  },
+
+  changeOpenContent(content) {
+    Dispatcher.handleViewAction({
+      type: ActionTypes.CHANGE_OPEN_CONTENT,
+      content: content,
+    })
+  },
+
+  updateSearchText(searchText) {
+    Dispatcher.handleViewAction({
+      type: ActionTypes.UPDATE_SEARCH_TEXT,
+      searchText: searchText,
     })
   },
 
