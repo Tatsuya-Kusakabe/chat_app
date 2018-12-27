@@ -1,4 +1,7 @@
 
+require 'active_support'
+require 'active_support/core_ext'
+
 # Responsible for 'user' model
 class User < ActiveRecord::Base
 
@@ -86,71 +89,40 @@ class User < ActiveRecord::Base
   end
 
   # Extracting an array of 'messages'
-  def messages(with_ids:)
+  def messages(partner_ids:, top_newest_counts:)
 
     # Custom error messages (just in case handling too much data)
     max_ids = 50;
-
-    case
-    when with_ids.length > max_ids;
-      raise "Limit the number of friends below #{max_ids}"
-    end
-
-    # Extracting 'messages' (while avoiding 'N + 1 problem')
-    messages = Message.where(
-      '(sent_from = ? and sent_to IN (?)) or
-       (sent_to = ? and sent_from IN (?))',
-      self.id, with_ids, self.id, with_ids
-
-    # ** Sorting with SQL (.order) is quicker than Rails (.sort_by)
-    ).order(:timestamp)
-
-    return messages
-
-  end
-
-  def messages_mapped(with_ids:, top_newest_counts:)
-
-    # Custom error messages (just in case handling too much data)
     max_ids_counts = 50 * 50;
 
     case
-    when top_newest_counts && top_newest_counts * with_ids.length > max_ids_counts;
+    when !top_newest_counts && partner_ids.length > max_ids;
+      raise "Limit the number of friends below #{max_ids}"
+    when top_newest_counts  && top_newest_counts * partner_ids.length > max_ids_counts;
       raise "Limit the number of messages or friends"
     end
 
-    # Inheriting from function 'messages'
-    messages = messages(with_ids: with_ids)
+    # Each function defined in 'private'
+    _messages_raw = messages_raw(partner_ids: partner_ids)
+    _messages_with_id = messages_with_id(messages: _messages_raw)
+    _messages_latest = messages_latest(
+      messages: _messages_with_id,
+      partner_ids: partner_ids,
+      top_newest_counts: top_newest_counts
+    )
 
-    # Mapping 'messages' with the key 'sent_from' or 'sent_to'
-    messages_mapped = with_ids.map do |with_id|
-
-      # Extracting 'messages' matching with the key
-      messages_with_id = messages.select do |message|
-        message.sent_from == with_id || message.sent_to == with_id
-      end
-
-      # If 'top_newest_counts' is defined, picking up as it wants
-      { with_id => top_newest_counts \
-        ? messages_with_id.last(top_newest_counts) \
-        : messages_with_id
-      }
-
-    end
-
-    # Returning 'messages_mapped'
-    return messages_mapped
+    return _messages_latest
 
   end
 
   # Extracting an array of 'relatioship' objects
-  def relationships(with_ids:)
+  def relationships(partner_ids:)
 
     # Custom error messages (just in case handling too much data)
     max_ids = 100;
 
     case
-    when with_ids.length > max_ids;
+    when partner_ids.length > max_ids;
       raise "Limit the number of friends below #{max_ids}"
     end
 
@@ -159,20 +131,20 @@ class User < ActiveRecord::Base
     relationships = Relationship.where(
       '(applicant_id = ? and recipient_id IN (?)) or
        (recipient_id = ? and applicant_id IN (?))',
-      self.id, with_ids, self.id, with_ids
+      self.id, partner_ids, self.id, partner_ids
     )
 
     return relationships
 
   end
 
-  def relationships_mapped(with_ids:)
+  def relationships_mapped(partner_ids:)
 
     # Inheriting from function 'relationships'
-    relationships = relationships(with_ids: with_ids)
+    relationships = relationships(partner_ids: partner_ids)
 
     # Mapping 'relationships' with the key 'applicant_id' or 'recipient_id'
-    relationships_mapped = with_ids.map do |with_id|
+    relationships_mapped = partner_ids.map do |with_id|
 
       # Extracting 'messages' matching with the key
       relationship_with_id = relationships.select do |relationship|
@@ -205,5 +177,69 @@ class User < ActiveRecord::Base
   def valid_token?(encrypted_token, token)
     Devise::Encryptor.compare(self.class, encrypted_token, token)
   end
+
+  private
+
+    def messages_raw(partner_ids: partner_ids)
+
+      # Extracting 'messages' (while avoiding 'N + 1 problem')
+      return messages = Message.where(
+        '(sent_from = ? and sent_to IN (?)) or
+         (sent_to = ? and sent_from IN (?))',
+        self.id, partner_ids, self.id, partner_ids
+
+      # ** Sorting with SQL (.order) is quicker than Rails (.sort_by)
+      ).order(:timestamp)
+
+    end
+
+    def messages_with_id(messages: messages)
+
+      return messages_with_id = messages.map do |message|
+        # Defining 'partner_id' to add
+        partner_id = (message.sent_from != self.id) \
+          ? message.sent_from : message.sent_to
+
+        # '{ **hoge }' in Ruby works like '{ ...hoge }' in JavaScript
+        # ** # http://yrfreelance.com/2018/05/18/
+        # 'Object' should be converted into 'Hash' using '.attributes'
+        # ** https://qiita.com/ashi_psn/items/4880d73b362e64d29740
+        # 'Only Symbol Keys Are Supported' for '**' (string keys not)
+        # ** http://wizardofogz.com/ruby/2015/10/02/ruby-double-splat.html
+        # '.symbolize_keys' changes keys from 'string' to 'symbol'
+        # ** https://apidock.com/rails/Hash/symbolize_keys
+        hash = message.attributes.symbolize_keys
+
+        # Adding 'partner_id' for each 'message'
+        # ** 'partner_id' could be equal to 'sent_from' or 'sent_to'
+        { partner_id: partner_id, **hash }
+      end
+
+    end
+
+    def messages_latest(
+      messages: messages,
+      partner_ids: partner_ids,
+      top_newest_counts: top_newest_counts
+    )
+
+      # For each 'partner_id'
+      latest_messages = partner_ids.map do |partner_id|
+        # Extracting 'messages' matching with 'partner_id'
+        _messages_before_pickup = messages.select do |message|
+          message[:partner_id] == partner_id
+        end
+
+        # Picking up latest messages according to 'top_newest_counts'
+        _messages_after_pickup = top_newest_counts \
+          ? _messages_before_pickup.last(top_newest_counts) \
+          : _messages_before_pickup
+      end
+
+      # Converting '[[{..}, {..}], [{..}, {..}]]' to '[{..}, {..}, {..}, {..}]'
+      # ** https://ref.xaio.jp/ruby/classes/array/flatten
+      return latest_messages.flatten
+
+    end
 
 end

@@ -21,8 +21,8 @@ class ApiV2::MessagesController < ApplicationController
       ? params[:limit].to_i : 50
 
     # Returning 'messages'
-    messages = user.messages_mapped(
-      with_ids: id_params, top_newest_counts: count_params
+    messages = user.messages(
+      partner_ids: id_params, top_newest_counts: count_params
     )
 
     render(json: messages)
