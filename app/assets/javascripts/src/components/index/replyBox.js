@@ -1,74 +1,53 @@
-//
-// components/8_replyBox.js
-//
-// Importing components
-//
+
 import React from 'react'
 import PropTypes from 'prop-types'
-import IndexAction from '../../actions/index'
-//
-// Creating a new class 'ReplyBox'
-//
+import MessageAction from '../../actions/index/messages'
+
 class ReplyBox extends React.Component {
 
   constructor(props) {
-    //
-    // Inheriting props  (modifiable   values) from 'React.component'
-    // Inheriting states (unmodifiable values) as   'this.getStateFromStore()'
-    //
     super(props)
-    this.state = this.initialState
-    //
+    this.state = { text: '', picture: '' }
   }
-  //
-  // Equalizing 'this.initialState' and '{ value: '', }'
-  // ** If you write "get hoge() {return fuga}", 'this.hoge' does 'fuga'
-  //
-  get initialState() {
-    return { text: '', picture: '' }
-  }
-  //
+
   // Updating a state from '{ value: '', }' to '{ value: e.target.value, }'
-  //
   updateText(e) {
     this.setState({ text: e.target.value })
   }
-  //
-  // Calling 'sendPicture()' and 'getMessages()' from 'actions/index'
+
+  // Calling 'sendPicture()' and 'getOpenMessages()'
   // ** https://qiita.com/To_BB/items/27c864a46f35545122c2
-  //
-  sendPicture(e) {
-    //
+  async sendPicture(e) {
+    // ** Somehow not warned as 'Duplicate definition'
+    const { currentUserID, openUserID } = this.props
     this.setState({ picture: e.target.files[0] })
-    IndexAction.sendPicture(this.props.currentUserID, this.props.openUserID, e.target.files[0])
-    IndexAction.getMessages('Friends')
+
+    await MessageAction.sendPicture(currentUserID, openUserID, e.target.files[0])
+    MessageAction.getOpenMessages(currentUserID, openUserID)
     this.setState({ picture: '' })
-    //
   }
-  //
+
   // When pressing Enter (code 13),
-  // calling 'sendMessage()' and 'getMessages()' from 'actions/index', and
-  // updating a state from '{ value: this.state.value, }' to '{ value: '', }'
-  //
-  sendMessage(e) {
+  // calling 'sendMessage()' and 'getMessages()', and initializing 'state'
+  async sendMessage(e) {
     if (e.keyCode === 13) {
-      IndexAction.sendMessage(this.props.openUserID, this.state.value)
-      IndexAction.getMessages('Friends')
+      // ** Somehow not warned as 'Duplicate definition'
+      const { currentUserID, openUserID } = this.props
+
+      await MessageAction.sendMessage(currentUserID, openUserID, e.target.value)
+      MessageAction.getOpenMessages(currentUserID, openUserID)
       this.setState({ text: '' })
     }
   }
-  //
-  // Rendering results
-  //
+
   render() {
-    console.log(this.state)
     return (
       <div className='reply-box'>
         {/**/}
         <input
           value={ this.state.text }
-          onChange={ this.updateText.bind(this) }
-          onKeyDown={ this.sendMessage.bind(this) }
+          onChange={ (e) => this.updateText(e) }
+          onKeyDown={ (e) => this.sendMessage(e) }
           className='reply-box__text'
           placeholder='Type message to reply..'
         />
@@ -83,7 +62,7 @@ class ReplyBox extends React.Component {
           <img src='/assets/images/picture_icon.png'/>
           <input
             type='file' ref='file' name='picture'
-            onChange={ this.sendPicture.bind(this) }
+            onChange={ (e) => this.sendPicture(e) }
             accept='image/png, image/jpeg, image/gif'
           />
         </label>
@@ -92,13 +71,12 @@ class ReplyBox extends React.Component {
     )
   }
 }
-//
+
 // Defining 'propTypes'
 // ** https://morizyun.github.io/javascript/react-js-proptypes-validator.html
-//
 ReplyBox.propTypes = {
   currentUserID: PropTypes.number,
-  openUserID: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  openUserID: PropTypes.number,
 }
-//
+
 export default ReplyBox
