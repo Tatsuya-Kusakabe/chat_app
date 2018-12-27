@@ -52,10 +52,9 @@ class FriendsList extends React.Component {
 
     const friendsInfo = friends.map((friend, index) => {
       let friendInfo = []
-      const friendID = String(friend.id)
-      const relationship = _.find(relationships, friendID)[friendID]
       friendInfo.user = friend
-      friendInfo.message = _.find(lastMessages, friendID)[friendID][0]
+      friendInfo.message = _.find(lastMessages, { partnerId: friend.id })
+      const relationship = _.find(relationships, { partnerId: friend.id })
       friendInfo.timestamp = (relationship.applicantId === currentUserID)
         ? { currentUser: relationship.timestampApplicant,
             friend: relationship.timestampRecipient }

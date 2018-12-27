@@ -44,8 +44,8 @@ class UserProf extends React.Component {
     // When 'openUserID' does not match 'friends' or 'suggestions' list
     // (during rerender), displaying nothing
     const skipRenderAfterUpdate = (openUserTab === 'Friends')
-      ? !(_.find(friends, { 'id': openUserID }))
-      : !(_.find(suggestions, { 'id': openUserID }))
+      ? !(_.find(friends, { id: openUserID }))
+      : !(_.find(suggestions, { id: openUserID }))
 
     // When 'openUserID' is null (namely having no friends), displaying 'No...'
     if (skipRenderFirst || skipRenderAfterUpdate) {
@@ -59,8 +59,8 @@ class UserProf extends React.Component {
     // Defining 'userInfo' and 'linkText' which triggers a friendship change
     const linkText = (openUserTab === 'Friends') ? 'Unfriend?' : 'Be friends!'
     const userInfo = (openUserTab === 'Friends')
-      ? _.find(friends, { 'id': openUserID })
-      : _.find(suggestions, { 'id': openUserID })
+      ? _.find(friends, { id: openUserID })
+      : _.find(suggestions, { id: openUserID })
 
     // Defining 'item_classes' to distinguish 'openUserTab'
     // ** https://www.npmjs.com/package/classnames

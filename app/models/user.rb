@@ -126,38 +126,11 @@ class User < ActiveRecord::Base
       raise "Limit the number of friends below #{max_ids}"
     end
 
-    # Extracting relationships (while avoiding 'N + 1 problem')
-    # ** This should be avoided -> hoge = fuga.map { |foo| (Queries) }
-    relationships = Relationship.where(
-      '(applicant_id = ? and recipient_id IN (?)) or
-       (recipient_id = ? and applicant_id IN (?))',
-      self.id, partner_ids, self.id, partner_ids
-    )
+    # Each function defined in 'private'
+    _relationships_raw = relationships_raw(partner_ids: partner_ids)
+    _relationships_with_id = relationships_with_id(relationships: _relationships_raw)
 
-    return relationships
-
-  end
-
-  def relationships_mapped(partner_ids:)
-
-    # Inheriting from function 'relationships'
-    relationships = relationships(partner_ids: partner_ids)
-
-    # Mapping 'relationships' with the key 'applicant_id' or 'recipient_id'
-    relationships_mapped = partner_ids.map do |with_id|
-
-      # Extracting 'messages' matching with the key
-      relationship_with_id = relationships.select do |relationship|
-        relationship.applicant_id == with_id \
-        || relationship.recipient_id == with_id
-      end
-
-      { with_id => relationship_with_id[0] }
-
-    end
-
-    # Returning 'relationships_mapped'
-    return relationships_mapped
+    return _relationships_with_id
 
   end
 
@@ -183,6 +156,7 @@ class User < ActiveRecord::Base
     def messages_raw(partner_ids: partner_ids)
 
       # Extracting 'messages' (while avoiding 'N + 1 problem')
+      # ** This should be avoided -> hoge = fuga.map { |foo| (Queries) }
       return messages = Message.where(
         '(sent_from = ? and sent_to IN (?)) or
          (sent_to = ? and sent_from IN (?))',
@@ -190,6 +164,17 @@ class User < ActiveRecord::Base
 
       # ** Sorting with SQL (.order) is quicker than Rails (.sort_by)
       ).order(:timestamp)
+
+    end
+
+    def relationships_raw(partner_ids: partner_ids)
+
+      # Extracting relationships (while avoiding 'N + 1 problem')
+      return relationships = Relationship.where(
+        '(applicant_id = ? and recipient_id IN (?)) or
+         (recipient_id = ? and applicant_id IN (?))',
+        self.id, partner_ids, self.id, partner_ids
+      )
 
     end
 
@@ -212,6 +197,18 @@ class User < ActiveRecord::Base
 
         # Adding 'partner_id' for each 'message'
         # ** 'partner_id' could be equal to 'sent_from' or 'sent_to'
+        { partner_id: partner_id, **hash }
+      end
+
+    end
+
+    def relationships_with_id(relationships: relationships)
+
+      return relationships_with_id = relationships.map do |relationship|
+        partner_id = (relationship.applicant_id != self.id) \
+          ? relationship.applicant_id
+          : relationship.recipient_id
+        hash = relationship.attributes.symbolize_keys
         { partner_id: partner_id, **hash }
       end
 

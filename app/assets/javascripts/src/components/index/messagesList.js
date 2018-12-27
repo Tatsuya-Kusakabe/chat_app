@@ -13,8 +13,8 @@ class MessagesList extends React.Component {
     // When having no 'openMessages' or 'relationships' with 'openUserID',
     // displaying 'No messages'
     const skipRender = !openUserID ||
-      !(_.find(openMessages, openUserID)) ||
-      !(_.find(relationships, openUserID))
+      !(_.find(openMessages, { partnerId: openUserID })) ||
+      !(_.find(relationships, { partnerId: openUserID }))
 
     if (skipRender) {
       return (
@@ -26,15 +26,14 @@ class MessagesList extends React.Component {
       )
     }
 
-    const openMessagesWoHash = _.find(openMessages, openUserID)[openUserID]
     const lastMessage = openMessages[openMessages.length - 1]
-    const openRelationship = _.find(relationships, openUserID)[openUserID]
+    const openRelationship = _.find(relationships, { partnerId: openUserID })
     const timestamp_partner = (openRelationship.applicantId === openUserID)
       ? openRelationship.timestampApplicant
       : openRelationship.timestampRecipient
 
     // Rendering 'openMessages'
-    const messagesList = openMessagesWoHash.map((message, index) => {
+    const messagesList = openMessages.map((message, index) => {
       // Defining 'item_classes' for each message icon
       const itemClasses = classNames({
         'messages-list__item': true,

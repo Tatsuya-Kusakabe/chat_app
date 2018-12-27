@@ -20,7 +20,7 @@ class UserShortProf extends React.Component {
 
     // When 'openUserID' does not match 'friends' list
     // (during rerender), displaying nothing
-    const skipRenderAfterUpdate = !(_.find(friends, { 'id': openUserID }))
+    const skipRenderAfterUpdate = !(_.find(friends, { id: openUserID }))
 
     if (skipRenderFirst || skipRenderAfterUpdate) {
       return <div className='user-short-prof__list user-short-prof__list__empty'></div>
@@ -29,8 +29,8 @@ class UserShortProf extends React.Component {
     // Defining 'userInfo' and 'contentName' to be displayed as an icon
     const contentName = (openContent === 'Profile') ? 'Messages' : 'Profile'
     const userInfo = (openUserTab === 'Friends')
-      ? _.find(friends, { 'id': openUserID })
-      : _.find(suggestions, { 'id': openUserID })
+      ? _.find(friends, { id: openUserID })
+      : _.find(suggestions, { id: openUserID })
     console.log(friends)
 
     return (

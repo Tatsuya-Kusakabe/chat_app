@@ -19,7 +19,7 @@ class ApiV2::RelationshipsController < ApplicationController
       : user.friend_ids
 
     # Returning 'relationships'
-    relationships = user.relationships_mapped(with_ids: id_params)
+    relationships = user.relationships(partner_ids: id_params)
     render(json: relationships)
 
   end
@@ -80,12 +80,12 @@ class ApiV2::RelationshipsController < ApplicationController
       : @current_user
 
     # Destroying 'relationships' on scope
-    relationships_to_destroy = user.relationships(with_ids: [params[:partner_id]])
+    relationships_to_destroy = user.relationships(partner_ids: [params[:partner_id]])
     relationships_to_destroy.destroy_all
 
     # Destroying messages sent within this 'relationship'
     # ** Too complicated to validate within 'model'
-    messages_to_destroy = user.messages(with_ids: [params[:partner_id]])
+    messages_to_destroy = user.messages(partner_ids: [params[:partner_id]])
     messages_to_destroy.destroy_all
 
     render(json: '')

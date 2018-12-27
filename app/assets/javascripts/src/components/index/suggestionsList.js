@@ -24,7 +24,7 @@ class SuggestionsList extends React.Component {
     // ** When 'openUserID' is null, should not skip Rendering
     // ** Initialization of 'openUserID' needed afterwards
     const skipRenderAfterUpdate =
-      openUserID && !(_.find(suggestions, { 'id': openUserID }))
+      openUserID && !(_.find(suggestions, { id: openUserID }))
 
     if (skipRenderFirst || skipRenderAfterUpdate) {
       return (
