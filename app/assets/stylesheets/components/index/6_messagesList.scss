@@ -1,0 +1,74 @@
+//
+// Importing various 'mixin'
+//
+@import 'mixin/color';
+@import 'mixin/flexbox';
+//
+.messages-list {
+  //
+  &__list {
+    //
+    // Positioning based on 'body'
+    //
+    position:   absolute;
+    top:        140px;
+    bottom:     70px;
+    left:       300px;
+    right:      0;
+    //
+    padding:    15px 30px;
+    //
+    overflow-y: scroll;
+    //
+    &__empty {
+      font-size:     14px;
+      font-weight:   400;
+    }
+    //
+  }
+  //
+  &__content {
+    //
+    padding:       10px 15px;
+    border-radius: 10px;
+    white-space:   nowrap;    // No line breaks
+    //
+    font-size:     14px;
+    font-weight:   400;
+    //
+    &__from-current {
+      //
+      float:         right;
+      margin-bottom: 10px;
+      overflow:      hidden;
+      //
+      background:    #218CB9;
+      color:         #fff;
+      //
+    }
+    //
+    &__from-partner {
+      //
+      float:         left;
+      margin-bottom: 5px;
+      //
+      background:    rgba(0, 0, 0, 0.08);
+      //
+    }
+    //
+  }
+  //
+  &__read {
+    //
+    float:       right;
+    padding:     4px 0;
+    //
+    font-size:   12px;
+    font-weight: bold;
+    //
+    color:       rgba( 0, 0, 0, 0.8 );
+    background:  none;
+    //
+  }
+  //
+}

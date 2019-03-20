@@ -1,0 +1,37 @@
+//
+// Importing various 'mixin'
+//
+@import 'mixin/color';
+//
+.search-box {
+  //
+  position: absolute; // Positioning based on 'body'
+  //
+  top:    120px;
+  height: 50px;
+  left:   0;
+  width:  300px;
+  //
+  padding: 10px;
+  //
+  background: color('content-strong');
+  //
+  border-right:  border('normal_opc_1');
+  border-bottom: border('normal_opc_1');
+  //
+  &__input {
+    //
+    display: block;
+    //
+    height:  30px;
+    width:   100%;
+    padding: 4px 9px; // Excluding 'border'
+    //
+    border:  border('normal');
+    border-radius: 3px;
+    //
+    color: rgba( 0, 0, 0, 0.7 );
+    //
+  }
+  //
+}

@@ -1,0 +1,52 @@
+//
+// Importing various 'mixin'
+//
+@import 'mixin/color';
+//
+.users-tab {
+  //
+  &__list {
+    //
+    // Positioning based on 'body'
+    //
+    position:     absolute;
+    top:          90px;
+    left:         0;
+    //
+    background:   color('content');
+    //
+  }
+  //
+  &__item {
+    //
+    display: inline-block;
+    float:   left;
+    //
+    line-height: 29px;  // Excluding 'border-bottom'
+    width:       150px; // Including 'border-right'
+    //
+    border-bottom: border('normal_opc_1');
+    border-right:  border('normal_opc_1');
+    //
+    font-weight: 400;
+    //
+    cursor: pointer;
+    //
+    &--active {
+      //
+      // Changing 'background' according to the class name
+      // ** https://www.nishi2002.com/6976.html
+      // ** https://stackoverflow.com/questions/22510423/
+      //
+      &[class*='friends']     { background: color('friends');     }
+      &[class*='suggestions'] { background: color('suggestions'); }
+      //
+      color:       #fff;
+      font-size:   15px;
+      font-weight: 500;
+      //
+    }
+    //
+  }
+  //
+}

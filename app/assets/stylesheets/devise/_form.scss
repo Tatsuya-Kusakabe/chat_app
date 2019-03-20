@@ -1,0 +1,17 @@
+//
+.devise_contents {
+  //
+  // Positioning based on 'body'
+  //
+  position: absolute;
+  top: 90px;
+  left: 0;
+  width: 100%;
+  //
+  overflow-y: scroll;
+  //
+}
+//
+.field, .actions {
+  margin-bottom: 10px;
+}

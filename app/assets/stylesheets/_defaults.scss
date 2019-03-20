@@ -4,20 +4,23 @@
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
 }
+
 html {
   font-size: 62.5%;
   height: 100%;
 }
-body {
-  background: #fff;
 
-  position: relative;
-  color: #444;
-  font: 300 13px/1.6 Roboto, 'Helvetica Neue', Helvetica, Arial;
-  margin: 0 auto;
+body {
+  position:   relative;
+  text-align: center;   // Making its siblings (inline and inline-block) centered
+  margin:     0 auto;   // Making itself centered
   min-height: 100%;
-  overflow: hidden;
+
+  font:       300 13px/1.6 Roboto, 'Helvetica Neue', Helvetica, Arial;
+  background: #fff;
+  overflow:   scroll;
 }
+
 ul,
 ol {
   margin: 0;

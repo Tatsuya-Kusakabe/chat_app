@@ -1,0 +1,66 @@
+
+181227_spread_operator
+"//": "", と書くとエラーになるから注意！
+（https://github.com/JeffreyWay/laravel-mix/issues/76）
+
+181214_村井レビュー
+
+・バックエンドは基本的に、データベースの中身を json で返すだけ。
+　get_messages に全て詰め込むな！
+・それぞれのデータベースに合わせて、controller と Actions と Stores を作ろう
+・変数の範囲は狭くする。引数と関数内の const だけで完結させる
+・DRY は本質的に同じものに対して適用すること。
+　たまたま同じコードだから DRY にしました、だと逆に分かりにくいことも
+・mutation は厳禁。Object.assign({ hoge: fuga }) ではなく、
+  [...object, { hoge: fuga }] を使おう
+・シグネチャー（関数名、引数、戻り値）は、初見でも分かりやすく定義するべき
+・emitChange() を飛ばすと、処理が追いにくくなるので避けるべき。
+　飛ばさないとうごかなくなるのは、action 側と密なので避けるべき
+・処理を共通化したいなら関数化せよ
+・rubocop を入れる
+・js action はリファクタしすぎ？？
+・store が変わらないのに action を変えてはいけない（tmpMsg）
+・components にナンバリングはしないほうがいい。汎用性が低くなる
+・ぷるりくえすとをだす。細かく（理想は一業の変更でもだす。robocop の導入とか）
+・リーダブルコード、楽しいルビー
+・RESTful な API_v2 を作成、js 側も v2 を呼ぶように徐々に変更
+
+Q1. localhost:3000 がアップデートされない時
+
+  a) npm run watch を走らせる
+
+  *) localhost:3000 は、public/assets/javascripts/boot.js を読み込み、レンダリングする。
+     npm run watch を走らせておけば、常に最新の状態が public/.../boot.js に読み込まれる。
+
+Q2. 'SQLite3::BusyException: database is locked:' が表示される時
+
+  a) rails c で ActiveRecord::Base.connection.execute("BEGIN TRANSACTION; END;") を走らせる。
+  *) https://qiita.com/kitaokeita/items/25916d2808968e7762f6
+
+  b) DB browser for SQLite を閉じる。
+  *) https://stackoverflow.com/questions/7154664/ruby-sqlite3busyexception-database-is-locked
+
+Q3. 'heroku run rake db:migrate' が上手くいかない時
+
+  a) Heroku 上にデータストアを作る
+  *) https://devcenter.heroku.com/articles/heroku-postgresql
+
+  b) データストア上に、ローカルで作成したのと同じテーブルを作る（不要かも？？）
+  *) https://www.postgresql.jp/document/9.4/html/tutorial-table.html
+
+  c) 'sqlite3 db/development.sqlite3' から 'heroku pg:psql' へデータを移す
+  *) https://qiita.com/kumakichiwel/items/5ad175111fcd841c6606
+
+  d) 'config/database.yml' の設定を変える
+  *) https://qiita.com/beta_chelsea/items/34ccd2b7ad48163c55f8
+
+  e) '/usr/local/var/postgres/postgresql.conf' の 'unix_socket_directories' を変更する
+  *) https://qiita.com/volanja/items/e4c351ae5e5d1b977077
+
+  f) '/var/run/postgresql' に 'x'権限を、'./.s.PGSQL.5432' に 'wrx'権限を与える
+  *) https://stackoverflow.com/questions/8465508/can-not-connect-to-local-postgresql
+
+Q4. heroku deploy
+https://qiita.com/tomomomo1217/items/fa8dfa094cc4c0e4e350
+buildpacks を指定する　https://qiita.com/yuku_t/items/8fd7551dc0418bf59aae
+package.json を書き換える　https://qiita.com/yuku_t/items/8fd7551dc0418bf59aae

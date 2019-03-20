@@ -1,0 +1,21 @@
+//
+// Defining various 'mixin'
+// ** https://qiita.com/one-a/items/2758511326c09200fded
+//
+@function color($color) {
+  //
+  @if      $color == 'friends'        { @return #93C26D;               }
+  @else if $color == 'suggestions'    { @return #ffb732;               }
+  @else if $color == 'header'         { @return #2AADE5;               }
+  @else if $color == 'content'        { @return rgba( 0, 0, 0, 0.03 ); }
+  @else if $color == 'content-strong' { @return rgba( 0, 0, 0, 0.06 ); }
+  //
+}
+//
+@function border($border) {
+  //
+  @if      $border == 'normal'       { @return 1px solid rgba(   0,   0,   0, 0.1 ); }
+  @else if $border == 'normal_opc_1' { @return 1px solid rgba( 224, 224, 224, 1.0 ); }
+  @else if $border == 'strong'       { @return 2px solid rgba( 192, 192, 192, 1.0 ); }
+  //
+}

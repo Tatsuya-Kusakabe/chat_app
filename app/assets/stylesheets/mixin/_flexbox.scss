@@ -1,0 +1,22 @@
+//
+// https://coliss.com/articles/build-websites/operation/css/css3-flexbox-properties-by-scotch.html
+//
+@mixin flexbox($align: row) {
+  //
+  // Defining using 'flexbox'
+  //
+  display: flex;
+  //
+  // Defining which directions to assemble each 'box'
+  //
+  flex-direction: $align;
+  //
+  // Defining how the overall 'container' is positioned 'vertically'
+  //
+  justify-content: center;
+  //
+  // Defining how each 'box' is positioned 'vertically'
+  //
+  align-items: center;
+  //
+}

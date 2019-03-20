@@ -1,0 +1,33 @@
+//
+// Defining various 'mixin'
+// ** https://qiita.com/one-a/items/2758511326c09200fded
+//
+@mixin picture($size: 30px) {
+  //
+  max-width:         $size;
+  min-width:         $size;
+  max-height:        $size;
+  min-height:        $size;
+  //
+  // Keeping a profile picture round
+  //
+  border-radius: 50%;
+  overflow:      hidden;
+  //
+  // Th child class 'img' should be centered against the parent class '&__picture'
+  // ** http://nor-asu.work/contents/design/html-css-oyayouso-koyouso-jyougechuou-centering
+  //
+  position: relative;
+  //
+  img {
+    //
+    height: $size;
+    //
+    position:  absolute;
+    top:       50%;
+    left:      50%;
+    transform: translate(-50%, -50%);
+    //
+  }
+  //
+}

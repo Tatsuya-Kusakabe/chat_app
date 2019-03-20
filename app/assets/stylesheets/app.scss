@@ -1,15 +1,25 @@
-// Defaults
+//
+// Basic frames
+//
+@import '_header';
 @import '_defaults';
 @import '_misc';
 @import '_print';
-
-// Icons
-@import 'fonts/_fontawesome';
-
-// Partials
-@import 'partials/_header';
-@import 'partials/_messagesBox';
-@import 'partials/_userList';
-
+//
 // Components
-@import 'components/_replyBox';
+//
+@import 'components/index/1_usersTab';
+@import 'components/index/2_usersList';
+@import 'components/index/3_searchBox';
+@import 'components/index/4_userShortProf';
+@import 'components/index/5_userProf';
+@import 'components/index/6_messagesList';
+@import 'components/index/7_replyBox';
+//
+// Devise
+//
+@import 'devise/_form';
+//
+// Icons
+//
+@import 'fonts/_fontawesome';

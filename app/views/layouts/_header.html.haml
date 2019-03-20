@@ -1,0 +1,18 @@
+%header.header
+  - if alert
+    %p.notice= alert
+  - else
+    %p.notice= notice
+  - if !current_user.nil?
+    .clear.login_user__item
+      .login_user__item__picture<
+        %img{ src: current_user.profile_picture }
+      .login_user__item__name<
+        %h4= current_user.name
+      .login_user__item__link.right= link_to "Edit profile", edit_user_registration_path
+      .login_user__item__link.right= link_to "Sign out",     destroy_user_session_path,   method: :delete
+  - else
+    .clear.header__item
+      .header__item__link.left.wide= link_to "Sign up",     new_user_registration_path
+      .header__item__link.right= link_to "Sign in",         new_user_session_path
+      .header__item__link.right= link_to "Forgot password", new_user_password_path

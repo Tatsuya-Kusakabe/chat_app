@@ -1,0 +1,29 @@
+//
+// Defining various 'mixin'
+// ** https://qiita.com/one-a/items/2758511326c09200fded
+//
+@import './picture';
+//
+@mixin short_prof($pic_size: 30px, $name_color: #000) {
+  //
+  &__picture {
+    //
+    float:  left;
+    margin: 0 0 0 15px;
+    //
+    @include picture($size: $pic_size);
+    //
+  }
+  //
+  &__name {
+    //
+    float:  left;
+    margin: 0 auto 0 15px;
+    //
+    font-size:   15px;
+    font-weight: 500;
+    color:       $name_color
+    //
+  }
+  //
+}

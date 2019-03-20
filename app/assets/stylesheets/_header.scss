@@ -1,0 +1,84 @@
+//
+// Importing various 'mixin'
+//
+@import 'mixin/picture';
+@import 'mixin/color';
+@import 'mixin/shortProf';
+@import 'mixin/flexbox';
+//
+.header {
+  //
+  // Always fixing on top
+  //
+  position: fixed;
+  top:      0;
+  height:   90px;
+  left:     0;
+  width:    100%;
+  //
+  z-index: 100;
+  //
+}
+//
+.login_user__item, .header__item {
+  //
+  @include flexbox;
+  //
+  // Positioning based on 'body'
+  //
+  position: absolute;
+  top:      30px;
+  height:   60px;
+  left:     0;
+  right:    0;
+  //
+  background:    color('header');
+  border-bottom: border('strong');
+  //
+  @include short_prof($name_color: #fff);
+  //
+  &__link {
+    //
+    &[class*='left'] {
+      //
+      float:  left;
+      margin: 0 15px;
+      //
+      &[class*='wide'] { margin: 0 auto 0 15px; }
+      //
+    }
+    //
+    &[class*='right'] {
+      //
+      float:  right;
+      margin: 0 15px;
+      //
+      &[class*='wide'] { margin: 0 15px 0 auto; }
+      //
+    }
+    //
+    font-size:   15px;
+    font-weight: 500;
+    //
+    a {
+      color:           white;
+      text-decoration: none;
+    }
+    //
+  }
+  //
+}
+//
+.notice {
+  //
+  text-align:  center;
+  margin:      0 auto;  // Default: 13px on top and bottom
+  height:      30px;
+  padding-top: 5px;
+  //
+  font-weight: bold;
+  color:       white;
+  //
+  background:  color('header');
+  //
+}

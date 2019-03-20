@@ -1,0 +1,132 @@
+//
+// Importing various 'mixin'
+//
+@import 'mixin/picture';
+@import 'mixin/color';
+//
+.friends-list, .suggestions-list {
+  //
+  &__list {
+    //
+    // Positioning based on 'body'
+    //
+    position:     absolute;
+    //
+    top:    170px;
+    bottom: 0;
+    left:   0;
+    //
+    background:   color('content');
+    border-right: border('normal');
+    //
+    overflow-y: scroll;
+    //
+    &__empty {
+      //
+      width:       300px; // Keeping 'users-list__list' 300px wide including 'border-right'
+      padding:     30px;
+      //
+      font-size:   15px;
+      font-weight: 400;
+      //
+    }
+    //
+  }
+  //
+  &__item {
+    //
+    text-align:    left;     // Canceling 'text-align: center' on 'body'
+    padding:       15px;
+    //
+    background:    color('content');
+    border-bottom: border('normal');
+    //
+    cursor: pointer;
+    //
+    &__picture {
+      //
+      @include picture($size: 50px);
+      float:   left;
+      //
+    }
+    //
+    &__details {
+      //
+      width:        219px; // Keeping 'users-list__item' 300px wide including 'border-right'
+      padding-left: 15px;
+      float:        left;
+      //
+    }
+    //
+    &__name {
+      //
+      height:      25px;
+      margin:      0 auto;
+      float: left;
+      //
+      font-size:   15px;
+      font-weight: inherit;
+      //
+    }
+    //
+    &__timestamp {
+      //
+      height:      25px;
+      margin:      0 auto;
+      float:       right;
+      //
+      font-size:   10px;
+      font-weight: inherit;
+      //
+    }
+    //
+    &__message {
+      //
+      line-height:   25px;
+      width:         200px;
+      float:         left;
+      //
+      display:       block;
+      //
+      white-space:   nowrap;   // Keeping a text single-line
+      overflow:      hidden;   // Stopping a text from going into 'messagesBox'
+      text-overflow: ellipsis; // Abbreviating a text with '...'
+      //
+    }
+    //
+    &--new {
+      //
+      background:  #EEF1F6;
+      font-weight: 500;
+      //
+      .friends-list__item__icon {
+        color:        #1D9BCE;
+        margin-right: 3px;
+      }
+      //
+    }
+    //
+    &--active {
+      //
+      // Changing 'background' according to the class name
+      // ** https://www.nishi2002.com/6976.html
+      // ** https://stackoverflow.com/questions/22510423/
+      //
+      &[class*='friends']     { background: color('friends');     }
+      &[class*='suggestions'] { background: color('suggestions'); }
+      //
+      color:       #fff;
+      font-weight: 500;
+      //
+      // Making 'active list' have highlighted 'border' for all directions
+      //
+      margin-top:   -1px;
+      margin-right: -1px;
+      border-top:   border('normal');
+      border-right: border('normal');
+      //
+    }
+    //
+  }
+  //
+}

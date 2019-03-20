@@ -1,0 +1,110 @@
+-#
+-# A partial 'form_for' in response to 'create' and 'update' action
+-# Information will be contained in params[:user]
+-# 'multipart: true' should be added when uploading files
+-#
+= form_for(@user, url: yield(:url), html: { method: yield(:html), multipart: true }) do |f|
+  -#
+  -# Rendering 'error_messages' if existing
+  -#
+  = devise_error_messages!
+  -#
+  -# 'Name' field
+  -#
+  .field
+    -#
+    -# Displaying 'Name'
+    -#
+    = f.label :name
+    %br/
+    -#
+    -# Displaying an input line
+    -#
+    = f.text_field :name, autocomplete: "name", autofocus: true
+    -#
+    -# Rendering 'leave blank if ...' if calling 'update' action
+    -#
+    = render "users/registrations/leave_blank"
+  -#
+  -# 'Profile picture' field
+  -# ** Only 'image' file acceptable
+  -# ** http://html5.cyberlab.info/elements/forms/input-accept.html
+  -#
+  .field
+    -#
+    = f.label :profile_picture
+    %br/
+    -#
+    = f.file_field :profile_picture, autocomplete: "profile_picture",
+                                     accept: "image/png, image/jpeg, image/gif"
+    -#
+    = render "users/registrations/leave_blank"
+  -#
+  -# 'Email' field
+  -#
+  .field
+    -#
+    = f.label :email
+    %br/
+    -#
+    = f.email_field :email, autocomplete: "email"
+    -#
+    = render "users/registrations/leave_blank"
+  -#
+  -# ??
+  -#
+  - if devise_mapping.confirmable? && resource.pending_reconfirmation?
+    %div Currently waiting confirmation for: #{resource.unconfirmed_email}
+  -#
+  -# 'Password' field
+  -#
+  .field
+    -#
+    = f.label :password
+    -#
+    -# Displaying 'minimum_password_length' if defined
+    -#
+    - if @minimum_password_length
+      %em (#{@minimum_password_length} characters minimum)
+    %br/
+    -#
+    = f.password_field :password, autocomplete: "new-password"
+    -#
+    = render "users/registrations/leave_blank"
+  -#
+  -# 'Password confirmation' field
+  -#
+  .field
+    -#
+    = f.label :password_confirmation
+    %br/
+    -#
+    = f.password_field :password_confirmation, autocomplete: "new-password"
+  -#
+  -# If calling 'create' action
+  -#
+  - if yield(:html) == "post"
+    -#
+    -# 'Sign up' button
+    -#
+    .actions
+      = f.submit "Sign up"
+  -#
+  -# If calling 'update' action
+  -#
+  - if yield(:html) == "put"
+    -#
+    -# 'Current password' field
+    -#
+    .field
+      -#
+      = f.label :current_password
+      -#
+      %br (needed to confirm your changes)
+      -#
+      = f.password_field :current_password, autocomplete: "current-password"
+    -#
+    -# 'Update' button
+    -#
+    .actions
+      = f.submit "Update"
