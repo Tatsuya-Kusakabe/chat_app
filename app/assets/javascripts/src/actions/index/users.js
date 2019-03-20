@@ -1,50 +1,63 @@
 
 import request from 'superagent'
+import { camelizeKeys } from 'humps'
 import Dispatcher from '../../dispatcher'
-import { ActionTypes, APIRoot, PicRoot, CSRFToken } from '../../utils'
+import { ActionTypes, APIRoot } from '../../utils'
 
 // Exporting 'UserAction' using 'async/await'
 // ** https://www.valentinog.com/blog/how-async-await-in-react/
 export default {
 
-  async getFriends(userID, searchText) {
+  async fetchFriends(searchText) {
     try {
-      // Defining query parameters
-      const query = `self_id=${userID}&search_text=${searchText}`
-      // Getting data from a server, then proceeding next
-      const response = await request.get(`${APIRoot}/friends?${query}`);
+      // Getting data from a server (with query params), then proceeding next
+      // ** https://visionmedia.github.io/superagent/#query-strings
+      const response = await request
+        .get(`${APIRoot}/friends`)
+        .query({ search_text: searchText })
       // Catching errors besides network errors
-      if (!response.ok) { throw Error(response.statusText); }
+      if (!response.ok) { throw Error(response.statusText) }
+      // Defining 'json' (because it is used duplicately)
+      const json = camelizeKeys(JSON.parse(response.text))
       // Changing data on 'stores' after converting a JSON string to an object
       Dispatcher.handleViewAction({
         type: ActionTypes.GET_FRIENDS,
-        json: JSON.parse(response.text),
+        json: json,
       })
+      // Returning 'json'
+      return json
     // If catching network errors, throwing it
-    } catch(error) { console.log(error); }
+    } catch (error) { console.log(error) }
   },
 
-  async getSuggestions(userID, searchText) {
+  async fetchSuggestions(searchText) {
     try {
-      const query = `self_id=${userID}&search_text=${searchText}`
-      const response = await request.get(`${APIRoot}/suggestions?${query}`);
-      if (!response.ok) { throw Error(response.statusText); }
+      const response = await request
+        .get(`${APIRoot}/suggestions`)
+        .query({ search_text: searchText })
+      if (!response.ok) { throw Error(response.statusText) }
+      const json = camelizeKeys(JSON.parse(response.text))
       Dispatcher.handleViewAction({
         type: ActionTypes.GET_SUGGESTIONS,
-        json: JSON.parse(response.text),
+        json: json,
       })
-    } catch(error) { console.log(error); }
+      return json
+    } catch (error) { console.log(error) }
   },
 
-  async getCurrentUserID() {
+  async fetchCurrentUserID() {
     try {
-      const response = await request.get(`${APIRoot}/current_user`);
-      if (!response.ok) { throw Error(response.statusText); }
+      const response = await request
+        .get(`${APIRoot}/current_user`)
+      if (!response.ok) { throw Error(response.statusText) }
+      const json = camelizeKeys(JSON.parse(response.text))
       Dispatcher.handleViewAction({
         type: ActionTypes.GET_CURRENT_USER_ID,
-        json: JSON.parse(response.text),
+        json: json,
       })
-    } catch(error) { console.log(error); }
+      // Returning 'json.id'
+      return json
+    } catch (error) { console.log(error) }
   },
 
   changeOpenUserTab(userTab) {

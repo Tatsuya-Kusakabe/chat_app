@@ -3,7 +3,6 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
 import UserAction from '../../actions/index/users'
-import UserStore from '../../stores/index/users'
 
 class UsersTab extends React.Component {
 
@@ -12,18 +11,17 @@ class UsersTab extends React.Component {
     // Updating 'openUserTab'
     UserAction.changeOpenUserTab(openUserTab)
 
-    // Initializing 'userSearchText' (because a set of users changes)
-    UserAction.updateSearchText(null)
-
     // Initializing 'openUserID' (because a set of users changes)
     UserAction.changeOpenUserID(null)
 
+    // Initializing 'userSearchText' (because a set of users changes)
+    UserAction.updateSearchText(null)
+
     // Initializing 'friends' or 'suggestions' list
     // (Because these list might be changed after search)
-    const currentUserID = UserStore.getCurrentUserID()
     openUserTab === 'Friends'
-      ? UserAction.getFriends(currentUserID)
-      : UserAction.getSuggestions(currentUserID)
+      ? UserAction.fetchFriends()
+      : UserAction.fetchSuggestions()
   }
 
   render() {
@@ -32,7 +30,6 @@ class UsersTab extends React.Component {
 
     // Rendering 'tabs'
     const tabsList = tabs.map((tab, index) => {
-
       // Defining 'item_classes' for each message icon
       const itemClasses = classNames({
         'clear': true,
@@ -54,7 +51,7 @@ class UsersTab extends React.Component {
       )
     })
 
-    return <ul className='users-tab__list'>{ tabsList }</ul>;
+    return <ul className='users-tab__list'>{ tabsList }</ul>
   }
 }
 

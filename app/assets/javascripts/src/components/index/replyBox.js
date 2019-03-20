@@ -17,25 +17,21 @@ class ReplyBox extends React.Component {
 
   // Calling 'sendPicture()' and 'getOpenMessages()'
   // ** https://qiita.com/To_BB/items/27c864a46f35545122c2
-  async sendPicture(e) {
+  sendPicture(e) {
     // ** Somehow not warned as 'Duplicate definition'
-    const { currentUserID, openUserID } = this.props
+    const { openUserID } = this.props
     this.setState({ picture: e.target.files[0] })
-
-    await MessageAction.sendPicture(currentUserID, openUserID, e.target.files[0])
-    MessageAction.getOpenMessages(currentUserID, openUserID)
+    MessageAction.sendPicture(openUserID, e.target.files[0])
     this.setState({ picture: '' })
   }
 
   // When pressing Enter (code 13),
   // calling 'sendMessage()' and 'getMessages()', and initializing 'state'
-  async sendMessage(e) {
+  sendMessage(e) {
     if (e.keyCode === 13) {
       // ** Somehow not warned as 'Duplicate definition'
-      const { currentUserID, openUserID } = this.props
-
-      await MessageAction.sendMessage(currentUserID, openUserID, e.target.value)
-      MessageAction.getOpenMessages(currentUserID, openUserID)
+      const { openUserID } = this.props
+      MessageAction.sendMessage(openUserID, e.target.value)
       this.setState({ text: '' })
     }
   }
@@ -75,7 +71,6 @@ class ReplyBox extends React.Component {
 // Defining 'propTypes'
 // ** https://morizyun.github.io/javascript/react-js-proptypes-validator.html
 ReplyBox.propTypes = {
-  currentUserID: PropTypes.number,
   openUserID: PropTypes.number,
 }
 

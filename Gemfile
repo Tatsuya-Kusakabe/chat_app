@@ -31,6 +31,12 @@ gem 'sdoc', '~> 0.4.0', group: :doc
 gem 'devise'
 gem 'bcrypt'
 
+# https://github.com/visionmedia/superagent/issues/629
+gem 'qs'
+
+# https://github.com/Tatsuya-Kusakabe/chat_app/pull/33
+gem 'humps'
+
 group :development, :test do
 
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
@@ -70,5 +76,5 @@ group :production do
   # 'rails_12factor' is necessary for activating 'Rails' on 'Heroku'
   # ** https://qiita.com/yuku_t/items/8fd7551dc0418bf59aae
   gem 'rails_12factor'
-  
+
 end

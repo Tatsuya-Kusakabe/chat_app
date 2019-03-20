@@ -1,62 +1,87 @@
 
 import request from 'superagent'
+import { camelizeKeys } from 'humps'
 import Dispatcher from '../../dispatcher'
-import { ActionTypes, APIRoot, PicRoot, CSRFToken } from '../../utils'
+import { ActionTypes, APIRoot, CSRFToken } from '../../utils'
 
 // Exporting 'MessageAction' using 'async/await'
 // ** https://www.valentinog.com/blog/how-async-await-in-react/
 export default {
 
-  async getLastMessages(currentUserID) {
+  async fetchLastMessages() {
     try {
-      // Defining query parameters
-      const query = `self_id=${currentUserID}&limit=1`
-      // Getting data from a server, then proceeding next
-      const response = await request.get(`${APIRoot}/messages?${query}`);
+      // Getting data from a server (with query params), then proceeding next
+      // ** https://visionmedia.github.io/superagent/#query-strings
+      const response = await request
+        .get(`${APIRoot}/messages`)
+        .query({ limit: 1 })
       // Catching errors besides network errors
-      if (!response.ok) { throw Error(response.statusText); }
+      if (!response.ok) { throw Error(response.statusText) }
+      // Defining 'json' (because it is used duplicately)
+      const json = camelizeKeys(JSON.parse(response.text))
       // Changing data on 'stores' after converting a JSON string to an object
       Dispatcher.handleViewAction({
         type: ActionTypes.GET_LAST_MESSAGES,
-        json: JSON.parse(response.text),
+        json: json,
       })
+      // Returning 'json'
+      return json
     // If catching network errors, throwing it
-    } catch(error) { console.log(error); }
+    } catch (error) { console.log(error) }
   },
 
-  async getOpenMessages(currentUserID, openUserID) {
+  async fetchOpenMessages(openUserID) {
     try {
-      const query = `self_id=${currentUserID}&partner_ids[]=${openUserID}`
-      const response = await request.get(`${APIRoot}/messages?${query}`);
-      if (!response.ok) { throw Error(response.statusText); }
+      const response = await request
+        .get(`${APIRoot}/messages`)
+        .query(`partner_ids[]=${openUserID}`)
+      if (!response.ok) { throw Error(response.statusText) }
+      const json = camelizeKeys(JSON.parse(response.text))
       Dispatcher.handleViewAction({
         type: ActionTypes.GET_OPEN_MESSAGES,
-        json: JSON.parse(response.text),
+        json: json,
       })
-    } catch(error) { console.log(error); }
+      return json
+    } catch (error) { console.log(error) }
   },
 
-  async sendMessage(currentUserID, openUserID, message) {
+  async sendMessage(openUserID, message) {
     try {
       const response = await request
         .post(`${APIRoot}/messages`)
         .set('X-CSRF-Token', CSRFToken())
-        .send({ self_id: currentUserID, partner_id: openUserID, contents: message });
-      if (!response.ok) { throw Error(response.statusText); }
-    } catch(error) { console.log(error); }
+        .send({ partner_id: openUserID, contents: message })
+      if (!response.ok) { throw Error(response.statusText) }
+      const json = camelizeKeys(message)
+      Dispatcher.handleViewAction({
+        type: ActionTypes.SEND_MESSAGE,
+        partnerId: openUserID,
+        contents: message,
+      })
+      return json
+    } catch (error) { console.log(error) }
   },
 
-  async sendPicture(currentUserID, openUserID, picture) {
+  async sendPicture(openUserID, picture) {
     try {
       const response = await request
         .post(`${APIRoot}/messages`)
         .set('X-CSRF-Token', CSRFToken())
         .attach('picture', picture)
+        .field('partner_id', openUserID)
         .field('contents', 'A picture was sent!')
-        .field('self_id', currentUserID)
-        .field('partner_id', openUserID);
-      if (!response.ok) { throw Error(response.statusText); }
-    } catch(error) { console.log(error); }
+      if (!response.ok) { throw Error(response.statusText) }
+      const json = camelizeKeys(picture)
+      console.log(picture)
+      Dispatcher.handleViewAction({
+        type: ActionTypes.SEND_PICTURE,
+        partnerId: openUserID,
+        contents: picture.read,
+        picRoot: '/assets/images',
+        picName: picture.name
+      })
+      return json
+    } catch (error) { console.log(error) }
   },
 
 }

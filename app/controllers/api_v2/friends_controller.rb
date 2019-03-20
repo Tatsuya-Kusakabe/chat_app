@@ -5,10 +5,13 @@ class ApiV2::FriendsController < ApplicationController
   # Newly created
   def index
 
-    friends = User.find(params[:self_id]).friends
+    # Without 'params[:user_id]', searching '@current_user's friends
+    friends = params[:user_id].present? \
+      ? User.find(params[:user_id]).friends \
+      : @current_user.friends
 
-    # Narrowing friends with 'params[:search_text]' if existing
-    friends_narrowed = (params[:search_text] != 'undefined') \
+      # With 'params[:search_text]', narrowing friends
+    friends_narrowed = params[:search_text].present? \
       ? friends.where('NAME LIKE ?', "%#{params[:search_text]}%") \
       : friends
 

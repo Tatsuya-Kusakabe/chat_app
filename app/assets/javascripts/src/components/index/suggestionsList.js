@@ -23,8 +23,8 @@ class SuggestionsList extends React.Component {
     // (during rerender), displaying 'No friends'
     // ** When 'openUserID' is null, should not skip Rendering
     // ** Initialization of 'openUserID' needed afterwards
-    const skipRenderAfterUpdate
-      = openUserID && !(_.find(suggestions, { 'id': openUserID }))
+    const skipRenderAfterUpdate =
+      openUserID && !(_.find(suggestions, { id: openUserID }))
 
     if (skipRenderFirst || skipRenderAfterUpdate) {
       return (
@@ -43,9 +43,9 @@ class SuggestionsList extends React.Component {
 
     // Sorting 'suggestionsRaw' according to 'name'
     const suggestionsSorted = suggestionsRaw.sort((a, b) => {
-      if (a.user.name < b.user.name) return -1;
-      if (a.user.name > b.user.name) return 1;
-      return 0;
+      if (a.user.name < b.user.name) return -1
+      if (a.user.name > b.user.name) return 1
+      return 0
     })
 
     // Initializing 'openUserID'
@@ -58,7 +58,6 @@ class SuggestionsList extends React.Component {
 
     // Rendering 'friendsSorted'
     const suggestionsList = suggestionsSorted.map((suggestion, index) => {
-
       // Defining 'item_classes' for each tab
       const itemClasses = classNames({
         'clear': true,
@@ -75,14 +74,14 @@ class SuggestionsList extends React.Component {
             key={ suggestion.user.id }
           >
             <div className='suggestions-list__item__picture'>
-              <img src={ suggestion.user.profile_picture } />
+              <img src={ suggestion.user.profilePicture } />
             </div>
             <div className='suggestions-list__item__details'>
               <h4 className='suggestions-list__item__name'>
                 { suggestion.user.name }
               </h4>
               <span className='suggestions-list__item__message'>
-                { suggestion.user.profile_comment }
+                { suggestion.user.profileComment }
               </span>
             </div>
           </li>
@@ -90,13 +89,14 @@ class SuggestionsList extends React.Component {
     }, this)
 
     // Returning 'suggestionsList'
-    return <ul className='suggestions-list__list'>{ suggestionsList }</ul>;
+    return <ul className='suggestions-list__list'>{ suggestionsList }</ul>
   }
 }
 
 // Defining 'propTypes'
 // ** https://morizyun.github.io/javascript/react-js-proptypes-validator.html
 SuggestionsList.propTypes = {
+  currentUserID: PropTypes.number,
   openUserID: PropTypes.number,
   suggestions: PropTypes.array,
 }

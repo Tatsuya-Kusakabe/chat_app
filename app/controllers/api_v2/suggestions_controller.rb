@@ -5,10 +5,13 @@ class ApiV2::SuggestionsController < ApplicationController
   # Newly created
   def index
 
-    suggestions = User.find(params[:self_id]).suggestions
+    # Without 'params[:user_id]', searching '@current_user's suggestions
+    suggestions = params[:user_id].present? \
+      ? User.find(params[:user_id]).suggestions \
+      : @current_user.suggestions
 
-    # Narrowing suggestions with 'params[:search_text]' if existing
-    suggestions_narrowed = (params[:search_text] != 'undefined') \
+    # With 'params[:search_text]', narrowing suggestions
+    suggestions_narrowed = params[:search_text].present? \
       ? suggestions.where('NAME LIKE ?', "%#{params[:search_text]}%") \
       : suggestions
 
