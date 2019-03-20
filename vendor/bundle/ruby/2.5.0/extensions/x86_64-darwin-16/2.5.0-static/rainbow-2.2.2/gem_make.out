@@ -1,0 +1,5 @@
+current directory: /Users/user/progate/flux_tutorial/vendor/bundle/ruby/2.5.0/gems/rainbow-2.2.2/ext
+/Users/user/.rbenv/versions/2.5.0/bin/ruby mkrf_conf.rb
+
+current directory: /Users/user/progate/flux_tutorial/vendor/bundle/ruby/2.5.0/gems/rainbow-2.2.2/ext
+/Users/user/.rbenv/versions/2.5.0/bin/ruby -rrubygems /Users/user/progate/flux_tutorial/vendor/bundle/ruby/2.5.0/gems/rake-12.3.1/exe/rake RUBYARCHDIR=/Users/user/progate/flux_tutorial/vendor/bundle/ruby/2.5.0/extensions/x86_64-darwin-16/2.5.0-static/rainbow-2.2.2 RUBYLIBDIR=/Users/user/progate/flux_tutorial/vendor/bundle/ruby/2.5.0/extensions/x86_64-darwin-16/2.5.0-static/rainbow-2.2.2
